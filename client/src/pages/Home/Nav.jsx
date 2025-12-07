@@ -20,8 +20,8 @@ const Nav = () => {
           <Link to="/" className="hover:text-green-700">Home</Link>
           <Link to="/ServicesList" className="hover:text-green-700">Services</Link>
           <Link to="/HowItWorks" className="hover:text-green-700">How It Works</Link>
-          <Link to="/about" className="hover:text-green-700">About</Link>
-          <Link to="/support" className="hover:text-green-700">Support</Link>
+          {/* <Link to="/about" className="hover:text-green-700">About</Link>
+          <Link to="/support" className="hover:text-green-700">Support</Link> */}
 
           <Link
             to="/auth/login"
@@ -57,8 +57,8 @@ const Nav = () => {
           <Link to="/" className="block hover:text-green-700">Home</Link>
           <Link to="/ServicesList" className="block hover:text-green-700">Services</Link>
           <Link to="/Services" className="block hover:text-green-700">How It Works</Link>
-          <Link to="/about" className="block hover:text-green-700">About</Link>
-          <Link to="/support" className="block hover:text-green-700">Support</Link>
+          {/* <Link to="/about" className="block hover:text-green-700">About</Link>
+          <Link to="/support" className="block hover:text-green-700">Support</Link> */}
 
           <div className="flex flex-col gap-3 pt-2">
             <Link
