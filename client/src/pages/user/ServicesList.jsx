@@ -1,4 +1,5 @@
 import { Grid, Card, CardContent, CardMedia, Typography, Button } from "@mui/material";
+import Categories from "../../components/layout/Sidebar/Categories";
 
 const dummyServices = [
   { id: 1, title: "Home Cleaning", desc: "Professional home deep cleaning", img: "https://source.unsplash.com/400x300/?cleaning" },
@@ -9,11 +10,13 @@ const dummyServices = [
 export default function ServicesList() {
   return (
     <div>
-      <Typography variant="h5" fontWeight="bold" mb={3}>
+      {/* <Typography variant="h5" fontWeight="bold" mb={3}>
         Available Services
-      </Typography>
+      </Typography> */}
 
-      <Grid container spacing={3}>
+      <Categories/>
+
+      {/* <Grid container spacing={3}>
         {dummyServices.map(service => (
           <Grid item xs={12} sm={6} md={4} key={service.id}>
             <Card sx={{ borderRadius: 3, boxShadow: 3 }}>
@@ -30,7 +33,7 @@ export default function ServicesList() {
             </Card>
           </Grid>
         ))}
-      </Grid>
+      </Grid> */}
     </div>
   );
 }
