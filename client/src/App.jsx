@@ -7,14 +7,21 @@ import BookService from "./pages/user/BookService";
 import MyBookings from "./pages/user/MyBookings";
 import Payments from "./pages/user/Payments";
 import Profile from "./pages/user/UserProfile";
-import ServiceProvideProfile from "./pages/service-provider/ServiceProvideProfile";
+// import ServiceProvideProfile from "./pages/service-provider/ServiceProvideProfile";
 import Home from "./pages/Home/Home";
+import HowItWorks from "./pages/Home/HowItWorks";
+import Categories from "./components/layout/Sidebar/Categories";
+import Services from "./pages/Home/Services";
+
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />}/>
+        <Route path="/" element={<Home />} />
+        <Route path="/HowItWorks" element={<HowItWorks />} />
+        <Route path="/ServicesList" element={<Services />} />
+
         <Route path="/user" element={<UserLayout />}>
           <Route index element={<UserDashboard />} />
           <Route path="services" element={<ServicesList />} />

@@ -15,11 +15,11 @@ const Nav = () => {
           QuickServe
         </Link>
 
-        {/* Desktop Menu */}
+        {/* Menu Button */}
         <div className="hidden md:flex items-center space-x-8 text-gray-700 font-medium">
           <Link to="/" className="hover:text-green-700">Home</Link>
-          <Link to="/services" className="hover:text-green-700">Services</Link>
-          <Link to="/how-it-works" className="hover:text-green-700">How It Works</Link>
+          <Link to="/ServicesList" className="hover:text-green-700">Services</Link>
+          <Link to="/HowItWorks" className="hover:text-green-700">How It Works</Link>
           <Link to="/about" className="hover:text-green-700">About</Link>
           <Link to="/support" className="hover:text-green-700">Support</Link>
 
@@ -55,8 +55,8 @@ const Nav = () => {
           className="md:hidden bg-white shadow-md px-6 pb-4 space-y-4 font-medium text-gray-700"
         >
           <Link to="/" className="block hover:text-green-700">Home</Link>
-          <Link to="/services" className="block hover:text-green-700">Services</Link>
-          <Link to="/how-it-works" className="block hover:text-green-700">How It Works</Link>
+          <Link to="/ServicesList" className="block hover:text-green-700">Services</Link>
+          <Link to="/Services" className="block hover:text-green-700">How It Works</Link>
           <Link to="/about" className="block hover:text-green-700">About</Link>
           <Link to="/support" className="block hover:text-green-700">Support</Link>
 

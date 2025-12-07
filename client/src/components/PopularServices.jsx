@@ -42,12 +42,10 @@ const PopularServices = () => {
     <section className="py-20 bg-[#f2fbf8]" id="popular-services">
       <div className="max-w-7xl mx-auto px-6">
 
-        {/* Title */}
         <h2 className="text-3xl md:text-4xl font-bold text-center text-green-800 mb-10">
           Most Booked Services
         </h2>
 
-        {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {services.map((service, index) => (
             <motion.div
@@ -59,25 +57,21 @@ const PopularServices = () => {
               transition={{ duration: 0.4, delay: index * 0.15 }}
               whileHover={{ scale: 1.05 }}
             >
-              {/* Image */}
+        
               <img
                 src={service.img}
                 alt={service.title}
                 className="w-full h-40 object-cover"
               />
 
-              {/* Content */}
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-1">{service.title}</h3>
                 <p className="text-sm text-gray-600">{service.duration}</p>
 
-                {/* Price */}
                 <p className="text-green-700 text-xl font-bold mt-3">{service.price}</p>
 
-                {/* Rating */}
                 <p className="text-sm text-yellow-600 mt-1">⭐ {service.rating}</p>
-
-                {/* CTA */}
+                
                 <button className="w-full mt-4 bg-green-600 text-white py-2 rounded-xl font-semibold hover:bg-green-700 transition">
                   Book Now
                 </button>
