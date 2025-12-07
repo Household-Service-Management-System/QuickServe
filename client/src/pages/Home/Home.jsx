@@ -10,6 +10,7 @@ import { TypeAnimation } from "react-type-animation";
 import Nav from "./Nav";
 import Footer from "./Footer";
 import Categories from "../../components/layout/Sidebar/Categories";
+import PopularServices from "../../components/PopularServices";
 
 const bannerImages = [
   "https://images.pexels.com/photos/4107284/pexels-photo-4107284.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", // cleaning
@@ -157,6 +158,10 @@ const Home = () => {
 
       {/* Categories Section  */}
       <Categories />
+
+      {/* Popular Services  */}
+      <PopularServices/>
+      
 
       <Footer />
     </div>
