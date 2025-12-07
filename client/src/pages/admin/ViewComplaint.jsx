@@ -1,7 +1,6 @@
+import "./ViewComplaint.css";
 import { Link } from "react-router-dom";
-import "./AdminDashboard.css";
-
-export default function AdminDashboard() {
+export default function ViewComplaint() {
   return (
     <div className="layout">
 
@@ -10,7 +9,7 @@ export default function AdminDashboard() {
         <h2 className="logo">QuickServe</h2>
         <p className="panel-text">Admin Panel</p>
 
-        <nav className="menu">
+          <nav className="menu">
           <Link to="/admin" className="menu-item active">Dashboard</Link>
           <Link to="/admin/customer" className="menu-item">Customer</Link>
           <Link to="/admin/serviceProvider" className="menu-item">Service Provider</Link>
@@ -19,42 +18,46 @@ export default function AdminDashboard() {
           <Link to="/admin/setting" className="menu-item">Setting</Link>
         </nav>
 
-  <Link to="/admin/logout">
+        <Link to="/admin/logout">
   <button className="logout-btn">Logout</button>
 </Link>
 
       </aside>
 
-      {/* Main Content */}
+      {/* MAIN CONTENT */}
       <main className="content">
+
         <h1 className="page-title">Dashboard Overview</h1>
 
-        <input
-          type="text"
-          className="search-bar"
-          placeholder="Search..."
-        />
+        {/* CARD BOX */}
+        <div className="complaint-card">
 
-        <div className="stats-grid">
-          <div className="stat-box">
-            <h3>Total Service Providers</h3>
-            <p className="stat-value">25</p>
+          {/* Top Row (ID + Name) */}
+          <div className="info-row">
+            <p className="info-text">SR/C ID : - 1</p>
+            <p className="info-text">Name : - ABV</p>
           </div>
 
-          <div className="stat-box">
-            <h3>Total Revenue</h3>
-            <p className="stat-value">$12,500</p>
+          {/* Complaint and Response */}
+          <div className="two-box-row">
+
+            <div className="box">
+              <label className="label">Complaint :</label>
+              <textarea className="textarea"></textarea>
+            </div>
+
+            <div className="box">
+              <label className="label">Response :</label>
+              <textarea className="textarea"></textarea>
+            </div>
+
           </div>
 
-          <div className="stat-box">
-            <h3>Total Customers</h3>
-            <p className="stat-value">250</p>
+          {/* Submit Button */}
+          <div className="submit-container">
+            <button className="submit-btn">Submit</button>
           </div>
 
-          <div className="stat-box">
-            <h3>Pending Requests</h3>
-            <p className="stat-value">8</p>
-          </div>
         </div>
       </main>
     </div>
