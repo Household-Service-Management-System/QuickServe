@@ -37,18 +37,19 @@ export default function ServiceProviderSidebar() {
 
     return (
         <Drawer
-            variant="permanent"
-            sx={{
+              variant="permanent"
+              sx={{
                 width: drawerWidth,
                 "& .MuiDrawer-paper": {
-                    width: drawerWidth,
-                    boxSizing: "border-box",
-                    background: "#111827",
-                    color: "white",
-                    borderRight: "1px solid #1f2937",
+                  width: drawerWidth,
+                  boxSizing: "border-box",
+                  background: "linear-gradient(180deg, #0f172a 0%, #1e3a8a 100%)",
+                  color: "white",
+                  borderRight: "none",
+                  backdropFilter: "blur(12px)",
                 },
-            }}
-        >
+              }}
+            >
             <Toolbar />
 
             {/* Header */}
