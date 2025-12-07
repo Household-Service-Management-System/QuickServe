@@ -31,7 +31,7 @@ const Testimonials = () => {
   return (
     <section className="py-20 bg-[#f2fbf8]" id="testimonials">
       <div className="max-w-7xl mx-auto px-6 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-green-800 mb-10">
+        <h2 className="text-3xl md:text-4xl font-bold text-blue-800 mb-10">
           What Our Customers Say
         </h2>
 

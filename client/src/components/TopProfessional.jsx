@@ -35,7 +35,7 @@ const TopProfessionals = () => {
   return (
     <section className="py-20 bg-[#f2fbf8]" id="top-professionals">
       <div className="max-w-7xl mx-auto px-6 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-green-800 mb-10">
+        <h2 className="text-3xl md:text-4xl font-bold text-blue-800 mb-10">
           Top Rated Professionals
         </h2>
 
@@ -56,7 +56,7 @@ const TopProfessionals = () => {
                 className="w-24 h-24 mx-auto rounded-full object-cover mb-4"
               />
               <h3 className="text-lg font-semibold text-gray-800">{pro.name}</h3>
-              <p className="text-green-700 font-medium">{pro.role}</p>
+              <p className="text-blue-700 font-medium">{pro.role}</p>
               <p className="text-sm text-gray-500 mt-1">{pro.experience}</p>
               <p className="text-sm text-yellow-600 mt-2">⭐ {pro.rating}</p>
             </motion.div>

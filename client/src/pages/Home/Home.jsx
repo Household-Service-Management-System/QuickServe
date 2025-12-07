@@ -52,7 +52,7 @@ const Home = () => {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
-                    className="inline-flex items-center px-3 py-1 rounded-full bg-white bg-opacity-80 text-xs md:text-sm font-semibold text-green-900 mb-4"
+                    className="inline-flex items-center px-3 py-1 rounded-full bg-white bg-opacity-80 text-xs md:text-sm font-semibold text-blue-900 mb-4"
                   >
                     Trusted Home Services • On-Demand
                   </motion.div>
@@ -64,7 +64,7 @@ const Home = () => {
                     className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 leading-tight"
                   >
                     Book Trusted{" "}
-                    <span className="text-green-300">Home Services</span>{" "}
+                    <span className="text-blue-300">Home Services</span>{" "}
                     in Minutes
                   </motion.h1>
 
@@ -78,7 +78,7 @@ const Home = () => {
                       1500,
                     ]}
                     wrapper="h2"
-                    className="text-lg md:text-2xl text-green-100 mb-6 font-medium"
+                    className="text-lg md:text-2xl text-blue-200 mb-6 font-medium"
                     repeat={Infinity}
                   />
 
@@ -86,7 +86,7 @@ const Home = () => {
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.2 }}
-                    className="max-w-2xl text-sm md:text-lg text-gray-100 mb-6"
+                    className="max-w-2xl text-sm md:text-lg text-blue-100 mb-6"
                   >
                     QuickServe connects you with background-verified professionals
                     for all your household needs. Choose a service, pick a time,
@@ -105,7 +105,7 @@ const Home = () => {
                     <div className="flex gap-3">
                       <Link
                         to="/auth/signup"
-                        className="px-5 py-2.5 rounded-full text-sm md:text-base font-semibold bg-white text-green-800 shadow-md hover:bg-gray-100 transition"
+                        className="px-5 py-2.5 rounded-full text-sm md:text-base font-semibold bg-white text-blue-800 shadow-md hover:bg-gray-100 transition"
                       >
                         Book a Service
                       </Link>

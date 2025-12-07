@@ -22,7 +22,7 @@ const Signup = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8"
                 >
-                    <h2 className="text-3xl font-bold text-green-800 text-center mb-6">
+                    <h2 className="text-3xl font-bold text-blue-800 text-center mb-6">
                         Create an Account
                     </h2>
 
@@ -35,7 +35,7 @@ const Signup = () => {
                                 type="text"
                                 value={form.name}
                                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-green-500"
+                                className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Your full name"
                             />
                         </div>
@@ -48,7 +48,7 @@ const Signup = () => {
                                 type="email"
                                 value={form.email}
                                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                                className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-green-500"
+                                className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Your email address"
                             />
                         </div>
@@ -61,7 +61,7 @@ const Signup = () => {
                                 type="password"
                                 value={form.password}
                                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                                className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-green-500"
+                                className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Create a strong password"
                             />
                         </div>
@@ -73,21 +73,21 @@ const Signup = () => {
                             <select
                                 value={form.role}
                                 onChange={(e) => setForm({ ...form, role: e.target.value })}
-                                className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none bg-white focus:ring-2 focus:ring-green-500"
+                                className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none bg-white focus:ring-2 focus:ring-blue-500"
                             >
                                 <option value="customer">Customer</option>
                                 <option value="provider">Service Provider</option>
                             </select>
                         </div>
 
-                        <button className="w-full bg-green-600 text-white py-2.5 rounded-xl font-semibold hover:bg-green-700 transition">
+                        <button className="w-full bg-blue-600 text-white py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition">
                             Sign Up
                         </button>
                     </form>
 
                     <p className="text-sm text-center text-gray-600 mt-4">
                         Already have an account?
-                        <Link to="/login" className="text-green-700 font-semibold hover:underline ml-1">
+                        <Link to="/login" className="text-blue-700 font-semibold hover:underline ml-1">
                             Login
                         </Link>
                     </p>

@@ -42,7 +42,7 @@ const PopularServices = () => {
     <section className="py-20 bg-[#f2fbf8]" id="popular-services">
       <div className="max-w-7xl mx-auto px-6">
 
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-green-800 mb-10">
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-blue-800 mb-10">
           Most Booked Services
         </h2>
 
@@ -68,11 +68,11 @@ const PopularServices = () => {
                 <h3 className="text-lg font-semibold text-gray-800 mb-1">{service.title}</h3>
                 <p className="text-sm text-gray-600">{service.duration}</p>
 
-                <p className="text-green-700 text-xl font-bold mt-3">{service.price}</p>
+                <p className="text-blue-700 text-xl font-bold mt-3">{service.price}</p>
 
                 <p className="text-sm text-yellow-600 mt-1">⭐ {service.rating}</p>
                 
-                <button className="w-full mt-4 bg-green-600 text-white py-2 rounded-xl font-semibold hover:bg-green-700 transition">
+                <button className="w-full mt-4 bg-blue-600 text-white py-2 rounded-xl font-semibold hover:bg-blue-700 transition">
                   Book Now
                 </button>
               </div>
