@@ -1,0 +1,168 @@
+/* LAYOUT */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.layout {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  background: #f3f4f7;
+  font-family: Arial, sans-serif;
+}
+
+
+.logout-btn {
+  width: 100%;
+  padding: 12px;
+  background: #4f74d9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+}
+
+.logout-btn:hover {
+  background: #c9c9c9;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 230px;
+  background: #0d1b2a;
+  color: white;
+  padding: 25px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.panel-text {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-bottom: 25px;
+}
+
+.menu-item {
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #dce1e7;
+}
+
+.menu-item:hover {
+  background: #1b263b;
+}
+
+.active {
+  background: #1b263b;
+  color: white;
+}
+
+.logout {
+  margin-top: auto;
+  padding: 12px 10px;
+  cursor: pointer;
+  color: #dce1e7;
+}
+
+.logout:hover {
+  color: white;
+}
+
+/* MAIN CONTENT */
+.content {
+  flex: 1;
+  padding: 30px;
+}
+
+.page-title {
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+/* CARD */
+.card {
+  width: 80%;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+}
+
+/* TABLE */
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.custom-table th {
+  padding: 12px;
+  border-bottom: 2px solid #ddd;
+  text-align: left;
+  color: #333;
+  font-size: 15px;
+}
+
+.custom-table td {
+  padding: 12px;
+  border-bottom: 1px solid #ececec;
+}
+
+/* BUTTONS */
+.view-btn,
+.accept-btn,
+.reject-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.view-btn {
+  background: #1b75d1;
+  color: white;
+}
+
+.accept-btn {
+  background: #28a745;
+  color: white;
+  margin-right: 5px;
+}
+
+.reject-btn {
+  background: #d9534f;
+  color: white;
+}
+
+/* BACK BUTTON */
+.back-container {
+  margin-top: 20px;
+}
+
+.back-btn {
+  padding: 10px 25px;
+  background: #1b263b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.menu-item {
+  text-decoration: none;
+  color: #dce1e7;
+}
+
+
+.back-btn:hover {
+  background: #0d1b2a;
+}

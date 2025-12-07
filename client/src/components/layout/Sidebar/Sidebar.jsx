@@ -55,7 +55,6 @@ export default function Sidebar() {
         </Typography>
       </Box> */}
 
-      {/* MENU ITEMS */}
       <List>
         {menuItems.map((item, i) => (
           <NavLink
@@ -81,7 +80,6 @@ export default function Sidebar() {
         ))}
       </List>
 
-      {/* LOGOUT */}
       <Box sx={{ position: "absolute", bottom: 20, width: "100%" }}>
         <ListItemButton onClick={handleLogout} sx={{ color: "white" }}>
           <ListItemIcon sx={{ color: "white" }}>
