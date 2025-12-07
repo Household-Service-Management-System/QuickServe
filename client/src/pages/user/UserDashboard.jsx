@@ -52,7 +52,6 @@ export default function UserDashboard() {
   return (
     <Box sx={{ p: 3 }}>
       {/* HEADER */}
-      <nav/>
       <Typography variant="h4" fontWeight={700}>
         Welcome Back 👋
       </Typography>

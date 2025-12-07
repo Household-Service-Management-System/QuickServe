@@ -17,6 +17,8 @@ const Login = () => {
     if (form.role === "customer") {
       window.location.href = "/user";
     } else if (form.role === "provider") {
+      window.location.href = "/service-provider";
+    } else {
       window.location.href = "/admin";
     }
   };
@@ -73,6 +75,7 @@ const Login = () => {
               >
                 <option value="customer">Customer</option>
                 <option value="provider">Service Provider</option>
+                <option value="admin">Admin</option>
               </select>
             </div>
 
