@@ -52,12 +52,10 @@ const Categories = () => {
     <section className="py-20 bg-white" id="categories">
       <div className="max-w-7xl mx-auto px-6">
         
-        {/* Title */}
         <h2 className="text-3xl md:text-4xl font-bold text-center text-green-800 mb-10">
           Popular Services
         </h2>
 
-        {/* Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {categories.map((cat, index) => (
             <motion.div

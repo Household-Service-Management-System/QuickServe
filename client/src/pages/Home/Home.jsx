@@ -10,6 +10,10 @@ import { TypeAnimation } from "react-type-animation";
 import Nav from "./Nav";
 import Footer from "./Footer";
 import Categories from "../../components/layout/Sidebar/Categories";
+import PopularServices from "../../components/PopularServices";
+import TopProfessionals from "../../components/TopProfessional";
+import WhyChooseUs from "./WhyChooseUs";
+import Testimonials from "./Testimonials";
 
 const bannerImages = [
   "https://images.pexels.com/photos/4107284/pexels-photo-4107284.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", // cleaning
@@ -35,16 +39,15 @@ const Home = () => {
         >
           {bannerImages.map((img, index) => (
             <SwiperSlide key={index} className="relative w-full h-full">
-              {/* Background Image */}
+              
               <div
                 className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
                 style={{ backgroundImage: `url(${img})` }}
               />
 
-              
               <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center px-4">
                 <div className="max-w-5xl mx-auto text-center md:text-left">
-                  {/* Small badge */}
+                  
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -54,7 +57,6 @@ const Home = () => {
                     Trusted Home Services • On-Demand
                   </motion.div>
 
-                  {/* Main Heading */}
                   <motion.h1
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -66,7 +68,6 @@ const Home = () => {
                     in Minutes
                   </motion.h1>
 
-                  {/* Animated sub-heading */}
                   <TypeAnimation
                     sequence={[
                       "Cleaning • Electrician • Plumber • AC Repair",
@@ -81,7 +82,6 @@ const Home = () => {
                     repeat={Infinity}
                   />
 
-                  
                   <motion.p
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -93,14 +93,13 @@ const Home = () => {
                     and relax—we’ll handle the rest.
                   </motion.p>
 
-                  {/* Location + Search + CTA */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.3 }}
                     className="bg-white bg-opacity-90 rounded-2xl shadow-lg p-3 md:p-4 flex flex-col md:flex-row gap-3 md:items-center mb-5"
                   >
-                    {/* Location */}
+
                     <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-2 bg-white">
                       <span className="text-gray-500 text-sm">📍</span>
                       <select className="flex-1 bg-transparent text-sm md:text-base outline-none">
@@ -121,7 +120,6 @@ const Home = () => {
                       />
                     </div>
 
-                    {/* Button */}
                     <button className="w-full md:w-auto px-5 py-2.5 rounded-xl text-sm md:text-base font-semibold bg-green-600 text-white hover:bg-green-700 transition">
                       Search Services
                     </button>
@@ -157,6 +155,17 @@ const Home = () => {
 
       {/* Categories Section  */}
       <Categories />
+
+      {/* Popular Services  */}
+      <PopularServices/>
+      
+      {/* Top Professioanls */}
+      <TopProfessionals/>
+
+      {/* WhyChooseUs */}
+      <WhyChooseUs/>
+
+      <Testimonials/>
 
       <Footer />
     </div>
