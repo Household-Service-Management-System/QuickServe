@@ -49,7 +49,11 @@ export default function Customer() {
       <main className="content">
 
         <h1 className="page-title">Customer List</h1>
-
+  <input
+          type="text"
+          className="search-bar"
+          placeholder="Search..."
+        />
         <div className="card">
           <table className="custom-table">
             <thead>

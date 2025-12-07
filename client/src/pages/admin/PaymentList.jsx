@@ -29,7 +29,11 @@ export default function PaymentList() {
       <main className="content">
 
         <h1 className="page-title">Payment Records</h1>
-
+  <input
+          type="text"
+          className="search-bar"
+          placeholder="Search..."
+        />
         {/* TABLE CARD */}
         <div className="card">
           <table className="custom-table">

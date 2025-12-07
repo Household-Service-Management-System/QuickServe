@@ -53,7 +53,11 @@ export default function ServiceProvider() {
       <main className="content">
 
         <h1 className="page-title">Service Provider List</h1>
-
+        <input
+          type="text"
+          className="search-bar"
+          placeholder="Search..."
+        />
         <div className="card">
           <table className="custom-table">
             <thead>
