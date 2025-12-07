@@ -24,14 +24,14 @@ const Nav = () => {
           <Link to="/support" className="hover:text-green-700">Support</Link> */}
 
           <Link
-            to="/auth/login"
+            to="/login"
             className="px-4 py-2 rounded-full border border-green-700 text-green-700 hover:bg-green-700 hover:text-white transition"
           >
             Login
           </Link>
 
           <Link
-            to="/auth/signup"
+            to="/signup"
             className="px-5 py-2 rounded-full bg-green-700 text-white font-semibold hover:bg-green-800 transition"
           >
             Sign Up
@@ -62,14 +62,14 @@ const Nav = () => {
 
           <div className="flex flex-col gap-3 pt-2">
             <Link
-              to="/auth/login"
+              to="/login"
               className="px-4 py-2 rounded-full border border-green-700 text-green-700 text-center hover:bg-green-700 hover:text-white transition"
             >
               Login
             </Link>
 
             <Link
-              to="/auth/signup"
+              to="/signup"
               className="px-5 py-2 rounded-full bg-green-700 text-white text-center font-semibold hover:bg-green-800 transition"
             >
               Sign Up

@@ -12,6 +12,8 @@ import Home from "./pages/Home/Home";
 import HowItWorks from "./pages/Home/HowItWorks";
 import Categories from "./components/layout/Sidebar/Categories";
 import Services from "./pages/Home/Services";
+import Login from "./pages/Auth/Login";
+import Signup from "./pages/Auth/SignUp";
 
 
 function App() {
@@ -21,8 +23,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/HowItWorks" element={<HowItWorks />} />
         <Route path="/ServicesList" element={<Services />} />
-
-
+        <Route path="/login" element={<Login/>}/>
+        <Route path="signup" element={<Signup/>}/>
         <Route path="/user" element={<UserLayout />}>
           <Route index element={<UserDashboard />} />
           <Route path="services" element={<ServicesList />} />
