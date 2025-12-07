@@ -9,17 +9,34 @@ const Nav = () => {
   return (
     <nav className="w-full bg-white shadow-md fixed top-0 left-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        
         {/* Logo */}
         <Link to="/" className="text-2xl font-extrabold text-green-700">
           QuickServe
         </Link>
 
+        <div className="hidden md:flex items-center gap-3 bg-white px-3 py-2 rounded-2xl shadow border border-gray-200 max-w-md w-full">
+          <span className="text-gray-500 text-sm">🔍</span>
+          <input
+            type="text"
+            placeholder="Search services e.g. AC Repair, Cleaning"
+            className="flex-1 bg-transparent text-sm outline-none"
+          />
+          <button className="px-4 py-1.5 rounded-xl text-sm font-semibold bg-green-600 text-white hover:bg-green-700 transition">
+            Search
+          </button>
+        </div>
+
         {/* Menu Button */}
         <div className="hidden md:flex items-center space-x-8 text-gray-700 font-medium">
-          <Link to="/" className="hover:text-green-700">Home</Link>
-          <Link to="/ServicesList" className="hover:text-green-700">Services</Link>
-          <Link to="/HowItWorks" className="hover:text-green-700">How It Works</Link>
+          <Link to="/" className="hover:text-green-700">
+            Home
+          </Link>
+          <Link to="/ServicesList" className="hover:text-green-700">
+            Services
+          </Link>
+          <Link to="/HowItWorks" className="hover:text-green-700">
+            How It Works
+          </Link>
           {/* <Link to="/about" className="hover:text-green-700">About</Link>
           <Link to="/support" className="hover:text-green-700">Support</Link> */}
 
@@ -54,9 +71,15 @@ const Nav = () => {
           animate={{ opacity: 1, y: 0 }}
           className="md:hidden bg-white shadow-md px-6 pb-4 space-y-4 font-medium text-gray-700"
         >
-          <Link to="/" className="block hover:text-green-700">Home</Link>
-          <Link to="/ServicesList" className="block hover:text-green-700">Services</Link>
-          <Link to="/Services" className="block hover:text-green-700">How It Works</Link>
+          <Link to="/" className="block hover:text-green-700">
+            Home
+          </Link>
+          <Link to="/ServicesList" className="block hover:text-green-700">
+            Services
+          </Link>
+          <Link to="/Services" className="block hover:text-green-700">
+            How It Works
+          </Link>
           {/* <Link to="/about" className="block hover:text-green-700">About</Link>
           <Link to="/support" className="block hover:text-green-700">Support</Link> */}
 

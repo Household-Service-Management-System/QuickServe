@@ -93,37 +93,7 @@ const Home = () => {
                     and relax—we’ll handle the rest.
                   </motion.p>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.3 }}
-                    className="bg-white bg-opacity-90 rounded-2xl shadow-lg p-3 md:p-4 flex flex-col md:flex-row gap-3 md:items-center mb-5"
-                  >
-
-                    <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-2 bg-white">
-                      <span className="text-gray-500 text-sm">📍</span>
-                      <select className="flex-1 bg-transparent text-sm md:text-base outline-none">
-                        <option>Pune, Maharashtra</option>
-                        <option>Mumbai, Maharashtra</option>
-                        <option>Nashik, Maharashtra</option>
-                        <option>Bengaluru, Karnataka</option>
-                      </select>
-                    </div>
-
-                    {/* Search */}
-                    <div className="flex-[2] flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-2 bg-white">
-                      <span className="text-gray-500 text-sm">🔍</span>
-                      <input
-                        type="text"
-                        placeholder="What service do you need? e.g. '2BHK Cleaning, AC Service'"
-                        className="flex-1 bg-transparent text-xs md:text-sm outline-none"
-                      />
-                    </div>
-
-                    <button className="w-full md:w-auto px-5 py-2.5 rounded-xl text-sm md:text-base font-semibold bg-green-600 text-white hover:bg-green-700 transition">
-                      Search Services
-                    </button>
-                  </motion.div>
+                  
 
                   
                   <motion.div
