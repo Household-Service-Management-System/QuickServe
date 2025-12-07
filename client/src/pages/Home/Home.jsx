@@ -9,6 +9,7 @@ import { Pagination, Autoplay } from "swiper/modules";
 import { TypeAnimation } from "react-type-animation";
 import Nav from "./Nav";
 import Footer from "./Footer";
+import Categories from "../../components/layout/Sidebar/Categories";
 
 const bannerImages = [
   "https://images.pexels.com/photos/4107284/pexels-photo-4107284.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", // cleaning
@@ -40,7 +41,7 @@ const Home = () => {
                 style={{ backgroundImage: `url(${img})` }}
               />
 
-              {/* Overlay */}
+              
               <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center px-4">
                 <div className="max-w-5xl mx-auto text-center md:text-left">
                   {/* Small badge */}
@@ -80,7 +81,7 @@ const Home = () => {
                     repeat={Infinity}
                   />
 
-                  {/* Supporting text */}
+                  
                   <motion.p
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -126,7 +127,7 @@ const Home = () => {
                     </button>
                   </motion.div>
 
-                  {/* Secondary CTAs */}
+                  
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -140,12 +141,7 @@ const Home = () => {
                       >
                         Book a Service
                       </Link>
-                      <Link
-                        to="/auth/provider-signup"
-                        className="px-5 py-2.5 rounded-full text-sm md:text-base font-semibold border border-white text-white hover:bg-white hover:text-green-800 transition"
-                      >
-                        Become a Partner
-                      </Link>
+                      
                     </div>
 
                     <p className="text-xs md:text-sm text-gray-200 mt-1 md:mt-0">
@@ -159,7 +155,8 @@ const Home = () => {
         </Swiper>
       </section>
 
-      {/* We will add: Categories, Popular Services, How It Works, etc. step by step later */}
+      {/* Categories Section  */}
+      <Categories />
 
       <Footer />
     </div>
