@@ -14,6 +14,8 @@ import Profile from "./pages/user/UserProfile";
 import Home from "./pages/Home/Home";
 import HowItWorks from "./pages/Home/HowItWorks";
 import Services from "./pages/Home/Services";
+import Login from "./pages/Auth/Login";
+import Signup from "./pages/Auth/SignUp";
 
 // ADMIN PAGES
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -35,6 +37,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/HowItWorks" element={<HowItWorks />} />
         <Route path="/ServicesList" element={<Services />} />
+        <Route path="/login" element={<Login/>}/>
+        <Route path="signup" element={<Signup/>}/>
 
         {/* USER ROUTES */}
         <Route path="/user" element={<UserLayout />}>
