@@ -12,6 +12,7 @@ import Footer from "./Footer";
 import Categories from "../../components/layout/Sidebar/Categories";
 import PopularServices from "../../components/PopularServices";
 import TopProfessionals from "../../components/TopProfessional";
+import WhyChooseUs from "./WhyChooseUs";
 
 const bannerImages = [
   "https://images.pexels.com/photos/4107284/pexels-photo-4107284.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", // cleaning
@@ -159,6 +160,9 @@ const Home = () => {
       
       {/* Top Professioanls */}
       <TopProfessionals/>
+
+      {/* WhyChooseUs */}
+      <WhyChooseUs/>
 
       <Footer />
     </div>
