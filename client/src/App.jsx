@@ -7,11 +7,14 @@ import BookService from "./pages/user/BookService";
 import MyBookings from "./pages/user/MyBookings";
 import Payments from "./pages/user/Payments";
 import Profile from "./pages/user/UserProfile";
+import ServiceProvideProfile from "./pages/service-provider/ServiceProvideProfile";
+import Home from "./pages/Home/Home";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Home />}/>
         <Route path="/user" element={<UserLayout />}>
           <Route index element={<UserDashboard />} />
           <Route path="services" element={<ServicesList />} />
