@@ -1,14 +1,29 @@
-import { useState } from 'react'
-import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import UserLayout from "./pages/user/UserLayout";
+import UserDashboard from "./pages/user/UserDashboard";
+import ServicesList from "./pages/user/ServicesList";
+import ServiceDetail from "./pages/user/ServiceDetail";
+import BookService from "./pages/user/BookService";
+import MyBookings from "./pages/user/MyBookings";
+import Payments from "./pages/user/Payments";
+import Profile from "./pages/user/UserProfile";
 
 function App() {
-  
-
   return (
-    <>
-      Welcome to QuickServe
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/user" element={<UserLayout />}>
+          <Route index element={<UserDashboard />} />
+          <Route path="services" element={<ServicesList />} />
+          <Route path="service/:id" element={<ServiceDetail />} />
+          <Route path="book/:id" element={<BookService />} />
+          <Route path="bookings" element={<MyBookings />} />
+          <Route path="payments" element={<Payments />} />
+          <Route path="profile" element={<Profile />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
