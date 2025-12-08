@@ -1,237 +1,5 @@
 
-// import React, { useState, useRef } from "react";
-// import {
-//   Box,
-//   Card,
-//   CardContent,
-//   CardHeader,
-//   Avatar,
-//   Typography,
-//   TextField,
-//   Button,
-//   Grid,
-//   IconButton,
-//   Divider,
-//   Snackbar,
-//   Alert,
-// } from "@mui/material";
-// import CameraAltIcon from "@mui/icons-material/CameraAlt";
-
-// export default function ServiceProviderProfile() {
-//   // Mocked user data (static)
-//   const initialUser = {
-//     name: "Rupprashik",
-//     email: "user@gmail.com",
-//     phone: "9876543210",
-//     city: "Mumbai",
-//     state: "Maharashtra",
-//   };
-
-//   const [user, setUser] = useState(initialUser);
-//   const [avatar, setAvatar] = useState(null);
-//   const [errors, setErrors] = useState({});
-//   const [snack, setSnack] = useState({ open: false, severity: "success", msg: "" });
-//   const inputRef = useRef(null);
-
-//   const validate = () => {
-//     const e = {};
-//     if (!user.name || user.name.trim().length < 2) e.name = "Enter a valid name";
-//     if (!/^[6-9]\d{9}$/.test(user.phone)) e.phone = "Enter a valid 10-digit phone starting 6-9";
-//     setErrors(e);
-//     return Object.keys(e).length === 0;
-//   };
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setUser((prev) => ({ ...prev, [name]: value }));
-//     setErrors((prev) => ({ ...prev, [name]: undefined }));
-//   };
-
-//   const handleSave = () => {
-//     if (!validate()) {
-//       setSnack({ open: true, severity: "error", msg: "Please fix validation errors" });
-//       return;
-//     }
-
-//     // Since this is static, we just show a snackbar.
-//     setSnack({ open: true, severity: "success", msg: "Profile saved locally (static page)" });
-//   };
-
-//   const onAvatarClick = () => inputRef.current?.click();
-
-//   const handleAvatar = (e) => {
-//     const file = e.target.files?.[0];
-//     if (!file) return;
-//     const reader = new FileReader();
-//     reader.onload = (ev) => setAvatar(ev.target.result);
-//     reader.readAsDataURL(file);
-//   };
-
-//   const handleReset = () => {
-//     setUser(initialUser);
-//     setAvatar(null);
-//     setErrors({});
-//     setSnack({ open: true, severity: "info", msg: "Form reset to defaults" });
-//   };
-
-//   const handleCloseSnack = (_, reason) => {
-//     if (reason === "clickaway") return;
-//     setSnack((s) => ({ ...s, open: false }));
-//   };
-
-//   return (
-//     <Grid container justifyContent="center" sx={{ mt: 4, px: 2 }}>
-//       <Grid item xs={12} md={8} lg={6}>
-//         <Card elevation={4}>
-//           <CardHeader
-//             title={
-//               <Box>
-//                 <Typography variant="h6">My Profile</Typography>
-//                 <Typography variant="body2" color="text.secondary">
-//                   Manage your personal information
-//                 </Typography>
-//               </Box>
-//             }
-//             sx={{ pb: 0 }}
-//           />
-
-//           <CardContent>
-//             <Grid container spacing={3} alignItems="center">
-//               {/* Avatar column */}
-//               <Grid item xs={12} sm={4} md={3}>
-//                 <Box
-//                   sx={{
-//                     display: "flex",
-//                     flexDirection: "column",
-//                     alignItems: "center",
-//                     gap: 1,
-//                   }}
-//                 >
-//                   <Avatar alt={user.name} src={avatar ?? undefined} sx={{ width: 92, height: 92, fontSize: 36 }}>
-//                     {!avatar && user.name?.[0]}
-//                   </Avatar>
-
-//                   <input
-//                     ref={inputRef}
-//                     type="file"
-//                     accept="image/*"
-//                     style={{ display: "none" }}
-//                     onChange={handleAvatar}
-//                   />
-
-//                   <IconButton
-//                     size="small"
-//                     onClick={onAvatarClick}
-//                     aria-label="upload avatar"
-//                     sx={{ border: 1, borderColor: "divider", p: 0.8, mt: 0.5 }}
-//                   >
-//                     <CameraAltIcon fontSize="small" />
-//                   </IconButton>
-
-//                   <Typography variant="caption" color="text.secondary">
-//                     Upload avatar
-//                   </Typography>
-//                 </Box>
-//               </Grid>
-
-//               {/* Form column */}
-//               <Grid item xs={12} sm={8} md={9}>
-//                 <Grid container spacing={2}>
-//                   <Grid item xs={12}>
-//                     <TextField
-//                       fullWidth
-//                       label="Full Name"
-//                       name="name"
-//                       value={user.name}
-//                       onChange={handleChange}
-//                       error={!!errors.name}
-//                       helperText={errors.name}
-//                       inputProps={{ maxLength: 60 }}
-//                     />
-//                   </Grid>
-
-//                   <Grid item xs={12} sm={6}>
-//                     <TextField fullWidth label="Email" name="email" value={user.email} disabled helperText="Email cannot be changed here" />
-//                   </Grid>
-
-//                   <Grid item xs={12} sm={6}>
-//                     <TextField
-//                       fullWidth
-//                       label="Phone"
-//                       name="phone"
-//                       value={user.phone}
-//                       onChange={handleChange}
-//                       error={!!errors.phone}
-//                       helperText={errors.phone ?? "10 digits"}
-//                       inputProps={{ maxLength: 10 }}
-//                     />
-//                   </Grid>
-
-//                   <Grid item xs={12} sm={6}>
-//                     <TextField fullWidth label="City" name="city" value={user.city} onChange={handleChange} />
-//                   </Grid>
-
-//                   <Grid item xs={12} sm={6}>
-//                     <TextField fullWidth label="State" name="state" value={user.state} onChange={handleChange} />
-//                   </Grid>
-
-//                   <Grid item xs={12}>
-//                     <Divider />
-//                   </Grid>
-
-//                   <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-//                     <Button variant="outlined" onClick={handleReset}>
-//                       Reset
-//                     </Button>
-
-//                     <Button variant="contained" onClick={handleSave}>
-//                       Save Changes
-//                     </Button>
-//                   </Grid>
-//                 </Grid>
-//               </Grid>
-//             </Grid>
-//           </CardContent>
-//         </Card>
-//       </Grid>
-
-//       <Snackbar
-//         open={snack.open}
-//         autoHideDuration={3000}
-//         onClose={handleCloseSnack}
-//         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-//       >
-//         <Alert onClose={handleCloseSnack} severity={snack.severity} sx={{ width: "100%" }}>
-//           {snack.msg}
-//         </Alert>
-//       </Snackbar>
-//     </Grid>
-//   );
-// }
 import React, { useState, useRef } from "react";
-import {
-  Box,
-  Grid,
-  Card,
-  CardContent,
-  CardHeader,
-  Avatar,
-  Typography,
-  TextField,
-  Button,
-  IconButton,
-  Divider,
-  Snackbar,
-  Alert,
-} from "@mui/material";
-import CameraAltIcon from "@mui/icons-material/CameraAlt";
-
-/**
- * ServiceProviderProfile
- * - polished, handcrafted look
- * - keeps local avatar preview, validation and snackbar
- * - constrained width so it fits inside your layout's Outlet
- */
 
 export default function ServiceProviderProfile() {
   const initialUser = {
@@ -245,8 +13,14 @@ export default function ServiceProviderProfile() {
   const [user, setUser] = useState(initialUser);
   const [avatar, setAvatar] = useState(null);
   const [errors, setErrors] = useState({});
-  const [snack, setSnack] = useState({ open: false, severity: "success", msg: "" });
+  const [toast, setToast] = useState({ show: false, type: "", message: "" });
+
   const inputRef = useRef(null);
+
+  const showToast = (type, message) => {
+    setToast({ show: true, type, message });
+    setTimeout(() => setToast({ show: false, type: "", message: "" }), 2500);
+  };
 
   const validate = () => {
     const e = {};
@@ -264,10 +38,10 @@ export default function ServiceProviderProfile() {
 
   const handleSave = () => {
     if (!validate()) {
-      setSnack({ open: true, severity: "error", msg: "Please fix validation errors" });
+      showToast("error", "Please fix validation errors");
       return;
     }
-    setSnack({ open: true, severity: "success", msg: "Profile saved locally (static)" });
+    showToast("success", "Profile saved locally (static)");
   };
 
   const onAvatarClick = () => inputRef.current?.click();
@@ -284,177 +58,152 @@ export default function ServiceProviderProfile() {
     setUser(initialUser);
     setAvatar(null);
     setErrors({});
-    setSnack({ open: true, severity: "info", msg: "Changes reset" });
-  };
-
-  const handleCloseSnack = (_, reason) => {
-    if (reason === "clickaway") return;
-    setSnack((s) => ({ ...s, open: false }));
+    showToast("info", "Form reset");
   };
 
   return (
-    <Grid container justifyContent="center" sx={{ mt: 4, px: 2 }}>
-      {/* Constrained container so it matches your dashboard width */}
-      <Grid item xs={12} md={10} lg={8} sx={{ maxWidth: 1100, width: "100%" }}>
-        <Card
-          sx={{
-            borderRadius: 3,
-            overflow: "visible",
-            boxShadow: "0 8px 30px rgba(20,24,40,0.06)",
-          }}
+    <div className="flex justify-center w-full mt-6 px-4">
+      <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-6">
+
+        <div className="pb-4 border-b mb-6">
+          <h2 className="text-xl font-bold text-gray-800">My Profile</h2>
+          <p className="text-sm text-gray-500">Update your personal details</p>
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-8">
+
+
+          <div className="flex flex-col items-center gap-2 w-full md:w-1/3">
+            <div className="w-28 h-28 rounded-full bg-gray-200 overflow-hidden shadow-md flex items-center justify-center">
+              {avatar ? (
+                <img src={avatar} alt="avatar" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-3xl font-semibold text-gray-600">
+                  {user.name[0]}
+                </span>
+              )}
+            </div>
+
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleAvatar}
+            />
+
+            <button
+              onClick={onAvatarClick}
+              className="px-3 py-1.5 border rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition"
+            >
+              Upload Avatar
+            </button>
+          </div>
+
+
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+
+            <div className="col-span-2">
+              <label className="text-sm font-medium text-gray-700">Full Name</label>
+              <input
+                type="text"
+                name="name"
+                value={user.name}
+                onChange={handleChange}
+                className={`w-full mt-1 px-3 py-2 border rounded-lg focus:ring-2 ${errors.name ? "border-red-500 ring-red-200" : "border-gray-300 focus:ring-blue-300"
+                  }`}
+              />
+              {errors.name && (
+                <p className="text-xs text-red-600 mt-1">{errors.name}</p>
+              )}
+            </div>
+
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                value={user.email}
+                disabled
+                className="w-full mt-1 px-3 py-2 border rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
+              />
+              <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
+            </div>
+
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">Phone</label>
+              <input
+                type="text"
+                name="phone"
+                value={user.phone}
+                maxLength={10}
+                onChange={handleChange}
+                className={`w-full mt-1 px-3 py-2 border rounded-lg focus:ring-2 ${errors.phone ? "border-red-500 ring-red-200" : "border-gray-300 focus:ring-blue-300"
+                  }`}
+              />
+              {errors.phone ? (
+                <p className="text-xs text-red-600 mt-1">{errors.phone}</p>
+              ) : (
+                <p className="text-xs text-gray-500 mt-1">10 digits</p>
+              )}
+            </div>
+
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">City</label>
+              <input
+                type="text"
+                name="city"
+                value={user.city}
+                onChange={handleChange}
+                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-300"
+              />
+            </div>
+
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">State</label>
+              <input
+                type="text"
+                name="state"
+                value={user.state}
+                onChange={handleChange}
+                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-300"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 flex justify-end gap-3">
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            Reset
+          </button>
+
+          <button
+            onClick={handleSave}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+
+
+      {toast.show && (
+        <div
+          className={`fixed bottom-6 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg shadow-lg text-white text-sm
+            ${toast.type === "success" ? "bg-green-600" :
+              toast.type === "error" ? "bg-red-600" : "bg-blue-600"
+            }`}
         >
-          {/* Slightly styled header for a handcrafted feel */}
-          <CardHeader
-            title={
-              <Typography variant="h6" fontWeight={800}>
-                My Profile
-              </Typography>
-            }
-            subheader={
-              <Typography variant="body2" color="text.secondary">
-                Update your details — changes are stored locally here.
-              </Typography>
-            }
-            sx={{
-              pb: 0,
-              px: { xs: 2, md: 3 },
-              pt: { xs: 2, md: 3 },
-              background: "linear-gradient(180deg, #ffffff, #fbfdff)",
-            }}
-          />
-
-          <CardContent sx={{ px: { xs: 2, md: 3 }, pt: 2 }}>
-            <Grid container spacing={3} alignItems="center">
-              {/* Avatar column */}
-              <Grid item xs={12} sm={4} md={3}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 1,
-                  }}
-                >
-                  <Avatar
-                    alt={user.name}
-                    src={avatar ?? undefined}
-                    sx={{
-                      width: 96,
-                      height: 96,
-                      fontSize: 36,
-                      boxShadow: "0 6px 18px rgba(16,24,40,0.08)",
-                    }}
-                  >
-                    {!avatar && user.name?.[0]}
-                  </Avatar>
-
-                  <input
-                    ref={inputRef}
-                    type="file"
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    onChange={handleAvatar}
-                  />
-
-                  <IconButton
-                    size="small"
-                    onClick={onAvatarClick}
-                    aria-label="upload avatar"
-                    sx={{
-                      border: 1,
-                      borderColor: "divider",
-                      p: 0.8,
-                      mt: 0.5,
-                      bgcolor: "transparent",
-                    }}
-                  >
-                    <CameraAltIcon fontSize="small" />
-                  </IconButton>
-
-                  <Typography variant="caption" color="text.secondary">
-                    Upload avatar
-                  </Typography>
-                </Box>
-              </Grid>
-
-              {/* Form column */}
-              <Grid item xs={12} sm={8} md={9}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Full Name"
-                      name="name"
-                      value={user.name}
-                      onChange={handleChange}
-                      error={!!errors.name}
-                      helperText={errors.name}
-                      inputProps={{ maxLength: 60 }}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Email"
-                      name="email"
-                      value={user.email}
-                      disabled
-                      helperText="Email cannot be changed here"
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Phone"
-                      name="phone"
-                      value={user.phone}
-                      onChange={handleChange}
-                      error={!!errors.phone}
-                      helperText={errors.phone ?? "10 digits"}
-                      inputProps={{ maxLength: 10 }}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} sm={6}>
-                    <TextField fullWidth label="City" name="city" value={user.city} onChange={handleChange} />
-                  </Grid>
-
-                  <Grid item xs={12} sm={6}>
-                    <TextField fullWidth label="State" name="state" value={user.state} onChange={handleChange} />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Divider sx={{ my: 1.5 }} />
-                  </Grid>
-
-                  <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-                    <Button variant="outlined" onClick={handleReset}>
-                      Reset
-                    </Button>
-
-                    <Button variant="contained" onClick={handleSave}>
-                      Save Changes
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
-      </Grid>
-
-      <Snackbar
-        open={snack.open}
-        autoHideDuration={3000}
-        onClose={handleCloseSnack}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert onClose={handleCloseSnack} severity={snack.severity} sx={{ width: "100%" }}>
-          {snack.msg}
-        </Alert>
-      </Snackbar>
-    </Grid>
+          {toast.message}
+        </div>
+      )}
+    </div>
   );
 }
