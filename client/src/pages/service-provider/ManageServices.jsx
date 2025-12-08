@@ -1,27 +1,16 @@
-// src/pages/service-provider/ManageServices.jsx
+
 import React, { useState } from "react";
-import {
-    Box,
-    Typography,
-    Card,
-    CardContent,
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-    IconButton,
-    Switch,
-    Button,
-} from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
+import {
+    PencilSquareIcon,
+    TrashIcon,
+    CheckCircleIcon,
+    XCircleIcon,
+} from "@heroicons/react/24/outline";
 
 export default function ManageServices() {
     const navigate = useNavigate();
 
-    // static services data (local state to allow toggling)
     const [services, setServices] = useState([
         { id: "s1", name: "AC Repair", category: "Home Appliances", price: 500, active: true },
         { id: "s2", name: "Electrical Wiring", category: "Electrical", price: 350, active: true },
@@ -29,70 +18,96 @@ export default function ManageServices() {
     ]);
 
     const toggleActive = (id) => {
-        setServices((prev) => prev.map((s) => (s.id === id ? { ...s, active: !s.active } : s)));
-    };
-
-    const handleEdit = (id) => {
-        navigate(`/service-provider/services/edit/${id}`);
+        setServices((prev) =>
+            prev.map((s) => (s.id === id ? { ...s, active: !s.active } : s))
+        );
     };
 
     const handleDelete = (id) => {
-        if (window.confirm("Are you sure you want to delete this service? (static placeholder)")) {
+        if (window.confirm("Delete this service?")) {
             setServices((prev) => prev.filter((s) => s.id !== id));
         }
     };
 
     return (
-        <Box>
-            <Typography variant="h4" gutterBottom>
-                Manage Services
-            </Typography>
+        <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
+            <div className="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-sm border">
 
-            <Card>
-                <CardContent>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                        <Typography variant="subtitle1">Your offered services</Typography>
-                        <Box>
-                            <Button variant="contained" onClick={() => navigate("/service-provider/services/add")}>
-                                Add Service
-                            </Button>
-                        </Box>
-                    </Box>
 
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Service</TableCell>
-                                <TableCell>Category</TableCell>
-                                <TableCell>Price</TableCell>
-                                <TableCell>Active</TableCell>
-                                <TableCell align="right">Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
+                <div className="flex justify-between items-center mb-5">
+                    <div>
+                        <h1 className="text-2xl font-semibold text-gray-800">Manage Services</h1>
+                        <p className="text-sm text-gray-500">View, edit or disable your services</p>
+                    </div>
 
-                        <TableBody>
+                    <button
+                        onClick={() => navigate("/service-provider/services/add")}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    >
+                        + Add Service
+                    </button>
+                </div>
+
+                <div className="overflow-x-auto">
+                    <table className="w-full border-collapse text-sm">
+                        <thead>
+                            <tr className="bg-gray-100 text-left text-gray-600">
+                                <th className="p-3">Service</th>
+                                <th className="p-3">Category</th>
+                                <th className="p-3">Price</th>
+                                <th className="p-3">Status</th>
+                                <th className="p-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
                             {services.map((s) => (
-                                <TableRow key={s.id}>
-                                    <TableCell>{s.name}</TableCell>
-                                    <TableCell>{s.category}</TableCell>
-                                    <TableCell>₹{s.price}</TableCell>
-                                    <TableCell>
-                                        <Switch checked={s.active} onChange={() => toggleActive(s.id)} />
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        <IconButton size="small" onClick={() => handleEdit(s.id)}>
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton size="small" onClick={() => handleDelete(s.id)}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
+                                <tr key={s.id} className="border-b hover:bg-gray-50">
+                                    <td className="p-3 font-medium text-gray-800">{s.name}</td>
+                                    <td className="p-3 text-gray-700">{s.category}</td>
+                                    <td className="p-3 font-medium">₹{s.price}</td>
+
+                                    <td className="p-3">
+                                        <button
+                                            onClick={() => toggleActive(s.id)}
+                                            className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${s.active
+                                                ? "bg-green-100 text-green-700"
+                                                : "bg-gray-200 text-gray-700"
+                                                }`}
+                                        >
+                                            {s.active ? (
+                                                <CheckCircleIcon className="w-4 h-4" />
+                                            ) : (
+                                                <XCircleIcon className="w-4 h-4" />
+                                            )}
+                                            {s.active ? "Active" : "Inactive"}
+                                        </button>
+                                    </td>
+
+                                    <td className="p-3 flex justify-end gap-3">
+                                        <button
+                                            onClick={() =>
+                                                navigate(`/service-provider/services/edit/${s.id}`)
+                                            }
+                                            className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200"
+                                        >
+                                            <PencilSquareIcon className="w-5 h-5 text-gray-700" />
+                                        </button>
+
+                                        <button
+                                            onClick={() => handleDelete(s.id)}
+                                            className="p-2 rounded-lg bg-red-50 hover:bg-red-100"
+                                        >
+                                            <TrashIcon className="w-5 h-5 text-red-600" />
+                                        </button>
+                                    </td>
+                                </tr>
                             ))}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
-        </Box>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
     );
 }
