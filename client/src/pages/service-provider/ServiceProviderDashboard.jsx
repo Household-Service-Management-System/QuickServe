@@ -1,164 +1,163 @@
-import React from "react";
-import {
-    Box,
-    Grid,
-    Card,
-    CardContent,
-    Typography,
-    TextField,
-    List,
-    ListItem,
-    ListItemText,
-    Divider,
-    Avatar,
-} from "@mui/material";
 
-import SearchIcon from "@mui/icons-material/Search";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
-import BuildIcon from "@mui/icons-material/Build";
-import FormatPaintIcon from "@mui/icons-material/FormatPaint";
-import BoltIcon from "@mui/icons-material/Bolt";
+import React, { useState } from "react";
+import {
+    MagnifyingGlassIcon,
+    ArrowRightIcon,
+    WrenchScrewdriverIcon,
+    CheckCircleIcon,
+    ClockIcon,
+    CurrencyRupeeIcon,
+} from "@heroicons/react/24/outline";
 
 export default function ServiceProviderDashboard() {
+    const [query, setQuery] = useState("");
+
     const stats = [
-        { label: "Total Services", value: 150 },
-        { label: "Completed", value: 100 },
-        { label: "Cancelled", value: 10 },
-        { label: "Pending", value: 15 },
+        { label: "Total Services", value: 150, icon: WrenchScrewdriverIcon },
+        { label: "Completed Jobs", value: 100, icon: CheckCircleIcon },
+        { label: "Pending Requests", value: 15, icon: ClockIcon },
+        { label: "Revenue (30 days)", value: "₹1,25,000", icon: CurrencyRupeeIcon },
     ];
 
     const services = [
-        { name: "Cleaning", Icon: CleaningServicesIcon },
-        { name: "Plumbing", Icon: BuildIcon },
-        { name: "Painting", Icon: FormatPaintIcon },
-        { name: "Electrician", Icon: BoltIcon },
+        { name: "AC Repair", requests: 48 },
+        { name: "Plumbing", requests: 36 },
+        { name: "Painting", requests: 20 },
+        { name: "Cleaning", requests: 52 },
     ];
 
     const bookings = [
-        { name: "John Doe", service: "Plumbing", date: "10 Apr", time: "10:00 — 11:00" },
-        { name: "Jane Smith", service: "Cleaning", date: "12 Apr", time: "14:00 — 15:00" },
-        { name: "Emily Johnson", service: "Painting", date: "14 Apr", time: "09:00 — 10:00" },
+        { id: 110, customer: "Amit Verma", service: "AC Repair", date: "Dec 5", time: "10:00–11:00", status: "Confirmed" },
+        { id: 111, customer: "Riya Patel", service: "Plumbing", date: "Dec 6", time: "14:00–15:00", status: "Pending" },
+        { id: 112, customer: "Suresh Kumar", service: "Electrician", date: "Dec 8", time: "09:00–10:00", status: "Confirmed" },
     ];
 
+    const revenueThisMonth = "₹1,25,000";
+
+    const filtered = bookings.filter(
+        (b) =>
+            b.customer.toLowerCase().includes(query.toLowerCase()) ||
+            b.service.toLowerCase().includes(query.toLowerCase())
+    );
+
     return (
-        <Box sx={{ p: 3, background: "linear-gradient(180deg,#f7f9fc, #f5f7fa)", minHeight: "100vh" }}>
-            {/* Outlet / main content area */}
-            <Box sx={{ background: "#fff", p: { xs: 2, md: 4 }, borderRadius: 3, boxShadow: "0 6px 30px rgba(20,24,40,0.06)" }}>
-                {/* Search row */}
-                <Box sx={{ display: "flex", gap: 2, alignItems: "center", mb: 4 }}>
-                    <Box sx={{ flex: 1, display: "flex", alignItems: "center", background: "#fafbfd", px: 2, py: 1.25, borderRadius: 2, border: "1px solid #eef3f6" }}>
-                        <SearchIcon sx={{ color: "#9aa7b2", mr: 1 }} />
-                        <TextField placeholder="Search customers, bookings or services" variant="standard" InputProps={{ disableUnderline: true }} fullWidth />
-                    </Box>
+        <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+            <div className="max-w-6xl mx-auto">
 
-                    {/* small contextual note instead of avatar */}
-                    <Box sx={{ display: { xs: "none", md: "block" }, minWidth: 180, textAlign: "right" }}>
-                        <Typography variant="caption" color="text.secondary">Overview • last 7 days</Typography>
-                        <Typography fontWeight={700}>You have 3 upcoming bookings</Typography>
-                    </Box>
-                </Box>
 
-                {/* Stats */}
-                <Grid container spacing={2} sx={{ mb: 4 }}>
-                    {stats.map((s, i) => (
-                        <Grid item xs={6} sm={3} key={i}>
-                            <Card
-                                sx={{
-                                    borderRadius: 2,
-                                    p: 2,
-                                    boxShadow: "0 8px 20px rgba(20,24,40,0.04)",
-                                    transition: "transform .18s ease, box-shadow .18s ease",
-                                    '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 12px 30px rgba(20,24,40,0.08)' },
-                                }}
+                <div className="mb-6 flex flex-col md:flex-row justify-between gap-4">
+                    <div>
+                        <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
+                        <p className="text-sm text-gray-500">Overview of your service performance</p>
+                    </div>
+
+                    <div className="flex items-center bg-white border rounded-lg shadow-sm px-3 py-2 w-full md:w-80">
+                        <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 mr-2" />
+                        <input
+                            placeholder="Search customers or bookings..."
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            className="w-full text-sm outline-none"
+                        />
+                    </div>
+                </div>
+
+
+                <div className="bg-white shadow-sm rounded-xl p-4 border mb-5">
+                    <div className="flex justify-between items-center">
+                        <span className="text-gray-500 text-sm">This Month’s Revenue</span>
+                        <ArrowRightIcon className="w-4 h-4 text-gray-400" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-800 mt-1">{revenueThisMonth}</h2>
+                </div>
+
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    {stats.map((item, index) => {
+                        const Icon = item.icon;
+                        return (
+                            <div
+                                key={index}
+                                className="bg-white p-4 rounded-xl border shadow-sm hover:shadow-md transition"
                             >
-                                <Typography variant="h4" fontWeight={800} sx={{ mb: 0.5 }}>
-                                    {s.value}
-                                </Typography>
-                                <Typography color="text.secondary">{s.label}</Typography>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs text-gray-500">{item.label}</p>
+                                        <p className="text-xl font-semibold text-gray-800">{item.value}</p>
+                                    </div>
+                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                        <Icon className="w-6 h-6 text-gray-700" />
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
 
-                {/* Popular services */}
-                <Typography variant="h6" fontWeight={700} sx={{ mb: 2 }}>
-                    Popular Services
-                </Typography>
 
-                <Grid container spacing={2} sx={{ mb: 4 }}>
-                    {services.map(({ name, Icon }, i) => (
-                        <Grid item xs={12} sm={6} key={i}>
-                            <Card
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    p: 1.5,
-                                    borderRadius: 2,
-                                    border: "1px solid #f0f3f6",
-                                    background: "linear-gradient(180deg,#fff,#fbfdff)",
-                                    cursor: 'pointer',
-                                }}
-                            >
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                                    <Box sx={{ width: 52, height: 52, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 1.5, background: '#f3f7fb' }}>
-                                        <Avatar sx={{ bgcolor: 'transparent', width: 36, height: 36 }}>
-                                            <Icon sx={{ color: '#2b7be4' }} />
-                                        </Avatar>
-                                    </Box>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                                    <Box>
-                                        <Typography fontWeight={700}>{name}</Typography>
-                                        <Typography variant="caption" color="text.secondary">{Math.floor(20 + Math.random() * 40)} requests</Typography>
-                                    </Box>
-                                </Box>
 
-                                <ArrowForwardIosIcon sx={{ color: "#c6d0da" }} />
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
+                    <div className="lg:col-span-2 bg-white p-5 rounded-xl shadow-sm border">
+                        <h2 className="text-lg font-semibold text-gray-800 mb-4">Popular Services</h2>
 
-                {/* Upcoming bookings */}
-                <Typography variant="h6" fontWeight={700} sx={{ mb: 2 }}>
-                    Upcoming Bookings
-                </Typography>
+                        <div className="grid sm:grid-cols-2 gap-4">
+                            {services.map((service, index) => (
+                                <div
+                                    key={index}
+                                    className="p-4 border rounded-xl hover:shadow-md transition flex justify-between items-center"
+                                >
+                                    <div>
+                                        <p className="font-medium text-gray-800">{service.name}</p>
+                                        <p className="text-xs text-gray-500">{service.requests} Requests</p>
+                                    </div>
 
-                <Card sx={{ borderRadius: 2, border: "1px solid #eef1f5" }}>
-                    <List>
-                        {bookings.map((b, i) => (
-                            <React.Fragment key={i}>
-                                <ListItem sx={{ py: 2 }}>
-                                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, width: '100%' }}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
-                                            <Box sx={{ width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 1, background: "#eef8ff" }}>
-                                                <CheckCircleIcon sx={{ color: "#2b7be4" }} />
-                                            </Box>
+                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                        <ArrowRightIcon className="w-4 h-4 text-gray-600" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
 
-                                            <Box>
-                                                <Typography fontWeight={700}>{b.name}</Typography>
-                                                <Typography variant="caption" color="text.secondary">{b.service}</Typography>
-                                            </Box>
-                                        </Box>
 
-                                        <Box sx={{ minWidth: 140, textAlign: 'right' }}>
-                                            <Typography color="text.secondary">{b.date}</Typography>
-                                            <Typography fontWeight={700}>{b.time}</Typography>
-                                        </Box>
-                                    </Box>
-                                </ListItem>
+                    <div className="bg-white p-5 rounded-xl shadow-sm border">
+                        <h2 className="text-lg font-semibold text-gray-800 mb-4">Upcoming Bookings</h2>
 
-                                {i !== bookings.length - 1 && <Divider />}
-                            </React.Fragment>
-                        ))}
-                    </List>
-                </Card>
-            </Box>
-        </Box>
+                        <div className="space-y-3">
+                            {filtered.map((booking, index) => (
+                                <div
+                                    key={index}
+                                    className="flex justify-between items-center p-3 border rounded-lg hover:bg-gray-50 transition"
+                                >
+                                    <div>
+                                        <p className="font-medium text-gray-800">{booking.customer}</p>
+                                        <p className="text-xs text-gray-500">{booking.service}</p>
+                                    </div>
+
+                                    <div className="text-right">
+                                        <p className="text-xs text-gray-500">{booking.date}</p>
+                                        <p className="text-sm font-semibold">{booking.time}</p>
+
+                                        <span
+                                            className={`text-xs px-2 py-1 rounded-md mt-1 inline-block 
+                        ${booking.status === "Confirmed"
+                                                    ? "bg-green-100 text-green-700"
+                                                    : "bg-yellow-100 text-yellow-700"
+                                                }
+                      `}
+                                        >
+                                            {booking.status}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
     );
 }
-
-
-
