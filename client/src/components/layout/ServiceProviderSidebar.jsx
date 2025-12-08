@@ -1,34 +1,31 @@
 
-import {
-    Drawer,
-    List,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Toolbar,
-    Box,
-    Typography,
-} from "@mui/material";
-
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import HomeRepairServiceIcon from "@mui/icons-material/HomeRepairService";
-import PaymentIcon from "@mui/icons-material/Payment";
-import PersonIcon from "@mui/icons-material/Person";
-import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
-import LogoutIcon from "@mui/icons-material/Logout";
-
 import { NavLink } from "react-router-dom";
+import {
+    HomeIcon,
+    ClipboardDocumentListIcon,
+    WrenchScrewdriverIcon,
+    CreditCardIcon,
+    UserCircleIcon,
+    ArrowLeftOnRectangleIcon,
+    FolderOpenIcon,
+    LifebuoyIcon,
+    Cog6ToothIcon
+} from "@heroicons/react/24/outline";
 
-const drawerWidth = 250;
 
 export default function ServiceProviderSidebar() {
     const menuItems = [
-        { name: "Dashboard", to: "/service-provider", icon: <DashboardIcon /> },
-        { name: "Service Requests", to: "/service-provider/requests", icon: <AssignmentTurnedInIcon /> },
-        { name: "Manage Services", to: "/service-provider/services", icon: <HomeRepairServiceIcon /> },
-        { name: "Payments", to: "/service-provider/payments", icon: <PaymentIcon /> },
-        { name: "Profile", to: "/service-provider/profile", icon: <PersonIcon /> },
+        { name: "Dashboard", to: "/service-provider", icon: HomeIcon },
+        { name: "Service Requests", to: "/service-provider/requests", icon: ClipboardDocumentListIcon },
+        { name: "Manage Services", to: "/service-provider/services", icon: WrenchScrewdriverIcon },
+        { name: "Payments", to: "/service-provider/payments", icon: CreditCardIcon },
+        { name: "Profile", to: "/service-provider/profile", icon: UserCircleIcon },
+
+        { name: "Documents", to: "/service-provider/documents", icon: FolderOpenIcon },
+        { name: "Support", to: "/service-provider/support", icon: LifebuoyIcon },
+        { name: "Settings", to: "/service-provider/settings", icon: Cog6ToothIcon }
     ];
+
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -36,93 +33,40 @@ export default function ServiceProviderSidebar() {
     };
 
     return (
-        <Drawer
-            variant="permanent"
-            sx={{
-                width: drawerWidth,
-                "& .MuiDrawer-paper": {
-                    width: drawerWidth,
-                    boxSizing: "border-box",
-                    background: "#111827",
-                    color: "white",
-                    borderRight: "1px solid #1f2937",
-                },
-            }}
-        >
-              variant="permanent"
-              sx={{
-                width: drawerWidth,
-                "& .MuiDrawer-paper": {
-                  width: drawerWidth,
-                  boxSizing: "border-box",
-                  background: "linear-gradient(180deg, #0f172a 0%, #1e3a8a 100%)",
-                  color: "white",
-                  borderRight: "none",
-                  backdropFilter: "blur(12px)",
-                },
-              }}
-            >
-            <Toolbar />
+        <div className="w-64 bg-[#0f172a] text-white flex flex-col border-r border-gray-800">
 
-            {/* Header */}
-            <Box sx={{ textAlign: "center", py: 4, borderBottom: "1px solid #1f2937" }}>
-                <Typography variant="h6" fontWeight="bold">
-                    QuickServe
-                </Typography>
-                <Typography variant="caption" sx={{ opacity: 0.7 }}>
-                    Service Provider Panel
-                </Typography>
-            </Box>
+            <div className="py-8 text-center border-b border-gray-700 bg-gradient-to-b from-[#0f172a] to-[#1e3a8a]">
+                <h1 className="text-xl font-bold tracking-wide">QuickServe</h1>
+                <p className="text-xs opacity-70">Service Provider Panel</p>
+            </div>
 
-            {/* Sidebar Menu */}
-            <List sx={{ mt: 1 }}>
-                {menuItems.map((item, index) => (
+            <nav className="flex-1 mt-4 space-y-1">
+                {menuItems.map((item, i) => (
                     <NavLink
-                        key={index}
+                        key={i}
                         to={item.to}
-                        style={{ textDecoration: "none", color: "inherit" }}
+                        className={({ isActive }) =>
+                            `flex items-center mx-3 px-4 py-2 rounded-lg transition-all ${isActive
+                                ? "bg-gray-800 text-white"
+                                : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                            }`
+                        }
                     >
-                        {({ isActive }) => (
-                            <ListItemButton
-                                sx={{
-                                    mx: 1.2,
-                                    my: 0.5,
-                                    borderRadius: 2,
-                                    transition: "0.25s",
-                                    background: isActive ? "#1f2937" : "transparent",
-                                    "&:hover": { background: "#374151" },
-                                }}
-                            >
-                                <ListItemIcon sx={{ color: "#cbd5e1" }}>
-                                    {item.icon}
-                                </ListItemIcon>
-                                <ListItemText primary={item.name} />
-                            </ListItemButton>
-                        )}
+                        <item.icon className="w-5 h-5 mr-3" />
+                        <span className="text-sm">{item.name}</span>
                     </NavLink>
                 ))}
-            </List>
+            </nav>
 
-            {/* Logout */}
-            <Box sx={{ position: "absolute", bottom: 25, width: "100%" }}>
-                <ListItemButton
+            <div className="mt-auto mb-6 px-3">
+                <button
                     onClick={handleLogout}
-                    sx={{
-                        color: "#fca5a5",
-                        mx: 1.2,
-                        borderRadius: 2,
-                        "&:hover": {
-                            background: "#b91c1c",
-                            color: "white",
-                        },
-                    }}
+                    className="flex items-center w-full px-4 py-2 rounded-lg text-red-300 hover:bg-red-600 hover:text-white transition-all"
                 >
-                    <ListItemIcon sx={{ color: "inherit" }}>
-                        <LogoutIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Logout" />
-                </ListItemButton>
-            </Box>
-        </Drawer>
+                    <ArrowLeftOnRectangleIcon className="w-5 h-5 mr-3" />
+                    <span className="text-sm">Logout</span>
+                </button>
+            </div>
+        </div>
     );
 }
