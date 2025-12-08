@@ -1,0 +1,86 @@
+/* Theme Card */
+.theme-card {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  width: 80%;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+/* Title inside card */
+.theme-card h2 {
+  font-size: 22px;
+  margin-bottom: 18px;
+}
+
+/* Theme options layout */
+.theme-options {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Theme Button */
+.theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: #f1f1f1;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.25s ease;
+  width: 200px;
+}
+
+.theme-btn:hover {
+  background: #e2e2e2;
+  transform: translateY(-3px);
+}
+
+/* Color preview circles */
+.theme-preview {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 2px solid #888;
+}
+
+/* Specific colors */
+.light-preview {
+  background: #f3f4f7;
+}
+
+.dark-preview {
+  background: #0d1b2a;
+}
+
+.blue-preview {
+  background: #1e3a8a;
+}
+
+.green-preview {
+  background: #0f5132;
+}
+
+/* Fix Back Button Center */
+.back-container {
+  margin-top: 20px;
+}
+
+.back-btn {
+  padding: 8px 18px;
+  background: rgb(13, 13, 13);
+  border: 1px solid #aaa;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.back-btn:hover {
+  background: #180e0e;
+}
