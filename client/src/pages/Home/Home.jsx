@@ -104,7 +104,7 @@ const Home = () => {
                   >
                     <div className="flex gap-3">
                       <Link
-                        to="/auth/signup"
+                        to="/signup"
                         className="px-5 py-2.5 rounded-full text-sm md:text-base font-semibold bg-white text-blue-800 shadow-md hover:bg-gray-100 transition"
                       >
                         Book a Service

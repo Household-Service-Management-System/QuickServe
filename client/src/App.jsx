@@ -71,7 +71,7 @@ function App() {
 
 
           <Route path="services/add" element={<AddService />} />
-          <Route path="services/edit/:id" element={<EditService />} />  {/* if created */}
+          <Route path="services/edit/:id" element={<EditService />} />  
 
           <Route path="payments" element={<ViewPayments />} />
           <Route path="profile" element={<ServiceProviderProfile />} />
