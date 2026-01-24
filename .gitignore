@@ -1,0 +1,19 @@
+# --- Maven / Spring Boot Standard ---
+target/
+**/target/
+*.class
+*.jar
+*.war
+
+# --- STS / Eclipse Specific (Do not push these) ---
+.metadata/
+.classpath
+.project
+.settings/
+.springBeans
+bin/
+.sts4-cache/
+
+# --- OS System Files (Always good to have) ---
+.DS_Store
+Thumbs.db
