@@ -1,6 +1,7 @@
 package com.backend.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +22,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT SUM(p.amount) FROM Payment p WHERE p.booking.serviceProvider.id = :providerId AND p.status = 'SUCCESS'")
     Double sumRevenueByServiceProviderId(@Param("providerId") Long providerId);
+    
+    List<Booking> findAllByUserId(Long id);
+    
+    Optional<Booking> findById(Long id);
 
 }
 
