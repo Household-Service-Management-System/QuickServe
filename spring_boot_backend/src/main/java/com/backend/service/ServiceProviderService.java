@@ -18,4 +18,6 @@ public interface ServiceProviderService {
     void rejectBooking(Long bookingId, String reason);
 
 	List<PaymentHistoryDTO> getPaymentHistory(Long providerId);
+
+	List<PaymentHistoryDTO> getFilteredPayments(Long providerId, String search, String filter);
 }
