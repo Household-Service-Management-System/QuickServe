@@ -1,15 +1,18 @@
 package com.backend.service;
 
 import com.backend.dtos.ServiceProviderDashboardDTO;
+import com.backend.dtos.ServiceProviderProfileUpdateDTO;
 import com.backend.dtos.ServiceProviderDashboardDTO;
 import com.backend.custom_exceptions.ResourceNotFoundException;
 import com.backend.dtos.PaymentHistoryDTO;
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
 import com.backend.entities.Booking;
 import com.backend.entities.BookingStatus;
+import com.backend.entities.User;
 import com.backend.repository.BookingRepository;
 import com.backend.repository.PaymentRepository;
 import com.backend.repository.ServiceRepository;
+import com.backend.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -34,6 +37,9 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
     @Autowired
 	private PaymentRepository paymentRepo;
 
+    @Autowired 
+    private UserRepository userRepo; 
+    
     @Override
     public ServiceProviderDashboardDTO getDashboardSummary(Long providerId) {
         Double revenue = bookingRepo.sumRevenueByServiceProviderId(providerId);
@@ -111,5 +117,27 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
         String searchPattern = (search == null || search.trim().isEmpty()) ? null : search;
         
         return paymentRepo.findFilteredPayments(providerId, searchPattern, startDate);
+    }
+    
+    
+    
+    @Override
+    @Transactional
+    public void updateProfile(Long userId, ServiceProviderProfileUpdateDTO dto) {
+        User user = userRepo.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+       
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setPhone(dto.getPhone());
+        user.setStreet(dto.getStreet());
+        user.setCity(dto.getCity());
+        user.setState(dto.getState());
+        user.setPincode(dto.getPincode());
+        user.setDob(dto.getDob());
+        user.setGender(dto.getGender());
+        
+        userRepo.save(user);
     }
 }
