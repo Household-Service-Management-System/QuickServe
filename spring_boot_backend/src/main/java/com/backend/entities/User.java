@@ -22,6 +22,13 @@ import lombok.Setter;
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
 public class User extends BaseEntity{
 	
+	
+	@Column(name="first_name", nullable = false, length = 50)
+    private String firstName;
+
+    @Column(name="last_name", nullable = false, length = 50)
+    private String lastName;
+    
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private Role role;
@@ -68,4 +75,8 @@ public class User extends BaseEntity{
 	//future_scope
 	@Column(columnDefinition = "json", nullable = true)
 	private String preferences; 
+	
+	public String getFullName() {
+	    return this.firstName + " " + this.lastName;
+	}
 }
