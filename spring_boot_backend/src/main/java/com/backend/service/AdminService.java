@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.backend.dto.AdminDashBoardInfo;
+import com.backend.dto.CustomerComplaintsDTO;
 import com.backend.entities.ServiceProvider;
 import com.backend.repository.PaymentRepository;
 import com.backend.repository.ServiceProviderRepository;
@@ -41,5 +42,11 @@ public class AdminService {
 		            pendingRequests
 		    );
 		}
+	  
+	  
+	public CustomerComplaintsDTO  complaints() { 
+		
+		return null;
+	}
 
 }
