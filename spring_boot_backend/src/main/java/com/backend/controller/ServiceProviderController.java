@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.dtos.PaymentHistoryDTO;
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
 import com.backend.dtos.ServiceProviderDashboardDTO;
 import com.backend.service.ServiceProviderService;
@@ -43,5 +44,10 @@ public class ServiceProviderController {
     public ResponseEntity<?> rejectBooking(@PathVariable Long id, @RequestBody String reason) {
     	ServiceProviderService.rejectBooking(id, reason);
         return ResponseEntity.ok("Booking rejected successfully");
+    }
+    
+    @GetMapping("/payments/{providerId}")
+    public ResponseEntity<List<PaymentHistoryDTO>> getPaymentHistory(@PathVariable Long providerId) {
+        return ResponseEntity.ok(ServiceProviderService.getPaymentHistory(providerId));
     }
 }

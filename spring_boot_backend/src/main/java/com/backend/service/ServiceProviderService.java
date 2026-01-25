@@ -1,6 +1,7 @@
 package com.backend.service;
 
 import com.backend.dtos.ServiceProviderDashboardDTO;
+import com.backend.dtos.PaymentHistoryDTO;
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface ServiceProviderService {
     void acceptBooking(Long bookingId);
     
     void rejectBooking(Long bookingId, String reason);
+
+	List<PaymentHistoryDTO> getPaymentHistory(Long providerId);
 }
