@@ -79,5 +79,5 @@ public class User extends BaseEntity{
 	public String getFullName() {
 	    return this.firstName + " " + this.lastName;
 	}
-	
+
 }

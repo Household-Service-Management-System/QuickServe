@@ -37,7 +37,7 @@ public class AdminController {
 
     @GetMapping("/pendingRequests")
     public ResponseEntity<?> pendingRequests() {
-        return ResponseEntity.ok("suraj");
+        return ResponseEntity.ok( adminService.getAllServiceProviders() );
     }
 
     @GetMapping("/paymentRecords")

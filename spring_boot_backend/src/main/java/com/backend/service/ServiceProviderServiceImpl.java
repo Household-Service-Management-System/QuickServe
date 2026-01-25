@@ -2,7 +2,13 @@ package com.backend.service;
 
 import com.backend.dtos.ServiceProviderDashboardDTO;
 import com.backend.dtos.ServiceProviderDashboardDTO;
+
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
+
+import com.backend.custom_exceptions.ResourceNotFoundException;
+import com.backend.dtos.ServiceProviderBookingResponseDTO;
+import com.backend.entities.Booking;
+ 
 import com.backend.entities.BookingStatus;
 import com.backend.repository.BookingRepository;
 import com.backend.repository.ServiceRepository;
@@ -54,9 +60,32 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
             )).collect(Collectors.toList());
     }
 
+
     @Override
     public void updateBookingStatus(Long bookingId, String status) {
         // We will implement the Accept/Reject logic here next!
     }
+
+
+   
+    @Override
+    public void acceptBooking(Long bookingId) {
+        Booking booking = bookingRepo.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
+        booking.setStatus(BookingStatus.ACCEPTED);
+        bookingRepo.save(booking);
+    }
+
+    
+    @Override
+    public void rejectBooking(Long bookingId, String reason) {
+        Booking booking = bookingRepo.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
+        booking.setStatus(BookingStatus.REJECTED);
+        booking.setRejectionReason(reason);
+        bookingRepo.save(booking);
+    }
+
+
 
 }

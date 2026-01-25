@@ -1,13 +1,15 @@
 package com.backend.service;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.backend.dto.AdminDashBoardInfo;
-import com.backend.dto.CustomerComplaintsDTO;
+
 import com.backend.dto.DisputeDetailsDTO;
+import com.backend.dto.ServiceProviderResponseDTO;
 import com.backend.entities.ServiceProvider;
 import com.backend.repository.DisputeRepository;
 import com.backend.repository.PaymentRepository;
@@ -52,5 +54,10 @@ public class AdminService {
 		
 	 } 
 	
+	 public List<ServiceProviderResponseDTO> getAllServiceProviders() {
+		   
+		    return serviceProviderRepository.findVerifiedProviders();
+		}
+
 
 }
