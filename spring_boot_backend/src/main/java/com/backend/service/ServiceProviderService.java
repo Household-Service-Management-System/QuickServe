@@ -8,9 +8,11 @@ public interface ServiceProviderService {
 	
     ServiceProviderDashboardDTO getDashboardSummary(Long providerId);
 
-    
     List<ServiceProviderBookingResponseDTO> getAllBookings(Long providerId);
     
-
-    void updateBookingStatus(Long bookingId, String status);
+//    void updateBookingStatus(Long bookingId, String status);
+    
+    void acceptBooking(Long bookingId);
+    
+    void rejectBooking(Long bookingId, String reason);
 }
