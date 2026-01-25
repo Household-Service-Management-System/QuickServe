@@ -3,10 +3,12 @@ package com.backend.service;
 import com.backend.dtos.ServiceProviderDashboardDTO;
 import com.backend.dtos.ServiceProviderDashboardDTO;
 import com.backend.custom_exceptions.ResourceNotFoundException;
+import com.backend.dtos.PaymentHistoryDTO;
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
 import com.backend.entities.Booking;
 import com.backend.entities.BookingStatus;
 import com.backend.repository.BookingRepository;
+import com.backend.repository.PaymentRepository;
 import com.backend.repository.ServiceRepository;
 
 import jakarta.transaction.Transactional;
@@ -26,6 +28,9 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
 
     @Autowired
     private ServiceRepository serviceRepo;
+
+    @Autowired
+	private PaymentRepository paymentRepo;
 
     @Override
     public ServiceProviderDashboardDTO getDashboardSummary(Long providerId) {
@@ -73,6 +78,12 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
         booking.setStatus(BookingStatus.REJECTED);
         booking.setRejectionReason(reason);
         bookingRepo.save(booking);
+    }
+    
+    
+    @Override
+    public List<PaymentHistoryDTO> getPaymentHistory(Long providerId) {
+        return paymentRepo.findPaymentHistoryByProviderId(providerId);
     }
 
 
