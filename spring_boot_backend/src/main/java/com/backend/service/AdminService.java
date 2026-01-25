@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.backend.dto.AdminDashBoardInfo;
 import com.backend.dto.CustomerComplaintsDTO;
+import com.backend.dto.DisputeDetailsDTO;
 import com.backend.entities.ServiceProvider;
+import com.backend.repository.DisputeRepository;
 import com.backend.repository.PaymentRepository;
 import com.backend.repository.ServiceProviderRepository;
 import com.backend.repository.ServiceRepository;
@@ -22,7 +24,8 @@ public class AdminService {
 	private UserRepository userRepository;
 	  @Autowired
 	private PaymentRepository paymentRepository; 
-	  
+	  @Autowired
+	private DisputeRepository disputeRepository;
 	  
 	  public AdminDashBoardInfo adminInfo() {
 
@@ -43,10 +46,11 @@ public class AdminService {
 		    );
 		}
 	  
-	  
-	public CustomerComplaintsDTO  complaints() { 
+	 public  List<DisputeDetailsDTO> dispute() {
+		 
+		 return  disputeRepository.fetchDisputeDetails();
 		
-		return null;
-	}
+	 } 
+	
 
 }

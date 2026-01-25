@@ -27,7 +27,7 @@ public class AdminController {
 
     @GetMapping("/customerComplaints")
     public ResponseEntity<?> getCustomerComplaints() {
-        return ResponseEntity.ok("suraj");
+        return ResponseEntity.ok(adminService.dispute());
     }
 
     @GetMapping("/serviceProviderComplaints")

@@ -7,4 +7,6 @@ import com.backend.entities.Service;
 
 @Repository
 public interface ServiceRepository extends JpaRepository<Service, Long> {
+	
+	long countByServiceProvidersId(Long providerId);
 }
