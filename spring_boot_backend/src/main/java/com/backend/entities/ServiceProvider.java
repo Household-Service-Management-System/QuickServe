@@ -26,6 +26,10 @@ import lombok.Setter;
 @AttributeOverride(name = "id", column = @Column(name = "service_provider_id"))
 public class ServiceProvider extends BaseEntity{
 	
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="user_id", nullable = false)
+	private User user; 
+	
 	@Enumerated(EnumType.STRING)
     @Column(name = "gov_id_type", nullable = false)
     private GovIdType govIdType;
@@ -39,7 +43,6 @@ public class ServiceProvider extends BaseEntity{
 	//future scope
 	@Column(columnDefinition = "json",nullable=true)
 	private String certification;
-	
 	
 	//owner side of relationship 
 	@ManyToMany(fetch = FetchType.LAZY)

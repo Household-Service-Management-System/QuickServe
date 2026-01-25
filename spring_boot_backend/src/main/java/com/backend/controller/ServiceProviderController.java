@@ -20,28 +20,28 @@ import com.backend.service.ServiceProviderService;
 public class ServiceProviderController {
 	
 	@Autowired
-    private ServiceProviderService providerService;
+    private ServiceProviderService ServiceProviderService;
 
     @GetMapping("/{id}/dashboard")
     public ResponseEntity<ServiceProviderDashboardDTO> getProviderDashboard(@PathVariable Long id) {
-        return ResponseEntity.ok(providerService.getDashboardSummary(id));
+        return ResponseEntity.ok(ServiceProviderService.getDashboardSummary(id));
     }
     
     
     @GetMapping("/{id}/bookings")
     public List<ServiceProviderBookingResponseDTO> getBookings(@PathVariable Long id) {
-        return providerService.getAllBookings(id);
+        return ServiceProviderService.getAllBookings(id);
     }
     
     @PatchMapping("/bookings/{id}/accept")
     public ResponseEntity<?> acceptBooking(@PathVariable Long id) {
-        providerService.acceptBooking(id);
+    	ServiceProviderService.acceptBooking(id);
         return ResponseEntity.ok("Booking accepted successfully");
     }
 
     @PatchMapping("/bookings/{id}/reject")
     public ResponseEntity<?> rejectBooking(@PathVariable Long id, @RequestBody String reason) {
-        providerService.rejectBooking(id, reason);
+    	ServiceProviderService.rejectBooking(id, reason);
         return ResponseEntity.ok("Booking rejected successfully");
     }
 }
