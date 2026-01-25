@@ -8,19 +8,23 @@ import com.backend.dtos.PaymentHistoryDTO;
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
 import com.backend.entities.Booking;
 import com.backend.entities.BookingStatus;
+import com.backend.entities.ServiceProvider;
 import com.backend.entities.User;
 import com.backend.repository.BookingRepository;
 import com.backend.repository.PaymentRepository;
+import com.backend.repository.ServiceProviderRepository;
 import com.backend.repository.ServiceRepository;
 import com.backend.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -38,7 +42,10 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
 	private PaymentRepository paymentRepo;
 
     @Autowired 
-    private UserRepository userRepo; 
+    private UserRepository userRepo;
+
+    @Autowired
+	private ServiceProviderRepository serviceProviderRepo; 
     
     @Override
     public ServiceProviderDashboardDTO getDashboardSummary(Long providerId) {
@@ -139,5 +146,37 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
         user.setGender(dto.getGender());
         
         userRepo.save(user);
+    }
+    
+    
+    @Override
+    public void addServiceToProvider(Long providerId, Long serviceId) {
+        ServiceProvider provider = serviceProviderRepo.findById(providerId)
+            .orElseThrow(() -> new ResourceNotFoundException("Provider not found"));
+        
+        com.backend.entities.Service service = serviceRepo.findById(serviceId)
+            .orElseThrow(() -> new ResourceNotFoundException("Service not found"));
+
+        // Add to the HashSet defined in your entity
+        provider.getServices().add(service);
+        serviceProviderRepo.save(provider);
+    }
+
+    @Override
+    public void removeServiceFromProvider(Long providerId, Long serviceId) {
+        ServiceProvider provider = serviceProviderRepo.findById(providerId)
+            .orElseThrow(() -> new ResourceNotFoundException("Provider not found"));
+        
+        // Remove by matching ID within the Set
+        provider.getServices().removeIf(s -> s.getId().equals(serviceId));
+        serviceProviderRepo.save(provider);
+    }
+
+   
+    @Override
+    public Set<com.backend.entities.Service> getProviderServices(Long providerId) {
+        ServiceProvider provider = serviceProviderRepo.findByIdWithServices(providerId)
+            .orElseThrow(() -> new ResourceNotFoundException("Provider not found"));
+        return provider.getServices();
     }
 }

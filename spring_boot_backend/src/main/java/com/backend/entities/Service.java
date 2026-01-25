@@ -3,6 +3,8 @@ package com.backend.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,5 +57,6 @@ public class Service extends BaseEntity{
 	
 	
 	@ManyToMany(mappedBy = "services", fetch = FetchType.LAZY)
+	@JsonIgnore // Prevents the JSON from looping back to the provider
 	private Set<ServiceProvider> serviceProviders = new HashSet<>();
 }
