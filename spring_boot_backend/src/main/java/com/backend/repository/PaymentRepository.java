@@ -1,5 +1,6 @@
 package com.backend.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,4 +28,20 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 	           "ORDER BY p.createdOn DESC")
 	    List<PaymentHistoryDTO> findPaymentHistoryByProviderId(@Param("providerId") Long providerId);
 
+	
+	
+	@Query("SELECT new com.backend.dtos.PaymentHistoryDTO(" +
+	           "p.createdOn, CONCAT(u.firstName, ' ', u.lastName), " +
+	           "b.id, p.amount, p.status, p.transactionId) " +
+	           "FROM Payment p JOIN p.booking b JOIN b.user u " +
+	           "WHERE b.serviceProvider.id = :providerId " +
+	           "AND p.createdOn >= :startDate " +
+	           "AND (:query IS NULL OR " + 
+	           "LOWER(u.firstName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+	           "LOWER(u.lastName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+	           "LOWER(p.transactionId) LIKE LOWER(CONCAT('%', :query, '%')))")
+	    List<PaymentHistoryDTO> findFilteredPayments(
+	            @Param("providerId") Long providerId, 
+	            @Param("query") String query, 
+	            @Param("startDate") LocalDateTime startDate);
 }

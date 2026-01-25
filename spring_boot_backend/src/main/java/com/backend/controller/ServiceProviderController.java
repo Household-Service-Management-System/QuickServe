@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.backend.dtos.PaymentHistoryDTO;
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
 import com.backend.dtos.ServiceProviderDashboardDTO;
@@ -49,5 +49,15 @@ public class ServiceProviderController {
     @GetMapping("/payments/{providerId}")
     public ResponseEntity<List<PaymentHistoryDTO>> getPaymentHistory(@PathVariable Long providerId) {
         return ResponseEntity.ok(ServiceProviderService.getPaymentHistory(providerId));
+    }
+    
+    
+ // GET /service-provider/payments/{id}/search?query=rohit&filter=This month
+    @GetMapping("/payments/{id}/search")
+    public ResponseEntity<List<PaymentHistoryDTO>> searchPayments(
+            @PathVariable Long id,
+            @RequestParam(required = false) String query,
+            @RequestParam(defaultValue = "All") String filter) {
+        return ResponseEntity.ok(ServiceProviderService.getFilteredPayments(id, query, filter));
     }
 }
