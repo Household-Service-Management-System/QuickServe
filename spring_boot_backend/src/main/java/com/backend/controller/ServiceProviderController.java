@@ -1,12 +1,15 @@
 package com.backend.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,5 +74,26 @@ public class ServiceProviderController {
         
         ServiceProviderService.updateProfile(id, profileDto);
         return ResponseEntity.ok("Profile updated successfully!");
+    }
+    
+    
+ 
+    @GetMapping("/{id}/services")
+    public ResponseEntity<Set<com.backend.entities.Service>> getMyServices(@PathVariable Long id) {
+        return ResponseEntity.ok(ServiceProviderService.getProviderServices(id));
+    }
+
+   
+    @PostMapping("/{id}/services/{serviceId}")
+    public ResponseEntity<String> addSkill(@PathVariable Long id, @PathVariable Long serviceId) {
+        ServiceProviderService.addServiceToProvider(id, serviceId);
+        return ResponseEntity.ok("Service added to your profile");
+    }
+
+  
+    @DeleteMapping("/{id}/services/{serviceId}")
+    public ResponseEntity<String> removeSkill(@PathVariable Long id, @PathVariable Long serviceId) {
+        ServiceProviderService.removeServiceFromProvider(id, serviceId);
+        return ResponseEntity.ok("Service removed from your profile");
     }
 }

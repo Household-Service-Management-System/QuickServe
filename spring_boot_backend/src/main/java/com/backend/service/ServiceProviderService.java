@@ -5,6 +5,9 @@ import com.backend.dtos.ServiceProviderProfileUpdateDTO;
 import com.backend.dtos.PaymentHistoryDTO;
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
 import java.util.List;
+import java.util.Set;
+
+import com.backend.entities.*;
 
 public interface ServiceProviderService {
 	
@@ -23,4 +26,10 @@ public interface ServiceProviderService {
 	List<PaymentHistoryDTO> getFilteredPayments(Long providerId, String search, String filter);
 
 	void updateProfile(Long userId, ServiceProviderProfileUpdateDTO dto);
+
+	void removeServiceFromProvider(Long providerId, Long serviceId);
+
+	void addServiceToProvider(Long providerId, Long serviceId);
+
+	Set<Service> getProviderServices(Long providerId);
 }
