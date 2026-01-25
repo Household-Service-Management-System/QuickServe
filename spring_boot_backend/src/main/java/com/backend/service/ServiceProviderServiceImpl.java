@@ -6,6 +6,9 @@ import com.backend.dtos.ServiceProviderBookingResponseDTO;
 import com.backend.entities.BookingStatus;
 import com.backend.repository.BookingRepository;
 import com.backend.repository.ServiceRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -13,6 +16,7 @@ import java.util.stream.Collectors;
 
 
 @Service
+@Transactional
 public class ServiceProviderServiceImpl implements ServiceProviderService {
 
 	@Autowired
