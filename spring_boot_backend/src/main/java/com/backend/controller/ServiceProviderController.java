@@ -16,10 +16,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.backend.dtos.PaymentHistoryDTO;
+import com.backend.dtos.PopularServiceDTO;
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
 import com.backend.dtos.ServiceProviderDashboardDTO;
 import com.backend.dtos.ServiceProviderProfileUpdateDTO;
 import com.backend.service.ServiceProviderService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
+import com.backend.dtos.ServiceProviderUpcomingBookingDTO;
 
 @RestController
 @RequestMapping("/service-provider")
@@ -28,11 +35,38 @@ public class ServiceProviderController {
 	@Autowired
     private ServiceProviderService ServiceProviderService;
 
+	
+	//All below endpoints are for Service Provider Dashboard
+	
+	//1. It is for the Ist upper portion : revenue and all for a particular service-provider  
     @GetMapping("/dashboard/{id}")
     public ResponseEntity<ServiceProviderDashboardDTO> getProviderDashboard(@PathVariable Long id) {
         return ResponseEntity.ok(ServiceProviderService.getDashboardSummary(id));
     }
     
+    
+    //2. It is for Mid portion : upcoming bookings for a particular service-provider 
+    @GetMapping("/bookings/{id}/upcoming")
+    public ResponseEntity<Page<ServiceProviderUpcomingBookingDTO>> getUpcomingBookings(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size) {
+
+        return ResponseEntity.ok(
+            ServiceProviderService.getUpcomingBookings(id, page, size)
+        );
+    }
+
+    
+    @GetMapping("/dashboard/{id}/popular-services")
+    public ResponseEntity<List<PopularServiceDTO>> getPopularServices(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+            ServiceProviderService.getPopularServices(id)
+        );
+    }
+
     
     @GetMapping("/bookings/{id}")
     public List<ServiceProviderBookingResponseDTO> getBookings(@PathVariable Long id) {
