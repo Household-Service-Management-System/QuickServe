@@ -68,11 +68,24 @@ public class ServiceProviderController {
     }
 
     
+    
+    
     @GetMapping("/bookings/{id}")
     public List<ServiceProviderBookingResponseDTO> getBookings(@PathVariable Long id) {
         return ServiceProviderService.getAllBookings(id);
     }
     
+    
+    // GET /service-provider/bookings/details/{bookingId}
+    @GetMapping("/bookings/details/{bookingId}")
+    public ResponseEntity<ServiceProviderBookingResponseDTO> getBookingDetails(
+            @PathVariable Long bookingId) {
+
+        return ResponseEntity.ok(
+            ServiceProviderService.getSingleBookingDetails(bookingId)
+        );
+    }
+
     
     @PatchMapping("/bookings/{id}/accept")
     public ResponseEntity<?> acceptBooking(@PathVariable Long id) {
@@ -85,6 +98,10 @@ public class ServiceProviderController {
     	ServiceProviderService.rejectBooking(id, reason);
         return ResponseEntity.ok("Booking rejected successfully");
     }
+    
+    
+    
+    
     
     @GetMapping("/payments/{providerId}")
     public ResponseEntity<List<PaymentHistoryDTO>> getPaymentHistory(@PathVariable Long providerId) {

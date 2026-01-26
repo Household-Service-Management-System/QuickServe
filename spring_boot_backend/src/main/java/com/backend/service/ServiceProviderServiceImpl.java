@@ -120,6 +120,23 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
                 booking.getStatus()
             )).collect(Collectors.toList());
     }
+    
+    @Override
+    public ServiceProviderBookingResponseDTO getSingleBookingDetails(Long bookingId) {
+
+        Booking booking = bookingRepo.findById(bookingId)
+            .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        return new ServiceProviderBookingResponseDTO(
+            booking.getId(),
+            booking.getUser().getFullName(),
+            booking.getService().getName(),
+            booking.getScheduledAt(),
+            booking.getPrice(),
+            booking.getStatus()
+        );
+    }
+
 
    
     @Override
