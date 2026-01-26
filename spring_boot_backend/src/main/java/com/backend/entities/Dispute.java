@@ -33,7 +33,7 @@ public class Dispute extends BaseEntity{
 	@Column(nullable = false, length = 500)
 	private String description;
 
-	
+		
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DisputeStatus status;
