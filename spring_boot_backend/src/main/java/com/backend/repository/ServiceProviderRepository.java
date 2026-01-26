@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.backend.dto.ServiceProviderDetailsDTO;
 import com.backend.dto.ServiceProviderResponseDTO;
 import com.backend.entities.ServiceProvider;
 
@@ -33,7 +35,27 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
     	""")
     	List<ServiceProviderResponseDTO> findVerifiedProviders();
 
-
-
+    @Query("""
+    	    SELECT new com.backend.dto.ServiceProviderDetailsDTO(
+    	        u.firstName,
+    	        u.lastName,
+    	        CONCAT(
+    	            COALESCE(u.street, ''), ', ',
+    	            COALESCE(u.city, ''), ', ',
+    	            COALESCE(u.state, ''), ' - ',
+    	            COALESCE(u.pincode, '')
+    	        ),
+    	        u.email,
+    	        u.role,
+    	        u.phone,
+    	        p.certification,
+    	        p.govId,
+    	        p.govIdType
+    	    )
+    	    FROM ServiceProvider p
+    	    JOIN p.user u
+    	    WHERE u.id = :userId
+    	""")
+    	ServiceProviderDetailsDTO fetchServiceProviderDetailsByUserId(@Param("userId") Long userId);
 
 }
