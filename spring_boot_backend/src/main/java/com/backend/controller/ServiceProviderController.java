@@ -118,6 +118,17 @@ public class ServiceProviderController {
         return ResponseEntity.ok(ServiceProviderService.getFilteredPayments(id, query, filter));
     }
     
+    
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<ServiceProviderProfileUpdateDTO> getProfile(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+            ServiceProviderService.getProfile(id)
+        );
+    }
+
+    
  // Endpoint: PUT /service-provider/profile/{id}
     @PutMapping("/profile/{id}")
     public ResponseEntity<String> updateProfile(
