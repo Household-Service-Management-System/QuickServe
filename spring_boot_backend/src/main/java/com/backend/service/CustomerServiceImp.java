@@ -10,13 +10,16 @@ import com.backend.dtos.BookingDTO;
 import com.backend.dtos.BookingReqDTO;
 import com.backend.dtos.CustomerDTO;
 import com.backend.dtos.CustomerReqDTO;
+import com.backend.dtos.PaymentDTO;
 import com.backend.entities.Booking;
 import com.backend.entities.BookingStatus;
+import com.backend.entities.Payment;
 import com.backend.entities.Role;
 import com.backend.entities.ServiceProvider;
 import com.backend.entities.Status;
 import com.backend.entities.User;
 import com.backend.repository.BookingRepository;
+import com.backend.repository.PaymentRepository;
 import com.backend.repository.ServiceProviderRepository;
 import com.backend.repository.ServiceRepository;
 import com.backend.repository.UserRepository;
@@ -33,6 +36,7 @@ public class CustomerServiceImp implements CustomerService {
 	public final BookingRepository bookingsRepository;
 	public final ServiceRepository serviceRepository;
 	public final ServiceProviderRepository serviceProviderRepository;
+	public final PaymentRepository paymentRepository;
 	private final ModelMapper modelMapper;
 	
 	@Override
@@ -111,6 +115,51 @@ public class CustomerServiceImp implements CustomerService {
 		 booking.setStatus(status);
 		 bookingsRepository.save(booking);
 		return modelMapper.map(booking, BookingDTO.class);
+	}
+
+	@Override
+	public List<PaymentDTO> getPaymnetsByUser(Long id) {
+		List<Payment> payments= paymentRepository.findByBookingUserId(id);
+		return payments.stream()
+        .map(payment -> {
+            PaymentDTO dto = modelMapper.map(payment, PaymentDTO.class);
+            // Manually set the ID if ModelMapper is failing to find it
+            dto.setBookingId(payment.getBooking().getId()); 
+            return dto;
+        })
+        .toList();
+	}
+
+	@Override
+	public PaymentDTO getPaymnetsById(Long id) {
+		Payment payment= paymentRepository.findById(id).orElseThrow(()->new RuntimeException("Paymnet entry not found id:"+id));
+		PaymentDTO dto= modelMapper.map(payment, PaymentDTO.class);
+		 dto.setBookingId(payment.getBooking().getId());
+		 return dto;
+	}
+
+	@Override
+	public PaymentDTO getPaymnetsByBooking(Long id) {
+		Payment payment=paymentRepository.findByBookingId(id).orElseThrow(()->new RuntimeException("Paymnet entry not found with booking id:"+id));
+		PaymentDTO dto= modelMapper.map(payment, PaymentDTO.class);
+		dto.setBookingId(payment.getBooking().getId());
+		 return dto;
+	}
+
+	@Override
+	public PaymentDTO postPaymnetsByBookingId(PaymentDTO paymentDTO) {
+		Booking booking=bookingsRepository.findById(paymentDTO.getBookingId()).orElseThrow(()->new RuntimeException("Booking not found"));
+		//Booking booking=paymentDTO.getBooking();
+		Payment payment=new Payment();
+		payment.setBooking(booking);
+		payment.setAmount(paymentDTO.getAmount());
+		payment.setMethod(paymentDTO.getMethod());
+		payment.setTransactionId(paymentDTO.getTransactionId());
+		payment.setStatus(paymentDTO.getStatus());
+		paymentRepository.save(payment);
+		PaymentDTO dto= modelMapper.map(payment, PaymentDTO.class);
+		dto.setBookingId(paymentDTO.getBookingId());
+		return dto;
 	}
 	
 	

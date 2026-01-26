@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.dtos.BookingReqDTO;
 import com.backend.dtos.CustomerDTO;
 import com.backend.dtos.CustomerReqDTO;
+import com.backend.dtos.PaymentDTO;
 import com.backend.entities.BookingStatus;
 import com.backend.entities.Status;
 import com.backend.service.CustomerService;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -71,6 +73,32 @@ public class CustomerController {
 	}
 	
 	
+	//Payment apis
+	@GetMapping("/paymentByUser/{id}")
+	public ResponseEntity<?> getPaymnetsByUser(@PathVariable Long id)
+	{
+		return ResponseEntity.ok(customerService.getPaymnetsByUser(id));
+	}
+	
+	
+	@GetMapping("/payment/{id}")
+	public ResponseEntity<?> getPaymnetsById(@PathVariable Long id)
+	{
+		return ResponseEntity.ok(customerService.getPaymnetsById(id));
+	}
+	
+	@GetMapping("/paymentByBooking/{id}")
+	public ResponseEntity<?> getPaymnetsByBooking(@PathVariable Long id)
+	{
+		return ResponseEntity.ok(customerService.getPaymnetsByBooking(id));
+	}
+	
+	@PostMapping("/paymentAddByBooking")
+	public ResponseEntity<?> postPaymnetsByBookingId(@RequestBody PaymentDTO paymentDTO)
+	{
+		System.out.println(paymentDTO.toString());
+		return ResponseEntity.ok(customerService.postPaymnetsByBookingId(paymentDTO));
+	}
 	
 	
 	

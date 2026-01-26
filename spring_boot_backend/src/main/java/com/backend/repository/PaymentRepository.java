@@ -2,6 +2,7 @@ package com.backend.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -44,4 +45,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 	            @Param("providerId") Long providerId, 
 	            @Param("query") String query, 
 	            @Param("startDate") LocalDateTime startDate);
+	
+	List<Payment> findByBookingUserId(Long id);
+	
+	Optional<Payment> findByBookingId(Long id);
 }
