@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.dtos.BookingReqDTO;
 import com.backend.dtos.CustomerDTO;
 import com.backend.dtos.CustomerReqDTO;
+import com.backend.dtos.DisputeDTO;
 import com.backend.dtos.PaymentDTO;
 import com.backend.dtos.ReviewDTO;
 import com.backend.entities.BookingStatus;
@@ -133,5 +134,38 @@ public class CustomerController {
 	{
 		return ResponseEntity.ok(customerService.putReview(reviewDTO,id));
 	}
+	
+	
+	
+	//Dispute apis
+		@GetMapping("/DisputeByUser/{id}")
+		public ResponseEntity<?> getDisputeByUser(@PathVariable Long id)
+		{
+			return ResponseEntity.ok(customerService.getDisputeByUser(id));
+		}
+		
+		@GetMapping("/DisputeByBooking/{id}")
+		public ResponseEntity<?> getDisputeByBooking(@PathVariable Long id)
+		{
+			return ResponseEntity.ok(customerService.getDisputeByBooking(id));
+		}
+		
+		@GetMapping("/DisputeById/{id}")
+		public ResponseEntity<?> getDisputeById(@PathVariable Long id)
+		{
+			return ResponseEntity.ok(customerService.getDisputeById(id));
+		}
+		
+		@PostMapping("/DisputeCreate")
+		public ResponseEntity<?> postDispute(@RequestBody DisputeDTO disputeDTO)
+		{
+			return ResponseEntity.ok(customerService.postDispute(disputeDTO));
+		}
+		
+		@PutMapping("/DisputeUpdate/{id}")
+		public ResponseEntity<?> putDispute(@RequestBody DisputeDTO disputeDTO,@PathVariable Long id)
+		{
+			return ResponseEntity.ok(customerService.putDispute(disputeDTO,id));
+		}
 	
 }
