@@ -41,5 +41,7 @@ public interface ServiceProviderService {
 
 	List<PopularServiceDTO> getPopularServices(Long providerId);
 
+	ServiceProviderBookingResponseDTO getSingleBookingDetails(Long bookingId);
+
 	
 }
