@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.backend.dto.DisputeComplaintDTO;
 import com.backend.dto.DisputeDetailsDTO;
 import com.backend.entities.Dispute;
 
@@ -25,6 +26,8 @@ public interface DisputeRepository extends JpaRepository<Dispute, Long> {
 		    JOIN d.raisedBy u
 		""")
 		List<DisputeDetailsDTO> fetchDisputeDetails();
+	
+	
 
 }
 
