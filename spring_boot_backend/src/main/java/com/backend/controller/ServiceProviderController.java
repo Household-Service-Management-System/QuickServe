@@ -28,16 +28,17 @@ public class ServiceProviderController {
 	@Autowired
     private ServiceProviderService ServiceProviderService;
 
-    @GetMapping("/{id}/dashboard")
+    @GetMapping("/dashboard/{id}")
     public ResponseEntity<ServiceProviderDashboardDTO> getProviderDashboard(@PathVariable Long id) {
         return ResponseEntity.ok(ServiceProviderService.getDashboardSummary(id));
     }
     
     
-    @GetMapping("/{id}/bookings")
+    @GetMapping("/bookings/{id}")
     public List<ServiceProviderBookingResponseDTO> getBookings(@PathVariable Long id) {
         return ServiceProviderService.getAllBookings(id);
     }
+    
     
     @PatchMapping("/bookings/{id}/accept")
     public ResponseEntity<?> acceptBooking(@PathVariable Long id) {
