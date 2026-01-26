@@ -43,5 +43,8 @@ public interface ServiceProviderService {
 
 	ServiceProviderBookingResponseDTO getSingleBookingDetails(Long bookingId);
 
+	ServiceProviderProfileUpdateDTO getProfile(Long providerId);
+
+
 	
 }

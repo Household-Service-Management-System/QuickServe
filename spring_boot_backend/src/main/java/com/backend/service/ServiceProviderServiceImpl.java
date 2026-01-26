@@ -189,7 +189,27 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
     }
     
     
-    
+    @Override
+    public ServiceProviderProfileUpdateDTO getProfile(Long providerId) {
+
+        User provider = userRepo.findById(providerId)
+            .orElseThrow(() -> new RuntimeException("Service provider not found"));
+
+        ServiceProviderProfileUpdateDTO dto = new ServiceProviderProfileUpdateDTO();
+
+        dto.setFirstName(provider.getFirstName());
+        dto.setLastName(provider.getLastName());
+        dto.setPhone(provider.getPhone());
+        dto.setStreet(provider.getStreet());
+        dto.setCity(provider.getCity());
+        dto.setState(provider.getState());
+        dto.setPincode(provider.getPincode());
+        dto.setDob(provider.getDob());
+        dto.setGender(provider.getGender());
+
+        return dto;
+    }
+
     @Override
     @Transactional
     public void updateProfile(Long userId, ServiceProviderProfileUpdateDTO dto) {
