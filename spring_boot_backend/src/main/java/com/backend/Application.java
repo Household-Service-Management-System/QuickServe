@@ -20,15 +20,14 @@ public class Application {
 	 * - to be managed by SC
 	 */
 	@Bean //method level annotation - to declare a method returning java object
-	 ModelMapper modelMapper()
-	{
-		ModelMapper mapper=new ModelMapper();
-		//configure mapper - to transfer the matching props (name + data type)
-		mapper.getConfiguration()
-		.setMatchingStrategy(MatchingStrategies.STRICT)
-		//configure mapper - not to transfer nulls from src -> dest
-		.setPropertyCondition(Conditions.isNotNull());
-		return mapper;//Method rets configured ModelMapper bean to SC
+	public ModelMapper modelMapper() {
+	    ModelMapper mapper = new ModelMapper();
+	    mapper.getConfiguration()
+	          .setMatchingStrategy(MatchingStrategies.STRICT)
+	          // This helps ModelMapper understand that 'bookingId' comes from 'booking.id'
+	          .setFieldMatchingEnabled(true)
+	          .setAmbiguityIgnored(true);
+	    return mapper;
 	}
 	
 
