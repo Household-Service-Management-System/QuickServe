@@ -2,10 +2,14 @@ package com.backend.service;
 
 import com.backend.dtos.ServiceProviderDashboardDTO;
 import com.backend.dtos.ServiceProviderProfileUpdateDTO;
+import com.backend.dtos.ServiceProviderUpcomingBookingDTO;
 import com.backend.dtos.PaymentHistoryDTO;
+import com.backend.dtos.PopularServiceDTO;
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.data.domain.Page;
 
 import com.backend.entities.*;
 
@@ -32,4 +36,10 @@ public interface ServiceProviderService {
 	void addServiceToProvider(Long providerId, Long serviceId);
 
 	Set<Service> getProviderServices(Long providerId);
+
+	Page<ServiceProviderUpcomingBookingDTO> getUpcomingBookings(Long providerId, int page, int size);
+
+	List<PopularServiceDTO> getPopularServices(Long providerId);
+
+	
 }

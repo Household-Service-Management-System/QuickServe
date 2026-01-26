@@ -5,6 +5,7 @@ import com.backend.dtos.ServiceProviderProfileUpdateDTO;
 import com.backend.dtos.ServiceProviderDashboardDTO;
 import com.backend.custom_exceptions.ResourceNotFoundException;
 import com.backend.dtos.PaymentHistoryDTO;
+import com.backend.dtos.PopularServiceDTO;
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
 import com.backend.entities.Booking;
 import com.backend.entities.BookingStatus;
@@ -26,6 +27,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
+import com.backend.dtos.ServiceProviderUpcomingBookingDTO;
+import com.backend.entities.Booking;
 
 
 @Service
@@ -62,6 +72,41 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
         );
     }
 
+    //just for DashBoard I created it 
+    @Override
+    public Page<ServiceProviderUpcomingBookingDTO> getUpcomingBookings(
+            Long providerId, int page, int size) {
+
+        Pageable pageable = PageRequest.of(
+            page, size, Sort.by("scheduledAt").ascending()
+        );
+
+        Page<Booking> bookings =
+            bookingRepo.findByServiceProviderId(providerId, pageable);
+
+        return bookings.map(booking -> {
+
+            LocalDateTime start = booking.getScheduledAt();
+            LocalDateTime end = start.plusHours(1);
+
+            return new ServiceProviderUpcomingBookingDTO(
+                booking.getId(),
+                booking.getUser().getFullName(),
+                booking.getService().getName(),
+                start.toLocalDate(),
+                start.toLocalTime() + " - " + end.toLocalTime(),
+                booking.getStatus()
+            );
+        });
+    }
+
+    @Override
+    public List<PopularServiceDTO> getPopularServices(Long providerId) {
+        return bookingRepo.findPopularServices(providerId);
+    }
+
+    
+    
     @Override
     public List<ServiceProviderBookingResponseDTO> getAllBookings(Long providerId) {
         // Implementation logic we discussed for the table
