@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.dtos.BookingReqDTO;
 import com.backend.dtos.CustomerDTO;
 import com.backend.dtos.CustomerReqDTO;
 import com.backend.dtos.PaymentDTO;
+import com.backend.dtos.ReviewDTO;
 import com.backend.entities.BookingStatus;
 import com.backend.entities.Status;
 import com.backend.service.CustomerService;
@@ -101,5 +103,35 @@ public class CustomerController {
 	}
 	
 	
+	//Reviews apis
+	@GetMapping("/ReviewsByUser/{id}")
+	public ResponseEntity<?> getReviewsByUser(@PathVariable Long id)
+	{
+		return ResponseEntity.ok(customerService.getReviewsByUser(id));
+	}
+	
+	@GetMapping("/ReviewsByBooking/{id}")
+	public ResponseEntity<?> getReviewsByBooking(@PathVariable Long id)
+	{
+		return ResponseEntity.ok(customerService.getReviewsByBooking(id));
+	}
+	
+	@GetMapping("/ReviewsById/{id}")
+	public ResponseEntity<?> getReviewById(@PathVariable Long id)
+	{
+		return ResponseEntity.ok(customerService.getReviewById(id));
+	}
+	
+	@PostMapping("/ReviewCreate")
+	public ResponseEntity<?> postReview(@RequestBody ReviewDTO reviewDTO)
+	{
+		return ResponseEntity.ok(customerService.postReview(reviewDTO));
+	}
+	
+	@PutMapping("/ReviewUpdate/{id}")
+	public ResponseEntity<?> putReview(@RequestBody ReviewDTO reviewDTO,@PathVariable Long id)
+	{
+		return ResponseEntity.ok(customerService.putReview(reviewDTO,id));
+	}
 	
 }

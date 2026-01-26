@@ -11,15 +11,18 @@ import com.backend.dtos.BookingReqDTO;
 import com.backend.dtos.CustomerDTO;
 import com.backend.dtos.CustomerReqDTO;
 import com.backend.dtos.PaymentDTO;
+import com.backend.dtos.ReviewDTO;
 import com.backend.entities.Booking;
 import com.backend.entities.BookingStatus;
 import com.backend.entities.Payment;
+import com.backend.entities.Review;
 import com.backend.entities.Role;
 import com.backend.entities.ServiceProvider;
 import com.backend.entities.Status;
 import com.backend.entities.User;
 import com.backend.repository.BookingRepository;
 import com.backend.repository.PaymentRepository;
+import com.backend.repository.ReviewRepository;
 import com.backend.repository.ServiceProviderRepository;
 import com.backend.repository.ServiceRepository;
 import com.backend.repository.UserRepository;
@@ -37,6 +40,7 @@ public class CustomerServiceImp implements CustomerService {
 	public final ServiceRepository serviceRepository;
 	public final ServiceProviderRepository serviceProviderRepository;
 	public final PaymentRepository paymentRepository;
+	public final ReviewRepository reviewRepository;
 	private final ModelMapper modelMapper;
 	
 	@Override
@@ -161,6 +165,71 @@ public class CustomerServiceImp implements CustomerService {
 		dto.setBookingId(paymentDTO.getBookingId());
 		return dto;
 	}
+
+	
+	
+	@Override
+	public List<ReviewDTO> getReviewsByUser(Long id) {
+		List<Review> reviews=reviewRepository.findAllByBookingUserId(id);//.orElseThrow(()->new RuntimeException("Review not found"+id));
+		return reviews.stream().map(r->
+		{
+			ReviewDTO dto=new ReviewDTO();
+			dto.setBookingId(r.getBooking().getId());
+			dto.setUserId(id);
+			dto.setRating(r.getRating());
+			dto.setComment(r.getComment());
+			return dto;
+		}).toList();
+	}
+
+	@Override
+	public ReviewDTO getReviewsByBooking(Long id) {
+		Review review=reviewRepository.findAllByBookingId(id);
+		ReviewDTO dto=modelMapper.map(review, ReviewDTO.class);
+		dto.setBookingId(id);
+		dto.setUserId(review.getUser().getId());
+		return dto;
+	}
+
+	@Override
+	public ReviewDTO getReviewById(Long id) {
+		Review review=reviewRepository.findById(id).orElseThrow(()->new RuntimeException("Review not found"));
+		ReviewDTO dto=modelMapper.map(review, ReviewDTO.class);
+		dto.setBookingId(review.getBooking().getId());
+		dto.setUserId(review.getUser().getId());
+		return dto;
+	}
+
+	@Override
+	public ReviewDTO postReview(ReviewDTO reviewDTO) {
+		Review review=new Review();
+		modelMapper.map(reviewDTO, review);
+		Booking booking=new Booking();
+		booking.setId(reviewDTO.getBookingId());
+		User user=new User();
+		user.setId(reviewDTO.getUserId());
+		review.setBooking(booking);
+		review.setUser(user);
+		reviewRepository.save(review);
+		return reviewDTO;
+	}
+
+	@Override
+	public ReviewDTO putReview(ReviewDTO reviewDTO,Long id) {
+		Review review=reviewRepository.findById(id).orElseThrow(()->new RuntimeException("Review not found"));
+		//modelMapper.map(reviewDTO, review);
+		Booking booking=new Booking();
+		booking.setId(reviewDTO.getBookingId());
+		User user=new User();
+		user.setId(reviewDTO.getUserId());
+		review.setBooking(booking);
+		review.setUser(user);
+		review.setRating(reviewDTO.getRating());
+		review.setComment(reviewDTO.getComment());
+		reviewRepository.save(review);
+		return reviewDTO;
+	}
+	
 	
 	
 	
