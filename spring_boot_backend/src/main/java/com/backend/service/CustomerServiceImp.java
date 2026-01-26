@@ -10,10 +10,12 @@ import com.backend.dtos.BookingDTO;
 import com.backend.dtos.BookingReqDTO;
 import com.backend.dtos.CustomerDTO;
 import com.backend.dtos.CustomerReqDTO;
+import com.backend.dtos.DisputeDTO;
 import com.backend.dtos.PaymentDTO;
 import com.backend.dtos.ReviewDTO;
 import com.backend.entities.Booking;
 import com.backend.entities.BookingStatus;
+import com.backend.entities.Dispute;
 import com.backend.entities.Payment;
 import com.backend.entities.Review;
 import com.backend.entities.Role;
@@ -21,6 +23,7 @@ import com.backend.entities.ServiceProvider;
 import com.backend.entities.Status;
 import com.backend.entities.User;
 import com.backend.repository.BookingRepository;
+import com.backend.repository.DisputeRepository;
 import com.backend.repository.PaymentRepository;
 import com.backend.repository.ReviewRepository;
 import com.backend.repository.ServiceProviderRepository;
@@ -41,6 +44,7 @@ public class CustomerServiceImp implements CustomerService {
 	public final ServiceProviderRepository serviceProviderRepository;
 	public final PaymentRepository paymentRepository;
 	public final ReviewRepository reviewRepository;
+	public final DisputeRepository disputeRepository;
 	private final ModelMapper modelMapper;
 	
 	@Override
@@ -168,6 +172,11 @@ public class CustomerServiceImp implements CustomerService {
 
 	
 	
+	
+	
+	
+	
+	
 	@Override
 	public List<ReviewDTO> getReviewsByUser(Long id) {
 		List<Review> reviews=reviewRepository.findAllByBookingUserId(id);//.orElseThrow(()->new RuntimeException("Review not found"+id));
@@ -228,6 +237,88 @@ public class CustomerServiceImp implements CustomerService {
 		review.setComment(reviewDTO.getComment());
 		reviewRepository.save(review);
 		return reviewDTO;
+	}
+	
+	
+	
+	
+	
+
+	@Override
+	public List<DisputeDTO> getDisputeByUser(Long id) {
+		List<Dispute> dispute=disputeRepository.findAllByRaisedById(id);//.orElseThrow(()->new RuntimeException("Dispute not found"+id));
+		return dispute.stream().map(r->
+		{
+			DisputeDTO dto=new DisputeDTO();
+			dto.setBookingId(r.getBooking().getId());
+			dto.setRaisedById(id);
+			dto.setResolvedById(r.getResolvedBy().getId());
+			dto.setStatus(r.getStatus());
+			dto.setDescription(r.getDescription());
+			return dto;
+		}).toList();
+	}
+
+	@Override
+	public DisputeDTO getDisputeByBooking(Long id) {
+		Dispute dispute=disputeRepository.findByBookingId(id).orElseThrow(()-> new RuntimeException("Dispute for this booking id not found"+id));
+		DisputeDTO dto=new DisputeDTO();
+		dto.setBookingId(id);
+		dto.setRaisedById(dispute.getRaisedBy().getId());
+		dto.setResolvedById(dispute.getResolvedBy().getId());
+		dto.setStatus(dispute.getStatus());
+		dto.setDescription(dispute.getDescription());
+		return dto;
+	}
+
+	@Override
+	public DisputeDTO getDisputeById(Long id) {
+		Dispute dispute=disputeRepository.findById(id).orElseThrow(()-> new RuntimeException("Dispute for this booking id not found"+id));
+		DisputeDTO dto=new DisputeDTO();
+		dto.setBookingId(dispute.getBooking().getId());
+		dto.setRaisedById(id);
+		dto.setResolvedById(dispute.getResolvedBy().getId());
+		dto.setStatus(dispute.getStatus());
+		dto.setDescription(dispute.getDescription());
+		return dto;
+	}
+
+	@Override
+	public DisputeDTO postDispute(DisputeDTO disputeDTO) {
+		Dispute dispute=new Dispute();
+		//modelMapper.map(reviewDTO, review);
+		Booking booking=new Booking();
+		booking.setId(disputeDTO.getBookingId());
+		User user=new User();
+		user.setId(disputeDTO.getRaisedById());
+		User admin=new User();
+		admin.setId(disputeDTO.getResolvedById());
+		dispute.setBooking(booking);
+		dispute.setRaisedBy(user);
+		dispute.setResolvedBy(admin);
+		dispute.setStatus(disputeDTO.getStatus());
+		dispute.setDescription(disputeDTO.getDescription());
+		disputeRepository.save(dispute);
+		return disputeDTO;
+	}
+
+	@Override
+	public DisputeDTO putDispute(DisputeDTO disputeDTO, Long id) {
+		Dispute dispute=disputeRepository.findById(id).orElseThrow(()-> new RuntimeException("Dispute for this booking id not found"+id));
+		//modelMapper.map(reviewDTO, review);
+		Booking booking=new Booking();
+		booking.setId(disputeDTO.getBookingId());
+		User user=new User();
+		user.setId(disputeDTO.getRaisedById());
+		User admin=new User();
+		admin.setId(disputeDTO.getResolvedById());
+		dispute.setBooking(booking);
+		dispute.setRaisedBy(user);
+		dispute.setResolvedBy(admin);
+		dispute.setStatus(disputeDTO.getStatus());
+		dispute.setDescription(disputeDTO.getDescription());
+		disputeRepository.save(dispute);
+		return disputeDTO;
 	}
 	
 	

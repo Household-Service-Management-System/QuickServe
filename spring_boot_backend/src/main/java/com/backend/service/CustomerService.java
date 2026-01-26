@@ -8,6 +8,7 @@ import com.backend.dtos.BookingDTO;
 import com.backend.dtos.BookingReqDTO;
 import com.backend.dtos.CustomerDTO;
 import com.backend.dtos.CustomerReqDTO;
+import com.backend.dtos.DisputeDTO;
 import com.backend.dtos.PaymentDTO;
 import com.backend.dtos.ReviewDTO;
 import com.backend.entities.Booking;
@@ -48,4 +49,14 @@ public interface CustomerService {
 	ReviewDTO postReview(ReviewDTO reviewDTO);
 
 	ReviewDTO putReview(ReviewDTO reviewDTO, Long id);
+
+	List<DisputeDTO> getDisputeByUser(Long id);
+
+	DisputeDTO getDisputeByBooking(Long id);
+
+	DisputeDTO getDisputeById(Long id);
+
+	DisputeDTO postDispute(DisputeDTO disputeDTO);
+
+	DisputeDTO putDispute(DisputeDTO disputeDTO, Long id);
 }
