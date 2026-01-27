@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.dtos.ServiceDTO;
 import com.backend.dtos.ServiceUpdateDTO;
+import com.backend.dtos.ServicesFromCategoriesDTO;
 import com.backend.entities.Service;
 import com.backend.entities.Status;
 import com.backend.repository.ServiceRepository;
@@ -22,6 +23,9 @@ import com.backend.service.ServiceService;
 @RequestMapping("/services")
 public class ServiceController {
 
+	@Autowired
+	private ServiceService serviceService;
+	
     @Autowired
     private ServiceRepository serviceRepository;
 
@@ -40,8 +44,7 @@ public class ServiceController {
             .toList();
     }
     
-    @Autowired
-    private ServiceService serviceService;
+   
 
     @GetMapping("/{id}")
     public ResponseEntity<ServiceDTO> getService(@PathVariable Long id) {
@@ -55,5 +58,14 @@ public class ServiceController {
 
         serviceService.updateService(id, dto);
         return ResponseEntity.ok("Service updated successfully");
+    }
+    
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<ServicesFromCategoriesDTO>> getServicesByCategory(
+    @PathVariable Long categoryId
+    ) {
+    return ResponseEntity.ok(
+    serviceService.getServicesByCategory(categoryId)
+    );
     }
 }

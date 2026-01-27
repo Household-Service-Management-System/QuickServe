@@ -50,6 +50,11 @@ public class Service extends BaseEntity{
 //	@Column(name="is_available", nullable = false)
 //	private Status isAvailable;
 	
+	@Column(name = "description", columnDefinition = "TEXT")
+	private String description;
+
+	@Column(name = "image_url")
+	private String image;
 	 
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="category_id", nullable = false)
