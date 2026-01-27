@@ -16,4 +16,5 @@ public class ServiceProviderProfileUpdateDTO {
     private String pincode;
     private LocalDate dob;
     private String gender;
+    private String profileImage;
 }
