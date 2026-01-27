@@ -19,6 +19,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class DisputeDTO {
+	private Long disputeId;
     private Long raisedById;
     private Long bookingId;
 	private Long resolvedById;

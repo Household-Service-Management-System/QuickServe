@@ -15,7 +15,7 @@ const Login = () => {
     e.preventDefault();
 
     if (form.role === "customer") {
-      window.location.href = "/user";
+      window.location.href = "/customer";
     } else if (form.role === "provider") {
       window.location.href = "/service-provider";
     } else {

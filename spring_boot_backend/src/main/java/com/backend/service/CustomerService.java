@@ -59,4 +59,6 @@ public interface CustomerService {
 	DisputeDTO postDispute(DisputeDTO disputeDTO);
 
 	DisputeDTO putDispute(DisputeDTO disputeDTO, Long id);
+
+	CustomerDTO putCutomerById(CustomerDTO customerDTO,Long id);
 }
