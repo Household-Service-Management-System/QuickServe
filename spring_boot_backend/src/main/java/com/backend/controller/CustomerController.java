@@ -1,5 +1,8 @@
 package com.backend.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.dtos.BookingReqDTO;
+import com.backend.dtos.CategoryResponseDTO;
 import com.backend.dtos.CustomerDTO;
 import com.backend.dtos.CustomerReqDTO;
 import com.backend.dtos.DisputeDTO;
@@ -23,6 +27,7 @@ import com.backend.dtos.ReviewDTO;
 import com.backend.entities.BookingStatus;
 import com.backend.entities.Status;
 import com.backend.service.CustomerService;
+import com.backend.service.CustomerServiceImp;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +37,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomerController {
 
+	@Autowired
+	private CustomerServiceImp customerServiceImp;
+	
 	public final CustomerService customerService;
 	
 	
@@ -52,6 +60,12 @@ public class CustomerController {
 	            customerService.putCustomer(customerReqDTO, image)
 	    );
 	}
+	
+	@GetMapping("/allServiceCategories")
+	public ResponseEntity<List<CategoryResponseDTO>> getAllCategories() {
+	return ResponseEntity.ok(customerServiceImp.getAllCategories());
+	}
+	
 	
 	//Booking apis
 	@GetMapping("/bookings/{id}")

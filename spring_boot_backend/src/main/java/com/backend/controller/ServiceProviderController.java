@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.backend.dtos.CategoryResponseDTO;
 import com.backend.dtos.PaymentHistoryDTO;
 import com.backend.dtos.PopularServiceDTO;
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
@@ -44,6 +46,10 @@ public class ServiceProviderController {
         return ResponseEntity.ok(ServiceProviderService.getDashboardSummary(id));
     }
     
+    @GetMapping
+    public ResponseEntity<List<CategoryResponseDTO>> getAllCategories() {
+    return ResponseEntity.ok(categoryService.getAllCategories());
+    }
     
     //2. It is for Mid portion : upcoming bookings for a particular service-provider 
     @GetMapping("/bookings/{id}/upcoming")

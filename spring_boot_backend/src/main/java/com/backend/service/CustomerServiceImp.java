@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.dtos.BookingDTO;
 import com.backend.dtos.BookingReqDTO;
+import com.backend.dtos.CategoryResponseDTO;
 import com.backend.dtos.CustomerDTO;
 import com.backend.dtos.CustomerReqDTO;
 import com.backend.dtos.DisputeDTO;
@@ -28,6 +29,7 @@ import com.backend.repository.BookingRepository;
 import com.backend.repository.DisputeRepository;
 import com.backend.repository.PaymentRepository;
 import com.backend.repository.ReviewRepository;
+import com.backend.repository.ServiceCategoryRepository;
 import com.backend.repository.ServiceProviderRepository;
 import com.backend.repository.ServiceRepository;
 import com.backend.repository.UserRepository;
@@ -42,6 +44,9 @@ public class CustomerServiceImp implements CustomerService {
 	
 	@Autowired
 	private CloudinaryImageServiceImpl cloudinaryImageServiceImpl;
+	
+	@Autowired
+	private ServiceCategoryRepository serviceCategoryRepository;
 	
 	public final UserRepository userReopsitory;
 	public final BookingRepository bookingsRepository;
@@ -356,6 +361,12 @@ public class CustomerServiceImp implements CustomerService {
 	}
 	
 	
+	public List<CategoryResponseDTO> getAllCategories() {
+		return serviceCategoryRepository.findAll()
+		.stream()
+		.map(category -> modelMapper.map(category, CategoryResponseDTO.class))
+		.toList();
+		}
 	
 	
 	
