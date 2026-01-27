@@ -29,4 +29,16 @@ public class CloudinaryImageServiceImpl implements CloudinaryImageService {
 
 	}
 
+	public String uploadImage(MultipartFile file) {
+	    try {
+	        Map<?, ?> uploadResult = cloudinary.uploader().upload(
+	            file.getBytes(),
+	            Map.of("folder", "quickserve/users")
+	        );
+	        return uploadResult.get("secure_url").toString();
+	    } catch (Exception e) {
+	        throw new RuntimeException("Image upload failed");
+	    }
+	}
+
 }

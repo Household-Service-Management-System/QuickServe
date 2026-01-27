@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.dtos.BookingDTO;
 import com.backend.dtos.BookingReqDTO;
@@ -37,6 +39,9 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class CustomerServiceImp implements CustomerService {
+	
+	@Autowired
+	private CloudinaryImageServiceImpl cloudinaryImageServiceImpl;
 	
 	public final UserRepository userReopsitory;
 	public final BookingRepository bookingsRepository;
@@ -319,6 +324,35 @@ public class CustomerServiceImp implements CustomerService {
 		dispute.setDescription(disputeDTO.getDescription());
 		disputeRepository.save(dispute);
 		return disputeDTO;
+	}
+
+	@Override
+	public User putCustomer(CustomerReqDTO customerReqDTO, MultipartFile image) {
+		// 🔴 FETCH EXISTING USER
+		User user = userReopsitory.findByEmail(customerReqDTO.getEmail())
+				.orElseThrow(() -> new RuntimeException("User not found with email"));
+
+
+		// map ONLY non-image fields
+		modelMapper.map(customerReqDTO, user);
+		user.setLastLogin(LocalDateTime.now());
+		user.setIsActive(Status.ACTIVE);
+
+
+		// 👇 Cloudinary upload
+		if (image != null && !image.isEmpty()) {
+		String imageUrl = null;
+		try {
+			imageUrl = cloudinaryImageServiceImpl.uploadImage(image);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		user.setProfileImage(imageUrl);
+		}
+
+
+		return userReopsitory.save(user);
 	}
 	
 	

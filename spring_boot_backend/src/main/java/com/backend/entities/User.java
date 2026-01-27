@@ -72,6 +72,9 @@ public class User extends BaseEntity{
 	@Column(name="deactive_reason",nullable = true)
 	private String deactiveReason;
 	
+	@Column(name = "profile_image", nullable = true)
+	private String profileImage;
+	
 	//future_scope
 	@Column(columnDefinition = "json", nullable = true)
 	private String preferences; 
