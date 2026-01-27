@@ -3,13 +3,16 @@ package com.backend.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.dtos.BookingReqDTO;
 import com.backend.dtos.CustomerDTO;
@@ -39,12 +42,15 @@ public class CustomerController {
 		return ResponseEntity.ok(customerService.getCutomerById(id));
 	}
 	
-	@PostMapping("/profile/register")
-	public ResponseEntity<?> putCustomer(@RequestBody CustomerReqDTO customerReqDTO)
-	{
-		System.out.println("Email controller customerDTO saving: " + customerReqDTO.toString());
-		return ResponseEntity.status(HttpStatus.CREATED)//SC 201
-		.body(customerService.putCustomer(customerReqDTO));
+	// New profile register using image
+	@PostMapping(value = "/profile/update", consumes = "multipart/form-data")
+	public ResponseEntity<?> updateCustomer(
+			@ModelAttribute CustomerReqDTO customerReqDTO,
+	        @RequestPart(value = "image", required = false) MultipartFile image
+	) {
+	    return ResponseEntity.ok(
+	            customerService.putCustomer(customerReqDTO, image)
+	    );
 	}
 	
 	

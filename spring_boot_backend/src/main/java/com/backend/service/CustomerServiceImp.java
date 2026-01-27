@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.dtos.BookingDTO;
 import com.backend.dtos.BookingReqDTO;
@@ -37,6 +39,9 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class CustomerServiceImp implements CustomerService {
+	
+	@Autowired
+	private CloudinaryImageServiceImpl cloudinaryImageServiceImpl;
 	
 	public final UserRepository userReopsitory;
 	public final BookingRepository bookingsRepository;
