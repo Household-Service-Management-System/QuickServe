@@ -379,9 +379,32 @@ public class CustomerServiceImp implements CustomerService {
 
 	@Override
 	public User putCustomer(CustomerReqDTO customerReqDTO, MultipartFile image) {
-		// TODO Auto-generated method stub
-		return null;
+		// 🔴 FETCH EXISTING USER
+		User user = userReopsitory.findByEmail(customerReqDTO.getEmail())
+				.orElseThrow(() -> new RuntimeException("User not found with email"));
+
+
+		// map ONLY non-image fields
+		modelMapper.map(customerReqDTO, user);
+		user.setLastLogin(LocalDateTime.now());
+		user.setIsActive(Status.ACTIVE);
+
+
+		// 👇 Cloudinary upload
+		if (image != null && !image.isEmpty()) {
+		String imageUrl = null;
+		try {
+			imageUrl = cloudinaryImageServiceImpl.uploadImage(image);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		user.setProfileImage(imageUrl);
+		}
+
+		return userReopsitory.save(user);
 	}
+	
 	
 	
 	
