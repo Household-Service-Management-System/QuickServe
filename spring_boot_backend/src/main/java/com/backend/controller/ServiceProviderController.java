@@ -125,6 +125,7 @@ public class ServiceProviderController {
     }
     
     
+   
     @GetMapping("/profile/{id}")
     public ResponseEntity<ServiceProviderProfileUpdateDTO> getProfile(
             @PathVariable Long id) {

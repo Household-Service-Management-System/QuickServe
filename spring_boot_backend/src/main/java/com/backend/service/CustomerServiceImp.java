@@ -73,6 +73,17 @@ public class CustomerServiceImp implements CustomerService {
 		user.setIsActive(Status.ACTIVE); 
 		return userReopsitory.save(user);
 	}
+	
+	
+	@Override
+	public CustomerDTO putCutomerById(CustomerDTO customerDTO,Long id) {
+		User user = userReopsitory.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
+		modelMapper.map(customerDTO,user);
+		
+	 return customerDTO;
+	}
+	
 
 	@Override
 	public List<BookingDTO> getBookingsByUser(Long id) {
@@ -86,6 +97,8 @@ public class CustomerServiceImp implements CustomerService {
 			dto.setScheduledAt(b.getScheduledAt());
 			dto.setStatus(b.getStatus());
 			dto.setRejectionReason(b.getRejectionReason());
+			dto.setBookingId(b.getId());
+
 			 return dto;
 		}
 		).toList();
@@ -104,6 +117,8 @@ public class CustomerServiceImp implements CustomerService {
 		dto.setScheduledAt(b.getScheduledAt());
 		dto.setStatus(b.getStatus());
 		dto.setRejectionReason(b.getRejectionReason());
+		dto.setBookingId(b.getId());
+
 		 return dto;
 	}
 
@@ -137,15 +152,32 @@ public class CustomerServiceImp implements CustomerService {
 
 	@Override
 	public List<PaymentDTO> getPaymnetsByUser(Long id) {
-		List<Payment> payments= paymentRepository.findByBookingUserId(id);
-		return payments.stream()
-        .map(payment -> {
-            PaymentDTO dto = modelMapper.map(payment, PaymentDTO.class);
-            // Manually set the ID if ModelMapper is failing to find it
-            dto.setBookingId(payment.getBooking().getId()); 
-            return dto;
-        })
-        .toList();
+		List<Payment> payments = paymentRepository.findByBookingUserId(id);
+
+	    return payments.stream().map(p -> {
+	        PaymentDTO dto = new PaymentDTO();
+
+	        dto.setPaymentId(p.getId());
+	        dto.setBookingId(p.getBooking().getId());
+	        dto.setAmount(p.getAmount());
+	        dto.setMethod(p.getMethod());
+	        dto.setTransactionId(p.getTransactionId());
+	        dto.setStatus(p.getStatus());
+	        dto.setCreatedOn(p.getCreatedOn());
+
+	        dto.setServiceName(p.getBooking().getService().getName());
+	        dto.setProviderName(
+	            p.getBooking().getServiceProvider()
+	             .getUser()
+	             .getFirstName()
+	             + " " +
+	             p.getBooking().getServiceProvider()
+	             .getUser()
+	             .getLastName()
+	        );
+
+	        return dto;
+	    }).toList();
 	}
 
 	@Override
@@ -260,6 +292,7 @@ public class CustomerServiceImp implements CustomerService {
 		return dispute.stream().map(r->
 		{
 			DisputeDTO dto=new DisputeDTO();
+			dto.setDisputeId(r.getId());
 			dto.setBookingId(r.getBooking().getId());
 			dto.setRaisedById(id);
 			dto.setResolvedById(r.getResolvedBy().getId());
@@ -273,6 +306,7 @@ public class CustomerServiceImp implements CustomerService {
 	public DisputeDTO getDisputeByBooking(Long id) {
 		Dispute dispute=disputeRepository.findByBookingId(id).orElseThrow(()-> new RuntimeException("Dispute for this booking id not found"+id));
 		DisputeDTO dto=new DisputeDTO();
+		dto.setDisputeId(dispute.getId());
 		dto.setBookingId(id);
 		dto.setRaisedById(dispute.getRaisedBy().getId());
 		dto.setResolvedById(dispute.getResolvedBy().getId());
@@ -285,6 +319,7 @@ public class CustomerServiceImp implements CustomerService {
 	public DisputeDTO getDisputeById(Long id) {
 		Dispute dispute=disputeRepository.findById(id).orElseThrow(()-> new RuntimeException("Dispute for this booking id not found"+id));
 		DisputeDTO dto=new DisputeDTO();
+		dto.setDisputeId(dispute.getId());
 		dto.setBookingId(dispute.getBooking().getId());
 		dto.setRaisedById(id);
 		dto.setResolvedById(dispute.getResolvedBy().getId());
@@ -303,6 +338,7 @@ public class CustomerServiceImp implements CustomerService {
 		user.setId(disputeDTO.getRaisedById());
 		User admin=new User();
 		admin.setId(disputeDTO.getResolvedById());
+		dispute.setId(disputeDTO.getDisputeId());
 		dispute.setBooking(booking);
 		dispute.setRaisedBy(user);
 		dispute.setResolvedBy(admin);
@@ -316,49 +352,22 @@ public class CustomerServiceImp implements CustomerService {
 	public DisputeDTO putDispute(DisputeDTO disputeDTO, Long id) {
 		Dispute dispute=disputeRepository.findById(id).orElseThrow(()-> new RuntimeException("Dispute for this booking id not found"+id));
 		//modelMapper.map(reviewDTO, review);
-		Booking booking=new Booking();
-		booking.setId(disputeDTO.getBookingId());
-		User user=new User();
-		user.setId(disputeDTO.getRaisedById());
-		User admin=new User();
-		admin.setId(disputeDTO.getResolvedById());
-		dispute.setBooking(booking);
-		dispute.setRaisedBy(user);
-		dispute.setResolvedBy(admin);
+//		Booking booking=new Booking();
+//		booking.setId(disputeDTO.getBookingId());
+//		User user=new User();
+//		user.setId(disputeDTO.getRaisedById());
+//		User admin=new User();
+//		admin.setId(disputeDTO.getResolvedById());
+//		dispute.setId(disputeDTO.getDisputeId());
+//		dispute.setBooking(booking);
+//		dispute.setRaisedBy(user);
+//		dispute.setResolvedBy(admin);
 		dispute.setStatus(disputeDTO.getStatus());
 		dispute.setDescription(disputeDTO.getDescription());
 		disputeRepository.save(dispute);
 		return disputeDTO;
 	}
 
-	@Override
-	public User putCustomer(CustomerReqDTO customerReqDTO, MultipartFile image) {
-		// 🔴 FETCH EXISTING USER
-		User user = userReopsitory.findByEmail(customerReqDTO.getEmail())
-				.orElseThrow(() -> new RuntimeException("User not found with email"));
-
-
-		// map ONLY non-image fields
-		modelMapper.map(customerReqDTO, user);
-		user.setLastLogin(LocalDateTime.now());
-		user.setIsActive(Status.ACTIVE);
-
-
-		// 👇 Cloudinary upload
-		if (image != null && !image.isEmpty()) {
-		String imageUrl = null;
-		try {
-			imageUrl = cloudinaryImageServiceImpl.uploadImage(image);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		user.setProfileImage(imageUrl);
-		}
-
-
-		return userReopsitory.save(user);
-	}
 	
 	
 	public List<CategoryResponseDTO> getAllCategories() {

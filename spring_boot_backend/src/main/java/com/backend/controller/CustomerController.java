@@ -67,6 +67,15 @@ public class CustomerController {
 	}
 	
 	
+	
+	@PutMapping("/profile/{id}")
+	public ResponseEntity<?> putCutomerById(@RequestBody CustomerDTO customerDTO ,@PathVariable Long id)
+	{
+		return ResponseEntity.ok(customerService.putCutomerById(customerDTO,id));
+	}
+	
+	
+	
 	//Booking apis
 	@GetMapping("/bookings/{id}")
 	public ResponseEntity<?> getBookingsByUser(@PathVariable Long id)
@@ -92,6 +101,9 @@ public class CustomerController {
 	{
 		return ResponseEntity.status(HttpStatus.CREATED).body(customerService.bookingStatusChange(id,status));
 	}
+	
+	
+	
 	
 	
 	//Payment apis
@@ -120,6 +132,9 @@ public class CustomerController {
 		System.out.println(paymentDTO.toString());
 		return ResponseEntity.ok(customerService.postPaymnetsByBookingId(paymentDTO));
 	}
+	
+	
+	
 	
 	
 	//Reviews apis
@@ -152,6 +167,9 @@ public class CustomerController {
 	{
 		return ResponseEntity.ok(customerService.putReview(reviewDTO,id));
 	}
+	
+	
+	
 	
 	
 	

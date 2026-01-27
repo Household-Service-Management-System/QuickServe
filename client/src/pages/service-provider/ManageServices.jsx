@@ -1,5 +1,5 @@
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
     PencilSquareIcon,
@@ -10,34 +10,61 @@ import {
 
 export default function ManageServices() {
     const navigate = useNavigate();
+    const providerId = 2; // TODO: later from auth
 
-    const [services, setServices] = useState([
-        { id: "s1", name: "AC Repair", category: "Home Appliances", price: 500, active: true },
-        { id: "s2", name: "Electrical Wiring", category: "Electrical", price: 350, active: true },
-        { id: "s3", name: "Plumbing", category: "Plumbing", price: 700, active: false },
-    ]);
+    const [services, setServices] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const toggleActive = (id) => {
-        setServices((prev) =>
-            prev.map((s) => (s.id === id ? { ...s, active: !s.active } : s))
-        );
-    };
+    useEffect(() => {
+        fetchServices();
+    }, []);
 
-    const handleDelete = (id) => {
-        if (window.confirm("Delete this service?")) {
-            setServices((prev) => prev.filter((s) => s.id !== id));
+    const fetchServices = async () => {
+        try {
+            const res = await axios.get(
+                `http://localhost:8080/service-provider/${providerId}/services`
+            );
+            setServices(res.data);
+        } catch (err) {
+            console.error("Failed to load services", err);
+        } finally {
+            setLoading(false);
         }
     };
+
+    const handleDelete = async (serviceId) => {
+        if (!window.confirm("Remove this service from your profile?")) return;
+
+        try {
+            await axios.delete(
+                `http://localhost:8080/service-provider/${providerId}/services/${serviceId}`
+            );
+
+            // update UI
+            setServices(prev =>
+                prev.filter(s => s.id !== serviceId)
+            );
+        } catch (err) {
+            alert("Failed to remove service");
+        }
+    };
+
+    if (loading) {
+        return <div className="p-6 text-center">Loading services...</div>;
+    }
 
     return (
         <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
             <div className="max-w-5xl mx-auto bg-white p-6 rounded-xl shadow-sm border">
 
-
                 <div className="flex justify-between items-center mb-5">
                     <div>
-                        <h1 className="text-2xl font-semibold text-gray-800">Manage Services</h1>
-                        <p className="text-sm text-gray-500">View, edit or disable your services</p>
+                        <h1 className="text-2xl font-semibold text-gray-800">
+                            Manage Services
+                        </h1>
+                        <p className="text-sm text-gray-500">
+                            Services you currently offer
+                        </p>
                     </div>
 
                     <button
@@ -61,33 +88,52 @@ export default function ManageServices() {
                         </thead>
 
                         <tbody>
+                            {services.length === 0 && (
+                                <tr>
+                                    <td
+                                        colSpan="5"
+                                        className="p-4 text-center text-gray-500"
+                                    >
+                                        No services added yet
+                                    </td>
+                                </tr>
+                            )}
+
                             {services.map((s) => (
                                 <tr key={s.id} className="border-b hover:bg-gray-50">
-                                    <td className="p-3 font-medium text-gray-800">{s.name}</td>
-                                    <td className="p-3 text-gray-700">{s.category}</td>
-                                    <td className="p-3 font-medium">₹{s.price}</td>
+
+                                    <td className="p-3 font-medium text-gray-800">
+                                        {s.name}
+                                    </td>
+
+                                    <td className="p-3 text-gray-700">
+                                        {s.category?.name}
+                                    </td>
+
+                                    <td className="p-3 font-medium">
+                                        ₹{s.basePrice}
+                                    </td>
 
                                     <td className="p-3">
-                                        <button
-                                            onClick={() => toggleActive(s.id)}
-                                            className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${s.active
-                                                ? "bg-green-100 text-green-700"
-                                                : "bg-gray-200 text-gray-700"
-                                                }`}
-                                        >
-                                            {s.active ? (
+                                        {s.isAvailable === "ACTIVE" || s.isAvailable === "AVAILABLE" ? (
+                                            <span className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 w-fit">
                                                 <CheckCircleIcon className="w-4 h-4" />
-                                            ) : (
+                                                Active
+                                            </span>
+                                        ) : (
+                                            <span className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-700 w-fit">
                                                 <XCircleIcon className="w-4 h-4" />
-                                            )}
-                                            {s.active ? "Active" : "Inactive"}
-                                        </button>
+                                                Inactive
+                                            </span>
+                                        )}
                                     </td>
 
                                     <td className="p-3 flex justify-end gap-3">
                                         <button
                                             onClick={() =>
-                                                navigate(`/service-provider/services/edit/${s.id}`)
+                                                navigate(
+                                                    `/service-provider/services/edit/${s.id}`
+                                                )
                                             }
                                             className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200"
                                         >
@@ -101,12 +147,13 @@ export default function ManageServices() {
                                             <TrashIcon className="w-5 h-5 text-red-600" />
                                         </button>
                                     </td>
+
                                 </tr>
                             ))}
                         </tbody>
-
                     </table>
                 </div>
+
             </div>
         </div>
     );

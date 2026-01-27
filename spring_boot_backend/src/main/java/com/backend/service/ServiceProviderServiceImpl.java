@@ -189,6 +189,8 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
     }
     
     
+    
+    
     @Override
     public ServiceProviderProfileUpdateDTO getProfile(Long providerId) {
 
@@ -244,6 +246,8 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
         serviceProviderRepo.save(provider);
     }
 
+    
+    //UI - Manage Services , Button associated - Delete Action
     @Override
     public void removeServiceFromProvider(Long providerId, Long serviceId) {
         ServiceProvider provider = serviceProviderRepo.findById(providerId)

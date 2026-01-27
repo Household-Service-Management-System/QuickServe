@@ -41,6 +41,17 @@ import PendingRequest from "./pages/admin/PendingRequest";
 import Setting from "./pages/admin/Setting";
 import Logout from "./pages/admin/Logout";
 
+
+
+import CustomerLayout from "./components/layout/CustomerLayout";
+import Dashboard from "./pages/customer/Dashboard";
+import CustomerBookings from "./pages/customer/Bookings";
+import CustomerPayments from "./pages/customer/Payments";
+import CustomerProfile from "./pages/customer/Profile";
+import CustomerSupport from "./pages/customer/Support";
+import CustomerSettings from "./pages/customer/Settings";
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -62,6 +73,17 @@ function App() {
           <Route path="payments" element={<Payments />} />
           <Route path="profile" element={<Profile />} />
         </Route>
+
+      
+
+<Route path="/customer" element={<CustomerLayout />}>
+  <Route index element={<Dashboard />} />
+  <Route path="bookings" element={<CustomerBookings />} />
+  <Route path="payments" element={<CustomerPayments />} />
+  <Route path="profile" element={<CustomerProfile />} />
+  <Route path="support" element={<CustomerSupport />} />
+  <Route path="settings" element={<CustomerSettings />} />
+</Route>
 
 
         <Route path="/service-provider" element={<ServiceProviderLayout />}>

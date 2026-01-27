@@ -19,11 +19,14 @@ import lombok.ToString;
 @ToString
 public class BookingDTO {
 	
-	private String service;
-	private String serviceProvider;
+	private Long bookingId;  
+
+    private String service;
+    private String serviceProvider;
     private LocalDateTime scheduledAt;
     private double price;
     private BookingStatus status;
     private String rejectionReason;
+
 
 }
