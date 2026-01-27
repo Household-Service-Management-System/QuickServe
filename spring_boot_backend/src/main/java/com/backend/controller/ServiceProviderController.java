@@ -46,10 +46,10 @@ public class ServiceProviderController {
         return ResponseEntity.ok(ServiceProviderService.getDashboardSummary(id));
     }
     
-    @GetMapping
-    public ResponseEntity<List<CategoryResponseDTO>> getAllCategories() {
-    return ResponseEntity.ok(categoryService.getAllCategories());
-    }
+//    @GetMapping
+//    public ResponseEntity<List<CategoryResponseDTO>> getAllCategories() {
+//    return ResponseEntity.ok(categoryService.getAllCategories());
+//    }
     
     //2. It is for Mid portion : upcoming bookings for a particular service-provider 
     @GetMapping("/bookings/{id}/upcoming")

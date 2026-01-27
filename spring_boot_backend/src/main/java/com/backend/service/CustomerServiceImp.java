@@ -376,6 +376,12 @@ public class CustomerServiceImp implements CustomerService {
 		.map(category -> modelMapper.map(category, CategoryResponseDTO.class))
 		.toList();
 		}
+
+	@Override
+	public User putCustomer(CustomerReqDTO customerReqDTO, MultipartFile image) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 	
