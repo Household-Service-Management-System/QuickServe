@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "../../components/layout/Sidebar/Sidebar";
+import Sidebar from "../../components/layout/CustomerSidebar";
 import { Box } from "@mui/material";
 
 export default function UserLayout() {

@@ -1,6 +1,7 @@
 package com.backend.dtos;
 
-import com.backend.entities.Booking;
+import java.time.LocalDateTime;
+
 import com.backend.entities.PaymentMethod;
 import com.backend.entities.PaymentStatus;
 
@@ -15,11 +16,16 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-
 public class PaymentDTO {
-	
+
+    private Long paymentId;
+
     private Long bookingId;
-    
+
+    private String serviceName;
+
+    private String providerName;
+
     private double amount;
 
     private PaymentMethod method;
@@ -27,6 +33,6 @@ public class PaymentDTO {
     private String transactionId;
 
     private PaymentStatus status;
-    
 
+    private LocalDateTime createdOn;
 }
