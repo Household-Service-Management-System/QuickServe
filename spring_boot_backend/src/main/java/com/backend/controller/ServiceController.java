@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.dtos.ServiceDTO;
+import com.backend.dtos.ServiceDetailDTO;
 import com.backend.dtos.ServiceUpdateDTO;
 import com.backend.dtos.ServicesFromCategoriesDTO;
 import com.backend.entities.Service;
@@ -66,6 +67,16 @@ public class ServiceController {
     ) {
     return ResponseEntity.ok(
     serviceService.getServicesByCategory(categoryId)
+    );
+    }
+    
+    
+    @GetMapping("/details/{serviceId}")
+    public ResponseEntity<ServiceDetailDTO> getServiceDetails(
+    @PathVariable Long serviceId
+    ) {
+    return ResponseEntity.ok(
+    serviceService.getServiceDetails(serviceId)
     );
     }
 }

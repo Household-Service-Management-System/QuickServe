@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServiceDetail {
+public class ServiceDetailDTO {
 	private Long id;
 	private String name;
 	private String categoryName;

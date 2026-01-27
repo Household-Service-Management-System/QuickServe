@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.backend.dtos.ServiceDTO;
+import com.backend.dtos.ServiceDetailDTO;
 import com.backend.dtos.ServiceUpdateDTO;
 import com.backend.dtos.ServicesFromCategoriesDTO;
 import com.backend.entities.ServiceCategory;
@@ -76,5 +77,26 @@ public class ServiceServiceImpl implements ServiceService {
 		return services.stream()
 		.map(service -> modelMapper.map(service, ServicesFromCategoriesDTO.class))
 		.toList();
+	}
+	
+	@Override
+	public ServiceDetailDTO getServiceDetails(Long serviceId) {
+
+	    com.backend.entities.Service service = serviceRepo.findById(serviceId)
+	            .orElseThrow(() -> new RuntimeException("Service not found"));
+
+	    ServiceDetailDTO dto = new ServiceDetailDTO();
+	    dto.setId(service.getId());
+	    dto.setName(service.getName());
+	    dto.setBasePrice(service.getBasePrice());
+	    dto.setDuration(service.getDuration());
+	    dto.setAvailability(service.getIsAvailable().name());
+	    dto.setCategoryName(service.getCategory().getName());
+
+	    // optional fields (only if present in entity)
+	    dto.setDescription(service.getDescription());
+	    dto.setImage(service.getImage());
+
+	    return dto;
 	}
 }
