@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.dtos.CategoryResponseDTO;
 import com.backend.dtos.PaymentHistoryDTO;
@@ -147,6 +149,16 @@ public class ServiceProviderController {
     }
     
     
+    @PutMapping(value = "/profile/{id}", consumes = "multipart/form-data")
+    public ResponseEntity<String> updateProfile(
+            @PathVariable Long id,
+            @RequestPart("data") ServiceProviderProfileUpdateDTO profileDto,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+
+        ServiceProviderService.updateProfile(id, profileDto, image);
+        return ResponseEntity.ok("Profile updated successfully!");
+    }
+
  
     @GetMapping("/{id}/services")
     public ResponseEntity<Set<com.backend.entities.Service>> getMyServices(@PathVariable Long id) {

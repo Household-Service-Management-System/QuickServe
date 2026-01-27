@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.entities.*;
 
@@ -44,6 +45,8 @@ public interface ServiceProviderService {
 	ServiceProviderBookingResponseDTO getSingleBookingDetails(Long bookingId);
 
 	ServiceProviderProfileUpdateDTO getProfile(Long providerId);
+
+	void updateProfile(Long id, ServiceProviderProfileUpdateDTO profileDto, MultipartFile image);
 
 
 	

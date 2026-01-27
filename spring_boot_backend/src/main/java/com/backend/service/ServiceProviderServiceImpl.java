@@ -19,9 +19,11 @@ import com.backend.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -56,6 +58,12 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
 
     @Autowired
 	private ServiceProviderRepository serviceProviderRepo; 
+    
+    @Autowired
+    private ModelMapper modelMapper;
+    
+    @Autowired
+    private CloudinaryImageServiceImpl cloudinaryImageServiceImpl;
     
     @Override
     public ServiceProviderDashboardDTO getDashboardSummary(Long providerId) {
@@ -189,28 +197,26 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
     }
     
     
-    
-    
-    @Override
-    public ServiceProviderProfileUpdateDTO getProfile(Long providerId) {
-
-        User provider = userRepo.findById(providerId)
-            .orElseThrow(() -> new RuntimeException("Service provider not found"));
-
-        ServiceProviderProfileUpdateDTO dto = new ServiceProviderProfileUpdateDTO();
-
-        dto.setFirstName(provider.getFirstName());
-        dto.setLastName(provider.getLastName());
-        dto.setPhone(provider.getPhone());
-        dto.setStreet(provider.getStreet());
-        dto.setCity(provider.getCity());
-        dto.setState(provider.getState());
-        dto.setPincode(provider.getPincode());
-        dto.setDob(provider.getDob());
-        dto.setGender(provider.getGender());
-
-        return dto;
-    }
+//    @Override
+//    public ServiceProviderProfileUpdateDTO getProfile(Long providerId) {
+//
+//        User provider = userRepo.findById(providerId)
+//            .orElseThrow(() -> new RuntimeException("Service provider not found"));
+//
+//        ServiceProviderProfileUpdateDTO dto = new ServiceProviderProfileUpdateDTO();
+//
+//        dto.setFirstName(provider.getFirstName());
+//        dto.setLastName(provider.getLastName());
+//        dto.setPhone(provider.getPhone());
+//        dto.setStreet(provider.getStreet());
+//        dto.setCity(provider.getCity());
+//        dto.setState(provider.getState());
+//        dto.setPincode(provider.getPincode());
+//        dto.setDob(provider.getDob());
+//        dto.setGender(provider.getGender());
+//
+//        return dto;
+//    }
 
     @Override
     @Transactional
@@ -265,4 +271,48 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
             .orElseThrow(() -> new ResourceNotFoundException("Provider not found"));
         return provider.getServices();
     }
+
+    @Override
+    public void updateProfile(Long id,
+            ServiceProviderProfileUpdateDTO dto,
+            MultipartFile image) {
+
+        ServiceProvider provider = serviceProviderRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Service Provider not found"));
+
+        User user = provider.getUser();
+
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setPhone(dto.getPhone());
+        user.setStreet(dto.getStreet());
+        user.setCity(dto.getCity());
+        user.setState(dto.getState());
+        user.setPincode(dto.getPincode());
+        user.setDob(dto.getDob());
+        user.setGender(dto.getGender());
+
+        if (image != null && !image.isEmpty()) {
+            String imageUrl = cloudinaryImageServiceImpl.uploadImage(image);
+            user.setProfileImage(imageUrl);
+        }
+
+        userRepo.save(user);
+    }
+    
+    @Override
+    public ServiceProviderProfileUpdateDTO getProfile(Long id) {
+
+        ServiceProvider provider = serviceProviderRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Provider not found"));
+
+        User user = provider.getUser();
+
+        ServiceProviderProfileUpdateDTO dto = new ServiceProviderProfileUpdateDTO();
+        modelMapper.map(user, dto);
+        dto.setProfileImage(user.getProfileImage());
+
+        return dto;
+    }
+
 }
