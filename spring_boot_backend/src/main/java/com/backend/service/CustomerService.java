@@ -3,6 +3,7 @@ package com.backend.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.dtos.BookingDTO;
 import com.backend.dtos.BookingReqDTO;
@@ -23,6 +24,9 @@ public interface CustomerService {
 	CustomerDTO getCutomerById(Long id);
 
 	User putCustomer(CustomerReqDTO customerReqDTO);
+	
+	//Updated 
+	User putCustomer(CustomerReqDTO customerReqDTO, MultipartFile image);
 
 	List<BookingDTO> getBookingsByUser(Long id);
 
@@ -59,4 +63,6 @@ public interface CustomerService {
 	DisputeDTO postDispute(DisputeDTO disputeDTO);
 
 	DisputeDTO putDispute(DisputeDTO disputeDTO, Long id);
+
+	
 }
