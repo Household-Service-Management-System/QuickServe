@@ -1,5 +1,6 @@
 package com.backend.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.backend.dtos.CustomerDTO;
+import com.backend.entities.Role;
 import com.backend.entities.User;
 
 @Repository
@@ -19,5 +21,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	@Query("SELECT u FROM User u WHERE u.id = :id")
 	Optional<User> findUserByIdCustom(@Param("id") Long id);
+	
+	@Query("SELECT u FROM User u WHERE u.role = ROLE_USER")
+	List<User> findUsersByRole();
+	
+	
+
+
 }
 
