@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.backend.entities.Service;
+import com.backend.entities.Status;
 
 @Repository
 public interface ServiceRepository extends JpaRepository<Service, Long> {
@@ -22,4 +23,9 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
 	        JOIN FETCH s.category
 	    """)
 	    List<Service> findAllWithCategory();
+	
+	List<Service> findByCategory_IdAndIsAvailable(
+			Long categoryId,
+			Status isAvailable
+			);
 }
