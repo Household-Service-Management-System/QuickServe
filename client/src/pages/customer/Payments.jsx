@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const USER_ID = 4; // TODO: replace with auth context later
+//import { useSelector } from "react-redux";
+
+// const user = useSelector((state) => state.auth.user);
+// const USER_ID = user?.id;
+const USER_ID = 4; // replace later with auth user
 
 export default function CustomerPayments() {
   const [payments, setPayments] = useState([]);
@@ -50,52 +54,76 @@ export default function CustomerPayments() {
     setSelectedBooking(null);
   };
 
-  /* ================= PAY NOW (RAZORPAY READY) ================= */
+  /* ================= RAZORPAY ================= */
+  const loadRazorpay = () =>
+    new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+
   const handlePayNow = async (payment) => {
-  try {
-    const orderRes = await axios.post(
-      "http://localhost:8080/payment/create-order",
-      {
-        bookingId: payment.bookingId,
-        amount: payment.amount,
-      }
-    );
+    const loaded = await loadRazorpay();
+    if (!loaded) {
+      alert("Razorpay SDK failed to load");
+      return;
+    }
 
-    const { orderId, amount, currency, razorpayKey } = orderRes.data;
+    try {
+      // 1️⃣ Create order
+      const orderRes = await axios.post(
+        "http://localhost:8080/payment/create-order",
+        {
+          bookingId: payment.bookingId,
+          amount: payment.amount,
+        }
+      );
 
-    const options = {
-      key: razorpayKey,
-      amount,
-      currency,
-      order_id: orderId,
-      name: "QuickServe",
-      description: `Payment for Booking #${payment.bookingId}`,
+      const order = orderRes.data;
 
-      handler: async function (response) {
-        await axios.post(
-          "http://localhost:8080/payment/verify",
-          {
-            razorpayOrderId: response.razorpay_order_id,
-            razorpayPaymentId: response.razorpay_payment_id,
-            razorpaySignature: response.razorpay_signature,
-            bookingId: payment.bookingId,
-            amount: payment.amount,
-          }
-        );
+      // 2️⃣ Razorpay options
+      const options = {
+        key: order.key,
+        amount: order.amount,
+        currency: order.currency,
+        order_id: order.orderId,
+        name: "QuickServe",
+        description: `Booking #${payment.bookingId}`,
+        handler: async function (response) {
+          // 3️⃣ Verify payment
+          await axios.post(
+            "http://localhost:8080/payment/verify",
+            {
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+              bookingId: payment.bookingId,
+              amount: payment.amount,
+            }
+          );
 
-        alert("Payment Successful");
-        fetchPayments();
-      },
-    };
+          alert("Payment successful 🎉");
+          fetchPayments();
+        },
+        prefill: {
+          name: "Customer",
+          email: "customer@test.com",
+          contact: "9999999999",
+        },
+        theme: {
+          color: "#2563eb",
+        },
+      };
 
-    const rzp = new window.Razorpay(options);
-    rzp.open();
-  } catch (err) {
-    console.error(err);
-    alert("Unable to initiate payment");
-  }
-};
-
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (err) {
+      console.error(err);
+      alert("Payment failed");
+    }
+  };
 
   /* ================= UI HELPERS ================= */
   const statusBadge = (status) => {
@@ -106,8 +134,6 @@ export default function CustomerPayments() {
         return "bg-yellow-100 text-yellow-700";
       case "FAILED":
         return "bg-red-100 text-red-700";
-      case "REFUNDED":
-        return "bg-blue-100 text-blue-700";
       default:
         return "bg-gray-100 text-gray-700";
     }
@@ -116,10 +142,7 @@ export default function CustomerPayments() {
   /* ================= RENDER ================= */
   return (
     <div className="p-4 md:p-6 space-y-6">
-
-      <h1 className="text-2xl font-semibold text-gray-800">
-        Payments
-      </h1>
+      <h1 className="text-2xl font-semibold text-gray-800">Payments</h1>
 
       {/* ================= PAYMENT TABLE ================= */}
       <div className="bg-white border rounded-xl overflow-x-auto">
@@ -158,13 +181,13 @@ export default function CustomerPayments() {
                     #{p.bookingId}
                   </td>
                   <td className="px-4 py-2">₹{p.amount}</td>
-                  <td className="px-4 py-2">{p.method}</td>
+                  <td className="px-4 py-2">{p.method || "-"}</td>
                   <td className="px-4 py-2">
                     {p.transactionId || "-"}
                   </td>
                   <td className="px-4 py-2">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${statusBadge(
+                      className={`px-3 py-1 rounded-full text-xs ${statusBadge(
                         p.status
                       )}`}
                     >
@@ -206,12 +229,12 @@ export default function CustomerPayments() {
                 <p><b>Provider:</b> {selectedBooking.serviceProvider}</p>
                 <p><b>Price:</b> ₹{selectedBooking.price}</p>
                 <p><b>Status:</b> {selectedBooking.status}</p>
-                <p><b>Scheduled:</b> {selectedBooking.scheduledAt}</p>
-                {selectedBooking.rejectionReason && (
-                  <p className="text-red-600 mt-2">
-                    Reason: {selectedBooking.rejectionReason}
-                  </p>
-                )}
+                <p>
+                  <b>Scheduled:</b>{" "}
+                  {new Date(
+                    selectedBooking.scheduledAt
+                  ).toLocaleString()}
+                </p>
               </>
             )}
 
@@ -226,7 +249,6 @@ export default function CustomerPayments() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

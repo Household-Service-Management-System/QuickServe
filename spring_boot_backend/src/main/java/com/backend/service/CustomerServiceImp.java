@@ -320,7 +320,7 @@ public class CustomerServiceImp implements CustomerService {
 			dto.setDisputeId(r.getId());
 			dto.setBookingId(r.getBooking().getId());
 			dto.setRaisedById(id);
-			dto.setResolvedById(r.getResolvedBy().getId());
+			//dto.setResolvedById(r.getResolvedBy().getId());
 			dto.setStatus(r.getStatus());
 			dto.setDescription(r.getDescription());
 			return dto;
@@ -334,7 +334,7 @@ public class CustomerServiceImp implements CustomerService {
 		dto.setDisputeId(dispute.getId());
 		dto.setBookingId(id);
 		dto.setRaisedById(dispute.getRaisedBy().getId());
-		dto.setResolvedById(dispute.getResolvedBy().getId());
+		//dto.setResolvedById(dispute.getResolvedBy().getId());
 		dto.setStatus(dispute.getStatus());
 		dto.setDescription(dispute.getDescription());
 		return dto;
@@ -347,7 +347,7 @@ public class CustomerServiceImp implements CustomerService {
 		dto.setDisputeId(dispute.getId());
 		dto.setBookingId(dispute.getBooking().getId());
 		dto.setRaisedById(id);
-		dto.setResolvedById(dispute.getResolvedBy().getId());
+		//dto.setResolvedById(dispute.getResolvedBy().getId());
 		dto.setStatus(dispute.getStatus());
 		dto.setDescription(dispute.getDescription());
 		return dto;
@@ -361,12 +361,12 @@ public class CustomerServiceImp implements CustomerService {
 		booking.setId(disputeDTO.getBookingId());
 		User user=new User();
 		user.setId(disputeDTO.getRaisedById());
-		User admin=new User();
-		admin.setId(disputeDTO.getResolvedById());
+		//User admin=new User();
+		//admin.setId(disputeDTO.getResolvedById());
 		dispute.setId(disputeDTO.getDisputeId());
 		dispute.setBooking(booking);
 		dispute.setRaisedBy(user);
-		dispute.setResolvedBy(admin);
+		//dispute.setResolvedBy(admin);
 		dispute.setStatus(disputeDTO.getStatus());
 		dispute.setDescription(disputeDTO.getDescription());
 		disputeRepository.save(dispute);

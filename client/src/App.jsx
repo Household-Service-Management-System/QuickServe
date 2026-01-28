@@ -53,6 +53,19 @@ import ServiceDetails from "./pages/Home/ServiceDetails";
 
 
 function App() {
+
+  // const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   dispatch(
+  //     loginSuccess({
+  //       id: 4,
+  //       role: "ROLE_USER",
+  //       name: "Rahul",
+  //     })
+  //   );
+  // }, []);
+
   return (
     <BrowserRouter>
       <Routes>
