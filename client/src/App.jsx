@@ -41,8 +41,6 @@ import PendingRequest from "./pages/admin/PendingRequest";
 import Setting from "./pages/admin/Setting";
 import Logout from "./pages/admin/Logout";
 
-
-
 import CustomerLayout from "./components/layout/CustomerLayout";
 import Dashboard from "./pages/customer/Dashboard";
 import CustomerBookings from "./pages/customer/Bookings";
@@ -50,14 +48,14 @@ import CustomerPayments from "./pages/customer/Payments";
 import CustomerProfile from "./pages/customer/Profile";
 import CustomerSupport from "./pages/customer/Support";
 import CustomerSettings from "./pages/customer/Settings";
+import ServicesByCategory from "./pages/Home/ServiceByCategories";
+import ServiceDetails from "./pages/Home/ServiceDetails";
 
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-
-
         <Route path="/" element={<Home />} />
         <Route path="/HowItWorks" element={<HowItWorks />} />
         <Route path="/ServicesList" element={<Services />} />
@@ -74,26 +72,33 @@ function App() {
           <Route path="profile" element={<Profile />} />
         </Route>
 
-      
+        {/* Home page routes  */}
+        <Route
+          path="/services/category/:categoryId"
+          element={<ServicesByCategory />}
+        />
 
-<Route path="/customer" element={<CustomerLayout />}>
-  <Route index element={<Dashboard />} />
-  <Route path="bookings" element={<CustomerBookings />} />
-  <Route path="payments" element={<CustomerPayments />} />
-  <Route path="profile" element={<CustomerProfile />} />
-  <Route path="support" element={<CustomerSupport />} />
-  <Route path="settings" element={<CustomerSettings />} />
-</Route>
+        <Route
+          path="/services/details/:serviceId"
+          element={<ServiceDetails />}
+        />
 
+        <Route path="/customer" element={<CustomerLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="bookings" element={<CustomerBookings />} />
+          <Route path="payments" element={<CustomerPayments />} />
+          <Route path="profile" element={<CustomerProfile />} />
+          <Route path="support" element={<CustomerSupport />} />
+          <Route path="settings" element={<CustomerSettings />} />
+        </Route>
 
         <Route path="/service-provider" element={<ServiceProviderLayout />}>
           <Route index element={<ServiceProviderDashboard />} />
           <Route path="requests" element={<ServiceRequest />} />
           <Route path="services" element={<ManageServices />} />
 
-
           <Route path="services/add" element={<AddService />} />
-          <Route path="services/edit/:id" element={<EditService />} />  
+          <Route path="services/edit/:id" element={<EditService />} />
 
           <Route path="payments" element={<ViewPayments />} />
           <Route path="profile" element={<ServiceProviderProfile />} />
@@ -103,19 +108,20 @@ function App() {
           <Route path="settings" element={<Settings />} />
         </Route>
 
-
         <Route path="/admin">
           <Route index element={<AdminDashboard />} />
           <Route path="customer" element={<Customer />} />
           <Route path="serviceProvider" element={<ServiceProvider />} />
           <Route path="paymentList" element={<PaymentList />} />
           <Route path="viewComplaint" element={<ViewComplaint />} />
-          <Route path="serviceProviderDetail" element={<ServiceProviderDetail />} />
+          <Route
+            path="serviceProviderDetail"
+            element={<ServiceProviderDetail />}
+          />
           <Route path="pendingRequest" element={<PendingRequest />} />
           <Route path="setting" element={<Setting />} />
           <Route path="logout" element={<Logout />} />
         </Route>
-
       </Routes>
     </BrowserRouter>
   );
