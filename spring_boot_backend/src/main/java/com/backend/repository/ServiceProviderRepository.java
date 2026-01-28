@@ -31,9 +31,26 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
     	    )
     	    FROM ServiceProvider sp
     	    JOIN sp.user u
-    	    WHERE sp.verificationStatus = false
+    	    WHERE sp.verificationStatus = true
     	""")
     	List<ServiceProviderResponseDTO> findVerifiedProviders();
+    
+    @Query("""
+    	    SELECT new com.backend.dto.ServiceProviderResponseDTO(
+    	        sp.id,
+    	        u.firstName,
+    	        u.lastName,
+    	        u.email,
+    	        u.phone,
+    	        sp.govIdType,
+    	        sp.govId,
+    	        sp.verificationStatus
+    	    )
+    	    FROM ServiceProvider sp
+    	    JOIN sp.user u
+    	    WHERE sp.verificationStatus = false
+    	""")
+    	List<ServiceProviderResponseDTO> findUnVerifiedProviders();
 
     @Query("""
     	    SELECT new com.backend.dto.ServiceProviderDetailsDTO(
@@ -54,8 +71,11 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
     	    )
     	    FROM ServiceProvider p
     	    JOIN p.user u
-    	    WHERE u.id = :userId
+    	    WHERE p.id = :serviceProviderId
     	""")
-    	ServiceProviderDetailsDTO fetchServiceProviderDetailsByUserId(@Param("userId") Long userId);
+    	ServiceProviderDetailsDTO fetchServiceProviderDetailsByServiceProviderId(
+    	        @Param("serviceProviderId") Long serviceProviderId
+    	);
+
 
 }
