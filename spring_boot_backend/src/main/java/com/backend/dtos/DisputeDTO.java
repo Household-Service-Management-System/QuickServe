@@ -22,7 +22,7 @@ public class DisputeDTO {
 	private Long disputeId;
     private Long raisedById;
     private Long bookingId;
-	private Long resolvedById;
+	//private Long resolvedById;
 	private String description;
     private DisputeStatus status;
 
