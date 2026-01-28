@@ -218,7 +218,6 @@ public class CustomerServiceImp implements CustomerService {
 	
 	
 	
-	
 	@Override
 	public List<ReviewDTO> getReviewsByUser(Long id) {
 		List<Review> reviews=reviewRepository.findAllByBookingUserId(id);//.orElseThrow(()->new RuntimeException("Review not found"+id));

@@ -51,19 +51,51 @@ export default function CustomerPayments() {
   };
 
   /* ================= PAY NOW (RAZORPAY READY) ================= */
-  const handlePayNow = (payment) => {
-    alert(
-      `Integrate Razorpay here\nBooking ID: ${payment.bookingId}\nAmount: ₹${payment.amount}`
+  const handlePayNow = async (payment) => {
+  try {
+    const orderRes = await axios.post(
+      "http://localhost:8080/payment/create-order",
+      {
+        bookingId: payment.bookingId,
+        amount: payment.amount,
+      }
     );
 
-    /*
-      Razorpay flow:
-      1. Create order on backend
-      2. Open Razorpay checkout
-      3. Verify payment
-      4. Update payment status
-    */
-  };
+    const { orderId, amount, currency, razorpayKey } = orderRes.data;
+
+    const options = {
+      key: razorpayKey,
+      amount,
+      currency,
+      order_id: orderId,
+      name: "QuickServe",
+      description: `Payment for Booking #${payment.bookingId}`,
+
+      handler: async function (response) {
+        await axios.post(
+          "http://localhost:8080/payment/verify",
+          {
+            razorpayOrderId: response.razorpay_order_id,
+            razorpayPaymentId: response.razorpay_payment_id,
+            razorpaySignature: response.razorpay_signature,
+            bookingId: payment.bookingId,
+            amount: payment.amount,
+          }
+        );
+
+        alert("Payment Successful");
+        fetchPayments();
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  } catch (err) {
+    console.error(err);
+    alert("Unable to initiate payment");
+  }
+};
+
 
   /* ================= UI HELPERS ================= */
   const statusBadge = (status) => {
