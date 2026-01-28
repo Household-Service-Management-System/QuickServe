@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.dtos.Booking_1_provider_detailsDTO;
 import com.backend.dtos.ServiceDTO;
 import com.backend.dtos.ServiceDetailDTO;
 import com.backend.dtos.ServiceUpdateDTO;
@@ -18,6 +19,7 @@ import com.backend.dtos.ServicesFromCategoriesDTO;
 import com.backend.entities.Service;
 import com.backend.entities.Status;
 import com.backend.repository.ServiceRepository;
+import com.backend.service.ServiceProviderService;
 import com.backend.service.ServiceService;
 
 @RestController
@@ -30,6 +32,15 @@ public class ServiceController {
     @Autowired
     private ServiceRepository serviceRepository;
 
+    private final ServiceProviderService serviceProviderService;
+
+
+    public ServiceController(
+    ServiceProviderService serviceProviderService
+    ) {
+    this.serviceProviderService = serviceProviderService;
+    }
+    
     @GetMapping
     public List<ServiceDTO> getAllServices() {
         return serviceRepository.findAllWithCategory()
@@ -79,4 +90,15 @@ public class ServiceController {
     serviceService.getServiceDetails(serviceId)
     );
     }
+    
+//  Booking API to get service providers for certain service
+  @GetMapping("/{serviceId}/providers")
+  public ResponseEntity<List<Booking_1_provider_detailsDTO>>
+  getProviders(@PathVariable Long serviceId) {
+
+
+  return ResponseEntity.ok(
+		  serviceProviderService.getProvidersByService(serviceId)
+  );
+  }
 }

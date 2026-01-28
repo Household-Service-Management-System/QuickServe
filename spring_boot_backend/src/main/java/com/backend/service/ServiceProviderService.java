@@ -3,6 +3,7 @@ package com.backend.service;
 import com.backend.dtos.ServiceProviderDashboardDTO;
 import com.backend.dtos.ServiceProviderProfileUpdateDTO;
 import com.backend.dtos.ServiceProviderUpcomingBookingDTO;
+import com.backend.dtos.Booking_1_provider_detailsDTO;
 import com.backend.dtos.PaymentHistoryDTO;
 import com.backend.dtos.PopularServiceDTO;
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
@@ -48,6 +49,7 @@ public interface ServiceProviderService {
 
 	void updateProfile(Long id, ServiceProviderProfileUpdateDTO profileDto, MultipartFile image);
 
-
+	List<Booking_1_provider_detailsDTO>
+    getProvidersByService(Long serviceId);
 	
 }
