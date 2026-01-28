@@ -51,16 +51,31 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 	
 	
 	// Booking api2 for slot finding
-	@Query(value = """
-			SELECT scheduled_at
-			FROM bookings
-			WHERE provider_id = :providerId
-			AND DATE(scheduled_at) = :date
-			AND status IN ('PENDING', 'ACCEPTED')
-			""", nativeQuery = true)
-			List<LocalDateTime> findBookedSlots(
-			@Param("providerId") Long providerId,
-			@Param("date") LocalDate date
-			);
+	@Query(
+		    value = """
+		    SELECT b.scheduled_at
+		    FROM bookings b
+		    WHERE b.provider_id = :providerId
+		      AND DATE(b.scheduled_at) = :date
+		      AND b.status IN ('PENDING', 'ACCEPTED')
+		    """,
+		    nativeQuery = true
+		)
+		List<java.sql.Timestamp> findBookedSlots(
+		        @Param("providerId") Long providerId,
+		        @Param("date") LocalDate date
+		);
+	
+//	@Query(value = """
+//			SELECT scheduled_at
+//			FROM bookings
+//			WHERE provider_id = :providerId
+//			AND DATE(scheduled_at) = :date
+//			AND status IN ('PENDING', 'ACCEPTED')
+//			""", nativeQuery = true)
+//			List<LocalDateTime> findBookedSlots(
+//			@Param("providerId") Long providerId,
+//			@Param("date") LocalDate date
+//			);
 }
 

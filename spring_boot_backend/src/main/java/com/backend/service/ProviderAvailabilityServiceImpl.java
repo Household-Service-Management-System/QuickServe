@@ -5,6 +5,7 @@ import com.backend.repository.BookingRepository;
 
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -32,13 +33,11 @@ public class ProviderAvailabilityServiceImpl
     ) {
 
         // 🔹 Fetch booked times
-        List<LocalDateTime> bookedTimes =
-                bookingRepository.findBookedSlots(providerId, date);
+    	List<Timestamp> timestamps = bookingRepository.findBookedSlots(providerId, date);
 
-        // 🔹 Convert booked times → booked hours
-        Set<Integer> bookedHours = bookedTimes.stream()
-                .map(LocalDateTime::getHour)
-                .collect(Collectors.toSet());
+    	Set<Integer> bookedHours = timestamps.stream()
+    	        .map(ts -> ts.toLocalDateTime().getHour())
+    	        .collect(Collectors.toSet());
 
         // 🔹 Fixed working hours
         LocalTime startTime = LocalTime.of(10, 0);
