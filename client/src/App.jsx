@@ -49,6 +49,8 @@ import CustomerProfile from "./pages/customer/Profile";
 import CustomerSupport from "./pages/customer/Support";
 import CustomerSettings from "./pages/customer/Settings";
 import ServicesByCategory from "./pages/Home/ServiceByCategories";
+import ServiceDetails from "./pages/Home/ServiceDetails";
+
 
 function App() {
   return (
@@ -74,6 +76,11 @@ function App() {
         <Route
           path="/services/category/:categoryId"
           element={<ServicesByCategory />}
+        />
+
+        <Route
+          path="/services/details/:serviceId"
+          element={<ServiceDetails />}
         />
 
         <Route path="/customer" element={<CustomerLayout />}>
