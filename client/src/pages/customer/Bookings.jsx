@@ -41,32 +41,65 @@ export default function CustomerBookings() {
   };
 
   /* ================= PAYMENT ================= */
-  const openPayment = async (booking) => {
-    try {
-      const res = await axios.get(
-        `http://localhost:8080/customer/paymentByBooking/${booking.bookingId}`
-      );
-      setPaymentPopup({ ...res.data, booking });
-    } catch {
-      setPaymentPopup({ booking });
-    }
-  };
-
   const payNow = async () => {
-    alert("Razorpay integration goes here");
+  try {
+    // 1️⃣ Create Razorpay Order
+    const orderRes = await axios.post(
+      "http://localhost:8080/payment/create-order",
+      {
+        bookingId: paymentPopup.booking.bookingId,
+        amount: paymentPopup.booking.price,
+      }
+    );
 
-    // after payment success:
-    await axios.post("http://localhost:8080/customer/paymentAddByBooking", {
-      bookingId: paymentPopup.booking.bookingId,
-      amount: paymentPopup.booking.price,
-      method: "UPI",
-      status: "SUCCESS",
-      transactionId: "TXN-" + Date.now(),
-    });
+    const { orderId, amount, currency, razorpayKey } = orderRes.data;
 
-    setPaymentPopup(null);
-    fetchBookings();
-  };
+    // 2️⃣ Open Razorpay Checkout
+    const options = {
+      key: razorpayKey,
+      amount,
+      currency,
+      order_id: orderId,
+      name: "QuickServe",
+      description: `Payment for Booking #${paymentPopup.booking.bookingId}`,
+
+      handler: async function (response) {
+        // 3️⃣ Verify Payment
+        await axios.post(
+          "http://localhost:8080/payment/verify",
+          {
+            razorpayOrderId: response.razorpay_order_id,
+            razorpayPaymentId: response.razorpay_payment_id,
+            razorpaySignature: response.razorpay_signature,
+            bookingId: paymentPopup.booking.bookingId,
+            amount: paymentPopup.booking.price,
+          }
+        );
+
+        alert("Payment Successful");
+
+        setPaymentPopup(null);
+        fetchBookings();
+      },
+
+      prefill: {
+        name: "Customer",
+        email: "customer@test.com",
+      },
+
+      theme: {
+        color: "#2563eb", // blue
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  } catch (err) {
+    console.error(err);
+    alert("Payment failed to start");
+  }
+};
+
 
   /* ================= UI HELPERS ================= */
   const statusBadge = (status) => {
