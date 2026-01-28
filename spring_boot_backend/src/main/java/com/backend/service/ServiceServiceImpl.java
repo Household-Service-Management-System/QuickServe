@@ -93,8 +93,23 @@ public class ServiceServiceImpl implements ServiceService {
 		List<com.backend.entities.Service> services =
 				serviceRepo.findByCategory_IdAndIsAvailable(categoryId,Status.ACTIVE);
 	
-			return services.stream()
-			.map(service -> modelMapper.map(service, ServicesFromCategoriesDTO.class))
-			.toList();
+		return services.stream()
+				.map(service -> {
+				ServicesFromCategoriesDTO dto = new ServicesFromCategoriesDTO();
+
+
+				dto.setId(service.getId());
+				dto.setName(service.getName());
+				dto.setBasePrice(service.getBasePrice());
+				dto.setDuration(service.getDuration());
+
+
+				// IMPORTANT: match entity field name
+				dto.setServiceImage(service.getImage()); // <-- FIX HERE
+
+
+				return dto;
+				})
+				.toList();
 	}
 }
