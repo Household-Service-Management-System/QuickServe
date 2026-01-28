@@ -36,6 +36,7 @@ import com.backend.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 @Transactional
@@ -48,6 +49,9 @@ public class CustomerServiceImp implements CustomerService {
 	@Autowired
 	private ServiceCategoryRepository serviceCategoryRepository;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	public final UserRepository userReopsitory;
 	public final BookingRepository bookingsRepository;
 	public final ServiceRepository serviceRepository;
@@ -64,15 +68,37 @@ public class CustomerServiceImp implements CustomerService {
 		 return modelMapper.map(user,CustomerDTO.class);
 	}
 
+//	@Override
+//	public User putCustomer(CustomerReqDTO customerReqDTO) {
+//		User user=new User();
+//		modelMapper.map(customerReqDTO, user);
+//		user.setRole(Role.ROLE_USER);
+//		user.setLastLogin(LocalDateTime.now());
+//		user.setIsActive(Status.ACTIVE); 
+//		return userReopsitory.save(user);
+//	}
+	
+	
+	
+	//created by Durgesh - to fix password encoding issue
 	@Override
 	public User putCustomer(CustomerReqDTO customerReqDTO) {
-		User user=new User();
-		modelMapper.map(customerReqDTO, user);
-		user.setRole(Role.ROLE_USER);
-		user.setLastLogin(LocalDateTime.now());
-		user.setIsActive(Status.ACTIVE); 
-		return userReopsitory.save(user);
+
+	    User user = new User();
+	    modelMapper.map(customerReqDTO, user);
+
+	    // ✅ ENCODE PASSWORD (STEP-1 FIX)
+	    user.setPassword(
+	        passwordEncoder.encode(customerReqDTO.getPassword())
+	    );
+
+	    user.setRole(Role.ROLE_USER);
+	    user.setLastLogin(LocalDateTime.now());
+	    user.setIsActive(Status.ACTIVE);
+
+	    return userReopsitory.save(user);
 	}
+
 	
 	
 	@Override
