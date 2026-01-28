@@ -1,57 +1,88 @@
 // Categories.jsx
 import { motion } from "framer-motion";
-import HomeCleaning from "../../../../src/assets/categories/cleaning.png"
-import WM from "../../../../src/assets/categories/WashingMachine.png"
-import AC from "../../../../src/assets/categories/ACRepair.png"
+import HomeCleaning from "../../../../src/assets/categories/cleaning.png";
+import WM from "../../../../src/assets/categories/WashingMachine.png";
+import AC from "../../../../src/assets/categories/ACRepair.png";
 
-import Carpenter from "../../../../src/assets/categories/carpenter.png"
-import Plumber from "../../../../src/assets/categories/plumber.png"
+import Carpenter from "../../../../src/assets/categories/carpenter.png";
+import Plumber from "../../../../src/assets/categories/plumber.png";
 
-import PestControl from "../../../../src/assets/categories/PestControl.png"
+import PestControl from "../../../../src/assets/categories/PestControl.png";
 
-import Refrigerator from "../../../../src/assets/categories/Refrigerator.png"
+import Refrigerator from "../../../../src/assets/categories/Refrigerator.png";
 
-import TV from "../../../../src/assets/categories/TV.png"
-const categories = [
-  {
-    title: "Home Cleaning",
-    img: HomeCleaning,
-  },
-  {
-    title: "Refrigerator",
-    img: Refrigerator,
-  },
-  {
-    title: "Plumber",
-    img: Plumber,
-  },
-  {
-    title: "Carpenter",
-    img: Carpenter,
-  },
-  {
-    title: "AC Repair",
-    img: AC,
-  },
-  {
-    title: "Pest Control",
-    img: PestControl,
-  },
-  {
-    title: "Washing Machine",
-    img: WM,
-    },
-  {
-    title: "Television",
-    img: TV,
-  },
-];
-
+import TV from "../../../../src/assets/categories/TV.png";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+// const categories = [
+//   {
+//     title: "Home Cleaning",
+//     img: HomeCleaning,
+//   },
+//   {
+//     title: "Refrigerator",
+//     img: Refrigerator,
+//   },
+//   {
+//     title: "Plumber",
+//     img: Plumber,
+//   },
+//   {
+//     title: "Carpenter",
+//     img: Carpenter,
+//   },
+//   {
+//     title: "AC Repair",
+//     img: AC,
+//   },
+//   {
+//     title: "Pest Control",
+//     img: PestControl,
+//   },
+//   {
+//     title: "Washing Machine",
+//     img: WM,
+//     },
+//   {
+//     title: "Television",
+//     img: TV,
+//   },
+// ];
+const DEFAULT_IMAGE =
+  "https://res.cloudinary.com/dbqf39erv/image/upload/v1769507649/Screenshot_2025-12-07_133542_kenh3d.png";
 const Categories = () => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8080/customer/allServiceCategories",
+        );
+        setCategories(res.data);
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="text-center py-20 text-gray-600">
+        Loading categories...
+      </div>
+    );
+  }
+
   return (
     <section className="py-20 bg-white" id="categories">
       <div className="max-w-7xl mx-auto px-6">
-        
         <h2 className="text-3xl md:text-4xl font-bold text-center text-blue-800 mb-10">
           Popular Services
         </h2>
@@ -59,23 +90,27 @@ const Categories = () => {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {categories.map((cat, index) => (
             <motion.div
-              key={index}
+              key={cat.categoryId}
+              onClick={() => navigate(`/services/category/${cat.categoryId}`)}
               className="bg-white shadow-md rounded-xl overflow-hidden cursor-pointer hover:shadow-xl transition"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
               whileHover={{ scale: 1.05 }}
             >
               <img
-                src={cat.img}
-                alt={cat.title}
+                src={cat.serviceImage || DEFAULT_IMAGE}
+                alt={cat.name}
                 className="w-full h-40 object-cover"
               />
+
               <div className="p-3 text-center">
                 <h3 className="text-lg font-semibold text-gray-800">
-                  {cat.title}
+                  {cat.name}
                 </h3>
+
+                <p className="text-sm text-gray-500 mt-1">{cat.description}</p>
               </div>
             </motion.div>
           ))}

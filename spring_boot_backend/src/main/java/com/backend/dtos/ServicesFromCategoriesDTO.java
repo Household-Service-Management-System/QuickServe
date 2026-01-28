@@ -11,4 +11,5 @@ public class ServicesFromCategoriesDTO {
 	private String name;
 	private double basePrice;
 	private Integer duration;
+	private String serviceImage;
 }

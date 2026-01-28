@@ -66,18 +66,6 @@ public class ServiceServiceImpl implements ServiceService {
 
         serviceRepo.save(service);
     }
-
-	@Override
-	public List<ServicesFromCategoriesDTO> getServicesByCategory(Long categoryId) {
-
-
-		List<com.backend.entities.Service> services =
-			serviceRepo.findByCategory_IdAndIsAvailable(categoryId,Status.ACTIVE);
-
-		return services.stream()
-		.map(service -> modelMapper.map(service, ServicesFromCategoriesDTO.class))
-		.toList();
-	}
 	
 	@Override
 	public ServiceDetailDTO getServiceDetails(Long serviceId) {
@@ -98,5 +86,26 @@ public class ServiceServiceImpl implements ServiceService {
 	    dto.setImage(service.getImage());
 
 	    return dto;
+	}
+
+	@Override
+	public List<ServicesFromCategoriesDTO> getServicesByCategory(Long categoryId) {
+		List<com.backend.entities.Service> services =
+				serviceRepo.findByCategory_IdAndIsAvailable(categoryId,Status.ACTIVE);
+	
+		return services.stream()
+				.map(service -> {
+				ServicesFromCategoriesDTO dto = new ServicesFromCategoriesDTO();
+
+				dto.setId(service.getId());
+				dto.setName(service.getName());
+				dto.setBasePrice(service.getBasePrice());
+				dto.setDuration(service.getDuration());
+
+				dto.setServiceImage(service.getImage()); 
+
+				return dto;
+				})
+				.toList();
 	}
 }
