@@ -2,18 +2,26 @@ package com.backend.service;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.dto.AdminDashBoardInfo;
 import com.backend.dto.DisputeComplaintDTO;
 import com.backend.dto.DisputeDetailsDTO;
+import com.backend.dto.DisputeFullDetailsDTO;
 import com.backend.dto.PaymentBookingUserDTO;
+import com.backend.dto.ServiceDTO;
 import com.backend.dto.ServiceProviderDetailsDTO;
 import com.backend.dto.ServiceProviderResponseDTO;
+import com.backend.entities.Dispute;
 import com.backend.entities.PaymentStatus;
+import com.backend.entities.Role;
 import com.backend.entities.ServiceProvider;
+import com.backend.entities.User;
 import com.backend.repository.DisputeRepository;
 import com.backend.repository.PaymentRepository;
 import com.backend.repository.ServiceProviderRepository;
@@ -60,6 +68,11 @@ public class AdminService {
 		 return  disputeRepository.fetchDisputeDetails();
 		
 	 } 
+	 
+	 public List<ServiceProviderResponseDTO> getAllUnVerifiedServiceProviders() {
+		   
+		    return serviceProviderRepository.findUnVerifiedProviders();
+		}
 	
 	 public List<ServiceProviderResponseDTO> getAllServiceProviders() {
 		   
@@ -72,7 +85,10 @@ public class AdminService {
 	 
 	 public ServiceProviderDetailsDTO getServiceProviderDetails(Long userId) {
 		    return serviceProviderRepository
-		            .fetchServiceProviderDetailsByUserId(userId);
+		            .fetchServiceProviderDetailsByServiceProviderId(userId);
+		 
+		
+		 
 		}
 	 
 	 public List<ServiceProvider> getAllServiceProvidersDetails() {
@@ -80,6 +96,48 @@ public class AdminService {
 	    }
 
 	 
+	    public List<User> getUsersByRole() {
+	        return userRepository.findUsersByRole();
+	    }
+	    
+	    @Transactional(readOnly = true)
+	    public DisputeFullDetailsDTO getDisputeFullDetails(Long disputeId) {
+
+	        Dispute dispute = disputeRepository
+	                .findDisputeWithAllJoins(disputeId)
+	                .orElseThrow(() ->
+	                        new RuntimeException("Dispute not found"));
+
+	        ServiceProvider sp = dispute.getBooking().getServiceProvider();
+
+	        // Map services safely
+	        Set<ServiceDTO> services = sp.getServices()
+	                .stream()
+	                .map(s -> new ServiceDTO(s.getId(), s.getName()))
+	                .collect(Collectors.toSet());
+
+	        // Build DTO
+	        DisputeFullDetailsDTO dto = new DisputeFullDetailsDTO();
+	        dto.setDisputeId(dispute.getId());
+	        dto.setDisputeDescription(dispute.getDescription());
+	        dto.setDisputeStatus(dispute.getStatus());
+
+	        dto.setCustomerFirstName(dispute.getRaisedBy().getFirstName());
+	        dto.setCustomerLastName(dispute.getRaisedBy().getLastName());
+	        dto.setCustomerEmail(dispute.getRaisedBy().getEmail());
+	        dto.setCustomerPhone(dispute.getRaisedBy().getPhone());
+
+	        dto.setBookingId(dispute.getBooking().getId());
+	        dto.setPrice(dispute.getBooking().getPrice());
+	        dto.setBookingStatus(dispute.getBooking().getStatus());
+
+	        dto.setServiceProviderId(sp.getId());
+	        dto.setVerificationStatus(sp.isVerificationStatus());
+	        dto.setServices(services);
+
+	        return dto;
+	    }
+
 	
 
 }
