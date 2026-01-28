@@ -9,9 +9,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.dto.DisputeFullDetailsDTO;
 import com.backend.dto.ServiceProviderDetailsDTO;
 import com.backend.dto.ServiceProviderResponseDTO;
+import com.backend.entities.Dispute;
+import com.backend.entities.Role;
 import com.backend.entities.ServiceProvider;
+import com.backend.entities.User;
 import com.backend.service.AdminService;
 
 import lombok.RequiredArgsConstructor;
@@ -33,19 +37,16 @@ public class AdminController {
         
     }
 
-    @GetMapping("/customerComplaints")
+    @GetMapping("/complaints")
     public ResponseEntity<?> getCustomerComplaints() {
         return ResponseEntity.ok(adminService.dispute());
     }
 
-    @GetMapping("/serviceProviderComplaints")
-    public ResponseEntity<?> serviceProviderComplaints() {
-        return ResponseEntity.ok("suraj");
-    }
+   
 
     @GetMapping("/pendingRequests")
     public ResponseEntity<?> pendingRequests() {
-        return ResponseEntity.ok( adminService.getAllServiceProviders() );
+        return ResponseEntity.ok( adminService.getAllUnVerifiedServiceProviders() );
     }
 
     @GetMapping("/paymentRecords")
@@ -66,6 +67,23 @@ public class AdminController {
     @GetMapping("/service-providers")
     public ResponseEntity<List<ServiceProviderResponseDTO>> getAllServiceProviders() {
         return ResponseEntity.ok(adminService.getAllServiceProviders());
+    }
+    
+    @GetMapping("/customer")
+    public ResponseEntity<List<User>> getUsersByRole(
+            ) {
+
+        List<User> users = adminService.getUsersByRole();
+        return ResponseEntity.ok(users);
+    }
+    
+    @GetMapping("/compailntMoreDetail/{disputeId}")
+    public ResponseEntity<DisputeFullDetailsDTO> getComplaintDetails(
+            @PathVariable Long disputeId) {
+
+        return ResponseEntity.ok(
+        		adminService.getDisputeFullDetails(disputeId)
+        );
     }
 
 
