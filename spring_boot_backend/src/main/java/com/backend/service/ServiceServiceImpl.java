@@ -97,16 +97,12 @@ public class ServiceServiceImpl implements ServiceService {
 				.map(service -> {
 				ServicesFromCategoriesDTO dto = new ServicesFromCategoriesDTO();
 
-
 				dto.setId(service.getId());
 				dto.setName(service.getName());
 				dto.setBasePrice(service.getBasePrice());
 				dto.setDuration(service.getDuration());
 
-
-				// IMPORTANT: match entity field name
-				dto.setServiceImage(service.getImage()); // <-- FIX HERE
-
+				dto.setServiceImage(service.getImage()); 
 
 				return dto;
 				})
