@@ -370,12 +370,24 @@ public class CustomerServiceImp implements CustomerService {
 
 	
 	
+
 	public List<CategoryResponseDTO> getAllCategories() {
-		return serviceCategoryRepository.findAll()
-		.stream()
-		.map(category -> modelMapper.map(category, CategoryResponseDTO.class))
-		.toList();
-		}
+
+	    return serviceCategoryRepository.findAll()
+	            .stream()
+	            .map(category -> {
+	                CategoryResponseDTO dto = new CategoryResponseDTO();
+
+	                dto.setCategoryId(category.getId());
+
+	                dto.setName(category.getName());
+	                dto.setDescription(category.getDescription());
+	                dto.setServiceImage(category.getServiceImage());
+
+	                return dto;
+	            })
+	            .toList();
+	}
 
 	@Override
 	public User putCustomer(CustomerReqDTO customerReqDTO, MultipartFile image) {
