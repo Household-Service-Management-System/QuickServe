@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.backend.dtos.CustomerDTO;
 import com.backend.entities.Role;
@@ -25,7 +27,28 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Query("SELECT u FROM User u WHERE u.role = ROLE_USER")
 	List<User> findUsersByRole();
 	
+	Optional<User> findFirstByRole(Role role);
 	
+	@Modifying
+    @Transactional
+    @Query("""
+        UPDATE User u
+        SET
+            u.firstName = :firstName,
+            u.lastName = :lastName,
+            u.phone = :phone,
+            u.city = :city,
+            u.state = :state
+        WHERE u.id = :id
+    """)
+    int updateUserProfile(
+        Long id,
+        String firstName,
+        String lastName,
+        String phone,
+        String city,
+        String state
+    );
 
 
 }
