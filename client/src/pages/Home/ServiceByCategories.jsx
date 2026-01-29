@@ -1,20 +1,29 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Footer from "./Footer";
-import Navbar from "./Nav";
-import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+/**
+ * Reusable component:
+ * - Uses categoryId from URL if present
+ * - Otherwise uses propCategoryId (Home page)
+ */
+const ServicesByCategory = ({ propCategoryId }) => {
+  const params = useParams();
+  const navigate = useNavigate();
 
-const ServicesByCategory = () => {
-  const { categoryId } = useParams(); // 👈 from URL
+  // ✅ URL param has priority, fallback to prop
+  const categoryId = params.categoryId || propCategoryId;
+
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
-const navigate = useNavigate();
+
   useEffect(() => {
+    if (!categoryId) return; // safety check
+
     const fetchServices = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/services/category/${categoryId}`,
+          `http://localhost:8080/services/category/${categoryId}`
         );
         setServices(res.data);
       } catch (error) {
@@ -27,76 +36,102 @@ const navigate = useNavigate();
     fetchServices();
   }, [categoryId]);
 
-  if (loading) {
-    return (
-      <div className="text-center py-20 text-gray-600">Loading services...</div>
-    );
-  }
-
   return (
-    <>
-      <Navbar />
-
-      <section className="py-28 bg-gray-50 min-h-screen">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8">
-            Available Services
+    <section className="pt-6 pb-10">
+      <div className="max-w-6xl mx-auto px-6">
+        {/* HEADER */}
+        <div className="mb-8">
+          <h2 className="text-3xl inline-flex items-center font-bold text-blue-900 mb-4">
+            Most Booked Services
           </h2>
+          {/* inline-flex items-center px-3 py-1 rounded-full bg-white bg-opacity-80 text-xs md:text-sm font-semibold text-blue-900 mb-4 */}
+          <p className="text-gray-500 mt-1">
+            Choose the service that fits your needs
+          </p>
+        </div>
 
+        {/* LOADING */}
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="h-44 bg-gray-200 rounded-2xl animate-pulse"
+              />
+            ))}
+          </div>
+        ) : services.length === 0 ? (
+          <div className="text-center text-gray-500 py-20">
+            No services available in this category
+          </div>
+        ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {services.map((service) => (
               <div
                 key={service.id}
-                className="flex bg-white rounded-xl shadow-md hover:shadow-xl transition overflow-hidden cursor-pointer"
+                onClick={() =>
+                  navigate(`/services/details/${service.id}`)
+                }
+                className="bg-white rounded-2xl shadow hover:shadow-xl transition cursor-pointer overflow-hidden flex"
               >
-                {/* Image section */}
-                <div className="w-1/3 flex items-center justify-center bg-gray-100">
+                {/* IMAGE */}
+                <div className="w-1/3 bg-gray-100 flex items-center justify-center">
                   {service.serviceImage ? (
                     <img
                       src={service.serviceImage}
                       alt={service.name}
-                      className="w-40 h-40 object-cover rounded-lg"
+                      className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-40 h-40 flex items-center justify-center text-gray-400 text-sm">
+                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
                       No Image
                     </div>
                   )}
                 </div>
 
-                {/* Content section */}
+                {/* CONTENT */}
                 <div className="w-2/3 p-6 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-800">
+                    <h3 className="text-xl font-semibold text-gray-900">
                       {service.name}
                     </h3>
 
-                    <p className="text-gray-600 mt-2 text-sm">
-                      Reliable and professional household service.
+                    <p className="text-sm text-gray-500 mt-2">
+                      Trusted professionals • Quality assured
                     </p>
 
-                    <div className="mt-4 space-y-1">
-                      <p className="text-gray-700 font-medium">
-                        💰 ₹{service.basePrice}
+                    <div className="mt-4 flex items-center gap-6">
+                      <p className="text-lg font-bold text-gray-900">
+                        ₹{service.basePrice}
                       </p>
-                      <p className="text-gray-500 text-sm">
-                        ⏱ {service.duration} minutes
+                      <p className="text-sm text-gray-500">
+                        ⏱ {service.duration} mins
                       </p>
+                    </div>
+
+                    <div className="flex items-center gap-3 mt-3 text-sm text-gray-600">
+                      <span>⭐ 4.7</span>
+                      <span>300+ bookings</span>
                     </div>
                   </div>
 
-                  <button onClick={() => navigate(`/services/details/${service.id}`)} className="mt-5 self-start bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition">
+                  {/* CTA */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/services/details/${service.id}`);
+                    }}
+                    className="mt-5 self-start bg-blue-600 text-white px-6 py-2 rounded-xl text-sm font-semibold hover:bg-blue-700 transition active:scale-[0.97]"
+                  >
                     View Details
                   </button>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      <Footer />
-    </>
+        )}
+      </div>
+    </section>
   );
 };
 

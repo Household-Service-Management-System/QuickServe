@@ -161,6 +161,8 @@ import PopularServices from "../../components/PopularServices";
 import TopProfessionals from "../../components/TopProfessional";
 import WhyChooseUs from "./WhyChooseUs";
 import Testimonials from "./Testimonials";
+import ServiceDetails from "./ServiceDetails";
+import ServicesByCategory from "./ServiceByCategories";
 
 import { getAllServiceCategories } from "../../api/customerService";
 
@@ -268,8 +270,21 @@ const Home = () => {
         </Swiper>
       </section>
 
-      {/* 🔹 CATEGORIES */}
-      <Categories categories={categories} loading={loading} />
+      {/* Categories Section  */}
+      <Categories />
+
+      {/* Popular Services  */}
+      
+      {/* <PopularServices/> */}
+      <ServicesByCategory propCategoryId={1} />
+      
+      {/* Top Professioanls */}
+      <TopProfessionals/>
+
+      {/* WhyChooseUs */}
+      <WhyChooseUs/>
+
+      <Testimonials/>
 
       <PopularServices />
       <TopProfessionals />

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.backend.dtos.Booking_1_provider_detailsDTO;
 import com.backend.dtos.CategoryResponseDTO;
 import com.backend.dtos.PaymentHistoryDTO;
 import com.backend.dtos.PopularServiceDTO;
@@ -178,4 +179,9 @@ public class ServiceProviderController {
         ServiceProviderService.removeServiceFromProvider(id, serviceId);
         return ResponseEntity.ok("Service removed from your profile");
     }
+    
+    
+    
+
+    
 }

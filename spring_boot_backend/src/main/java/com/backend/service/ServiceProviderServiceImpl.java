@@ -4,6 +4,7 @@ import com.backend.dtos.ServiceProviderDashboardDTO;
 import com.backend.dtos.ServiceProviderProfileUpdateDTO;
 import com.backend.dtos.ServiceProviderDashboardDTO;
 import com.backend.custom_exceptions.ResourceNotFoundException;
+import com.backend.dtos.Booking_1_provider_detailsDTO;
 import com.backend.dtos.PaymentHistoryDTO;
 import com.backend.dtos.PopularServiceDTO;
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
@@ -313,6 +314,16 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
         dto.setProfileImage(user.getProfileImage());
 
         return dto;
+    }
+    
+    // Booking service 
+    @Override
+    public List<Booking_1_provider_detailsDTO>
+    getProvidersByService(Long serviceId) {
+
+
+    return serviceProviderRepo
+    .findProvidersByServiceId(serviceId);
     }
 
 }
