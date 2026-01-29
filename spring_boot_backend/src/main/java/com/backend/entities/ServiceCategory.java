@@ -22,4 +22,7 @@ public class ServiceCategory extends BaseEntity{
 	
 	@Column(name="description")
 	private String description;
+	
+	@Column(name = "service_image", nullable = true)
+	private String serviceImage;
 }

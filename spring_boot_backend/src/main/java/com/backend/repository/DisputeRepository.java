@@ -62,5 +62,9 @@ public interface DisputeRepository extends JpaRepository<Dispute, Long> {
             @Param("status") DisputeStatus status
     );
 
+
+	List<Dispute> findAllByRaisedById(Long id);
+
+	Optional<Dispute> findByBookingId(Long id);
 }
 
