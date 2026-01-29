@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.backend.dto.AdminDTO;
 import com.backend.dto.AdminDashBoardInfo;
 import com.backend.dto.DisputeComplaintDTO;
 import com.backend.dto.DisputeDetailsDTO;
@@ -18,11 +19,14 @@ import com.backend.dto.ServiceDTO;
 import com.backend.dto.ServiceProviderDetailsDTO;
 import com.backend.dto.ServiceProviderResponseDTO;
 import com.backend.entities.Dispute;
+import com.backend.entities.DisputeResponse;
+import com.backend.entities.DisputeStatus;
 import com.backend.entities.PaymentStatus;
 import com.backend.entities.Role;
 import com.backend.entities.ServiceProvider;
 import com.backend.entities.User;
 import com.backend.repository.DisputeRepository;
+import com.backend.repository.DisputeResponseRepository;
 import com.backend.repository.PaymentRepository;
 import com.backend.repository.ServiceProviderRepository;
 import com.backend.repository.ServiceRepository;
@@ -39,6 +43,8 @@ public class AdminService {
 	private PaymentRepository paymentRepository; 
 	  @Autowired
 	private DisputeRepository disputeRepository;
+	  @Autowired
+	  private  DisputeResponseRepository disputeResponseRepository;
 	  
 	  public AdminDashBoardInfo adminInfo() {
 
@@ -138,6 +144,67 @@ public class AdminService {
 	        return dto;
 	    }
 
-	
+	    public AdminDTO getAdminDetails() {
+
+	        User admin = userRepository
+	                .findFirstByRole(Role.ROLE_ADMIN)   // ✅ IMPORTANT
+	                .orElseThrow(() -> new RuntimeException("Admin not found"));
+
+	        return new AdminDTO(
+	                admin.getId(),
+	                admin.getFullName(),
+	                admin.getEmail(),
+	                admin.getPhone(),
+	                admin.getCity(),
+	                admin.getState()
+	        );
+	    }
+	    
+	    public void updateUserProfile(User user) {
+
+	        int updated = userRepository.updateUserProfile(
+	                user.getId(),
+	                user.getFirstName(),
+	                user.getLastName(),
+	                user.getPhone(),
+	                user.getCity(),
+	                user.getState()
+	        );
+
+	        if (updated == 0) {
+	            throw new RuntimeException("Profile update failed");
+	        }
+	    }
+	    
+	    
+	    
+	    public void deactivateServiceProvider(Long id) {
+	        int updated = serviceProviderRepository.deactivateServiceProvider(id);
+	        if (updated == 0) {
+	            throw new RuntimeException("Service Provider not found");
+	        }
+	    }
+	    public void activateServiceProvider(Long id) {
+	        int updated = serviceProviderRepository.activateServiceProvider(id);
+	        if (updated == 0) {
+	            throw new RuntimeException("Service Provider not found");
+	        }
+	    }
+	    
+	    public DisputeResponse insertResponse(Long disputeId, String adminResponse) {
+
+	        Dispute dispute = disputeRepository.findById(disputeId).get();
+
+	        DisputeResponse response = new DisputeResponse();
+	        response.setDispute(dispute);
+	        response.setAdminResponse(adminResponse);
+	        //mark status 
+	        disputeRepository.updateStatus(
+	                disputeId,
+	                DisputeStatus.RESOLVED
+	        );
+
+	        return disputeResponseRepository.save(response);
+	    }
 
 }
