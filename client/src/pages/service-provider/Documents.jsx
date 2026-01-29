@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import {
+    getDocuments,
+    uploadDocument,
+    deleteDocument,
+} from "../../api/serviceProviderService";
+
 
 export default function Documents() {
-
-    const providerId = 2; // TODO: replace with auth/JWT later
 
     const [documents, setDocuments] = useState([]);
     const [files, setFiles] = useState({
@@ -28,13 +31,10 @@ export default function Documents() {
         setTimeout(() => setToast({ show: false, type: "", message: "" }), 2500);
     };
 
-    // ---------------- FETCH EXISTING DOCUMENTS ----------------
     useEffect(() => {
         const fetchDocs = async () => {
             try {
-                const res = await axios.get(
-                    `http://localhost:8080/service-provider/${providerId}/documents`
-                );
+                const res = await getDocuments();
                 setDocuments(res.data);
             } catch {
                 showToast("error", "Failed to load documents");
@@ -43,7 +43,8 @@ export default function Documents() {
             }
         };
         fetchDocs();
-    }, [providerId]);
+    }, []);
+
 
     // ---------------- FILE HANDLER ----------------
     const handleFile = (type, file) => {
@@ -58,22 +59,21 @@ export default function Documents() {
     };
 
     // ---------------- UPLOAD ----------------
-    const uploadDocument = async (type) => {
+    const uploadDoc = async (type) => {
         if (!files[type]) {
             showToast("error", "Please select a file");
             return;
         }
+
+
+        console.log("Uploading:", type, files[type]);
 
         try {
             const formData = new FormData();
             formData.append("type", type);
             formData.append("file", files[type]);
 
-            await axios.post(
-                `http://localhost:8080/service-provider/${providerId}/documents`,
-                formData,
-                { headers: { "Content-Type": "multipart/form-data" } }
-            );
+            await uploadDocument(formData);
 
             showToast("success", "Document uploaded");
             window.location.reload();
@@ -82,18 +82,29 @@ export default function Documents() {
         }
     };
 
+
     // ---------------- DELETE ----------------
-    const deleteDocument = async (docId) => {
+    // const deleteDocument = async (docId) => {
+    //     try {
+    //         await axios.delete(
+    //             `http://localhost:8080/service-provider/documents/${docId}`
+    //         );
+    //         showToast("success", "Document deleted");
+    //         window.location.reload();
+    //     } catch {
+    //         showToast("error", "Delete failed");
+    //     }
+    // };
+    const deleteDoc = async (docId) => {
         try {
-            await axios.delete(
-                `http://localhost:8080/service-provider/documents/${docId}`
-            );
+            await deleteDocument(docId);
             showToast("success", "Document deleted");
             window.location.reload();
         } catch {
             showToast("error", "Delete failed");
         }
     };
+
 
     if (loading) {
         return <div className="text-center py-10">Loading documents...</div>;
@@ -131,7 +142,7 @@ export default function Documents() {
                                 </a>
                                 <span className="text-xs">{d.verificationStatus}</span>
                                 <button
-                                    onClick={() => deleteDocument(d.id)}
+                                    onClick={() => deleteDoc(d.id)}
                                     className="text-red-600 text-xs"
                                 >
                                     Delete
@@ -155,7 +166,7 @@ export default function Documents() {
                         />
 
                         <button
-                            onClick={() => uploadDocument("ID_PROOF")}
+                            onClick={() => uploadDoc("ID_PROOF")}
                             className="mt-2 px-4 py-1.5 bg-blue-600 text-white rounded text-sm"
                         >
                             Upload ID Proof
@@ -178,7 +189,7 @@ export default function Documents() {
                                 </a>
                                 <span className="text-xs">{d.verificationStatus}</span>
                                 <button
-                                    onClick={() => deleteDocument(d.id)}
+                                    onClick={() => deleteDoc(d.id)}
                                     className="text-red-600 text-xs"
                                 >
                                     Delete
@@ -202,7 +213,7 @@ export default function Documents() {
                         />
 
                         <button
-                            onClick={() => uploadDocument("ADDRESS_PROOF")}
+                            onClick={() => uploadDoc("ADDRESS_PROOF")}
                             className="mt-2 px-4 py-1.5 bg-blue-600 text-white rounded text-sm"
                         >
                             Upload Address Proof
@@ -225,7 +236,7 @@ export default function Documents() {
                                 </a>
                                 <span className="text-xs">{d.verificationStatus}</span>
                                 <button
-                                    onClick={() => deleteDocument(d.id)}
+                                    onClick={() => deleteDoc(d.id)}
                                     className="text-red-600 text-xs"
                                 >
                                     Delete
@@ -250,7 +261,7 @@ export default function Documents() {
                         />
 
                         <button
-                            onClick={() => uploadDocument("CERTIFICATION")}
+                            onClick={() => uploadDoc("CERTIFICATION")}
                             className="mt-2 px-4 py-1.5 bg-blue-600 text-white rounded text-sm"
                         >
                             Upload Certification

@@ -1,10 +1,14 @@
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import {
+    getPayments,
+    searchPayments
+} from "../../api/serviceProviderService";
+
 
 export default function ViewPayments() {
 
-    const providerId = 2; // TODO: move to auth context later
+
 
     const [payments, setPayments] = useState([]);
     const [query, setQuery] = useState("");
@@ -32,13 +36,14 @@ export default function ViewPayments() {
     //fetching payments 
     const fetchPayments = async () => {
         try {
-            let url = `http://localhost:8080/service-provider/payments/${providerId}`;
+            let res;
 
             if (query || period !== "All") {
-                url = `http://localhost:8080/service-provider/payments/${providerId}/search?query=${query}&filter=${period}`;
+                res = await searchPayments(query, period);
+            } else {
+                res = await getPayments();
             }
 
-            const res = await axios.get(url);
             setPayments(res.data);
         } catch (err) {
             console.error("Failed to fetch payments", err);
@@ -46,6 +51,7 @@ export default function ViewPayments() {
             setLoading(false);
         }
     };
+
 
     useEffect(() => {
         fetchPayments();
