@@ -31,10 +31,10 @@ public class ServiceProvider extends BaseEntity{
 	private User user; 
 	
 	@Enumerated(EnumType.STRING)
-    @Column(name = "gov_id_type", nullable = false)
+    @Column(name = "gov_id_type", nullable = true)
     private GovIdType govIdType;
 	
-	@Column(name = "gov_id", nullable = false)
+	@Column(name = "gov_id", nullable = true)
     private String govId;
 	
 	@Column(name="verification_status")

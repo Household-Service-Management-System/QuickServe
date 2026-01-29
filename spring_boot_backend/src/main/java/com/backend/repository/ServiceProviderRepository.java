@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.backend.entities.Booking;
 import com.backend.entities.ServiceProvider;
 
 @Repository
@@ -22,4 +23,6 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
             "LEFT JOIN FETCH s.category " + // Added this line to fetch categories
             "WHERE p.id = :id")
     Optional<ServiceProvider> findByIdWithServices(@Param("id") Long id);
+
+	Optional<ServiceProvider> findByUserId(Long userId);
 }

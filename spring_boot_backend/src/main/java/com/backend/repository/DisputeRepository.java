@@ -14,5 +14,7 @@ public interface DisputeRepository extends JpaRepository<Dispute, Long> {
 	List<Dispute> findAllByRaisedById(Long id);
 
 	Optional<Dispute> findByBookingId(Long id);
+	
+	List<Dispute> findByRaisedById(Long userId);
 }
 

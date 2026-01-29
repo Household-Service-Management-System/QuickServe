@@ -65,6 +65,11 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
     @Autowired
     private CloudinaryImageServiceImpl cloudinaryImageServiceImpl;
     
+    private ServiceProvider getLoggedInProvider(Long userId) {
+        return serviceProviderRepo.findByUserId(userId)
+            .orElseThrow(() -> new RuntimeException("Service provider not found"));
+    }
+
     @Override
     public ServiceProviderDashboardDTO getDashboardSummary(Long providerId) {
         Double revenue = bookingRepo.sumRevenueByServiceProviderId(providerId);
