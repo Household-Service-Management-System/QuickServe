@@ -3,6 +3,7 @@ package com.backend.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Repository;
 import com.backend.dto.ServiceProviderDetailsDTO;
 import com.backend.dto.ServiceProviderResponseDTO;
 import com.backend.entities.ServiceProvider;
+
+import jakarta.transaction.Transactional;
 
 @Repository
 public interface ServiceProviderRepository extends JpaRepository<ServiceProvider, Long> {
@@ -76,6 +79,24 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
     	ServiceProviderDetailsDTO fetchServiceProviderDetailsByServiceProviderId(
     	        @Param("serviceProviderId") Long serviceProviderId
     	);
+    
+    @Modifying
+    @Transactional
+    @Query("""
+        UPDATE ServiceProvider sp
+        SET sp.verificationStatus = false
+        WHERE sp.id = :serviceProviderId
+    """)
+    int deactivateServiceProvider(@Param("serviceProviderId") Long serviceProviderId);
+    
+    @Modifying
+    @Transactional
+    @Query("""
+        UPDATE ServiceProvider sp
+        SET sp.verificationStatus = true
+        WHERE sp.id = :serviceProviderId
+    """)
+    int activateServiceProvider(@Param("serviceProviderId") Long serviceProviderId)
 
 
 }
