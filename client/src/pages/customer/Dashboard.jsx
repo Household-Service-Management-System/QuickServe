@@ -7,6 +7,8 @@ import {
   CurrencyRupeeIcon,
 } from "@heroicons/react/24/outline";
 
+//import { useSelector } from "react-redux";
+
 const USER_ID = 4; // replace later with auth context
 
 export default function CustomerDashboard() {

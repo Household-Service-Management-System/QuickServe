@@ -36,6 +36,7 @@ import com.backend.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 @Transactional
@@ -48,6 +49,9 @@ public class CustomerServiceImp implements CustomerService {
 	@Autowired
 	private ServiceCategoryRepository serviceCategoryRepository;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	public final UserRepository userReopsitory;
 	public final BookingRepository bookingsRepository;
 	public final ServiceRepository serviceRepository;
@@ -64,15 +68,37 @@ public class CustomerServiceImp implements CustomerService {
 		 return modelMapper.map(user,CustomerDTO.class);
 	}
 
+//	@Override
+//	public User putCustomer(CustomerReqDTO customerReqDTO) {
+//		User user=new User();
+//		modelMapper.map(customerReqDTO, user);
+//		user.setRole(Role.ROLE_USER);
+//		user.setLastLogin(LocalDateTime.now());
+//		user.setIsActive(Status.ACTIVE); 
+//		return userReopsitory.save(user);
+//	}
+	
+	
+	
+	//created by Durgesh - to fix password encoding issue
 	@Override
 	public User putCustomer(CustomerReqDTO customerReqDTO) {
-		User user=new User();
-		modelMapper.map(customerReqDTO, user);
-		user.setRole(Role.ROLE_USER);
-		user.setLastLogin(LocalDateTime.now());
-		user.setIsActive(Status.ACTIVE); 
-		return userReopsitory.save(user);
+
+	    User user = new User();
+	    modelMapper.map(customerReqDTO, user);
+
+	    // ✅ ENCODE PASSWORD (STEP-1 FIX)
+	    user.setPassword(
+	        passwordEncoder.encode(customerReqDTO.getPassword())
+	    );
+
+	    user.setRole(Role.ROLE_USER);
+	    user.setLastLogin(LocalDateTime.now());
+	    user.setIsActive(Status.ACTIVE);
+
+	    return userReopsitory.save(user);
 	}
+
 	
 	
 	@Override
@@ -294,7 +320,7 @@ public class CustomerServiceImp implements CustomerService {
 			dto.setDisputeId(r.getId());
 			dto.setBookingId(r.getBooking().getId());
 			dto.setRaisedById(id);
-			dto.setResolvedById(r.getResolvedBy().getId());
+			//dto.setResolvedById(r.getResolvedBy().getId());
 			dto.setStatus(r.getStatus());
 			dto.setDescription(r.getDescription());
 			return dto;
@@ -308,7 +334,7 @@ public class CustomerServiceImp implements CustomerService {
 		dto.setDisputeId(dispute.getId());
 		dto.setBookingId(id);
 		dto.setRaisedById(dispute.getRaisedBy().getId());
-		dto.setResolvedById(dispute.getResolvedBy().getId());
+		//dto.setResolvedById(dispute.getResolvedBy().getId());
 		dto.setStatus(dispute.getStatus());
 		dto.setDescription(dispute.getDescription());
 		return dto;
@@ -321,7 +347,7 @@ public class CustomerServiceImp implements CustomerService {
 		dto.setDisputeId(dispute.getId());
 		dto.setBookingId(dispute.getBooking().getId());
 		dto.setRaisedById(id);
-		dto.setResolvedById(dispute.getResolvedBy().getId());
+		//dto.setResolvedById(dispute.getResolvedBy().getId());
 		dto.setStatus(dispute.getStatus());
 		dto.setDescription(dispute.getDescription());
 		return dto;
@@ -335,12 +361,12 @@ public class CustomerServiceImp implements CustomerService {
 		booking.setId(disputeDTO.getBookingId());
 		User user=new User();
 		user.setId(disputeDTO.getRaisedById());
-		User admin=new User();
-		admin.setId(disputeDTO.getResolvedById());
+		//User admin=new User();
+		//admin.setId(disputeDTO.getResolvedById());
 		dispute.setId(disputeDTO.getDisputeId());
 		dispute.setBooking(booking);
 		dispute.setRaisedBy(user);
-		dispute.setResolvedBy(admin);
+		//dispute.setResolvedBy(admin);
 		dispute.setStatus(disputeDTO.getStatus());
 		dispute.setDescription(disputeDTO.getDescription());
 		disputeRepository.save(dispute);

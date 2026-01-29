@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+import { useSelector } from "react-redux";
+
+// const user = useSelector((state) => state.auth.user);
+// const USER_ID = user?.id;
 const USER_ID = 4; // replace with auth later
 const ADMIN_ID = 12; // temp admin resolver
 

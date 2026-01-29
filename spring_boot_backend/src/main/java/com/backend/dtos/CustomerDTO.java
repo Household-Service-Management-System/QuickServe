@@ -25,6 +25,7 @@ public class CustomerDTO {
 	private String pincode;
 	private LocalDate dob;
 	private String gender;
+	private String profileImage;
 	
 	
 	public String getFullName() {
