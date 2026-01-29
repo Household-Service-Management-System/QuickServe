@@ -4,15 +4,22 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.dto.AdminDTO;
 import com.backend.dto.DisputeFullDetailsDTO;
 import com.backend.dto.ServiceProviderDetailsDTO;
 import com.backend.dto.ServiceProviderResponseDTO;
 import com.backend.entities.Dispute;
+import com.backend.entities.DisputeResponse;
 import com.backend.entities.Role;
 import com.backend.entities.ServiceProvider;
 import com.backend.entities.User;
@@ -85,6 +92,44 @@ public class AdminController {
         		adminService.getDisputeFullDetails(disputeId)
         );
     }
+    
+    @GetMapping("/profile")
+    public ResponseEntity<AdminDTO> getAdminDetails() {
+        return ResponseEntity.ok(adminService.getAdminDetails());
+    }
+    
+    // UPDATE ADMIN PROFILE
+    @PutMapping("/profile")
+    public ResponseEntity<String> updateAdminProfile(
+            @RequestBody User user
+    ) {
+    	adminService.updateUserProfile(user);
+        return ResponseEntity.ok("Profile updated successfully");
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    	adminService.deactivateServiceProvider(id);
+        return ResponseEntity.ok("User deleted successfully");
+    }
+    
+    @GetMapping("/verify/{id}")
+    public ResponseEntity<?> verifiy(@PathVariable Long id) {
+    	adminService.activateServiceProvider(id);
+        return ResponseEntity.ok("User Verify successfully");
+    }
+    
+    @PostMapping("/{disputeId}/respose")
+    public DisputeResponse insertResponse(
+            @PathVariable Long disputeId,
+            @RequestBody String adminResponse) {
+    	System.out.println("Try programiz.pro");
+        return adminService.insertResponse(disputeId, adminResponse);
+    }
+
+
+    
+
 
 
 }
