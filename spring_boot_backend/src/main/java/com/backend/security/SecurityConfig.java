@@ -32,7 +32,7 @@ public class SecurityConfig {
     .authorizeHttpRequests(auth -> auth
 
         // 🔓 PUBLIC
-        .requestMatchers("/auth/**","/services/**","/providers/**").permitAll()
+        .requestMatchers("/auth/**","/services/**","/providers/**","/service-categories/**").permitAll()
 
         // 👤 CUSTOMER
         .requestMatchers("/customer/**","/bookings/**").hasRole("USER")

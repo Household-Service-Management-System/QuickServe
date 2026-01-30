@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,14 +17,10 @@ import com.backend.dtos.ServiceDetailDTO;
 import com.backend.dtos.ServiceUpdateDTO;
 import com.backend.dtos.ServicesFromCategoriesDTO;
 import com.backend.entities.Service;
-import com.backend.entities.ServiceProvider;
 import com.backend.entities.Status;
-import com.backend.repository.ServiceProviderRepository;
 import com.backend.repository.ServiceRepository;
 import com.backend.service.ServiceProviderService;
 import com.backend.service.ServiceService;
-
-import io.jsonwebtoken.Claims;
 
 @RestController
 @RequestMapping("/services")
@@ -36,20 +31,9 @@ public class ServiceController {
 	
     @Autowired
     private ServiceRepository serviceRepository;
-    
-    @Autowired
-    private ServiceProviderRepository serviceProviderRepo;
 
     private final ServiceProviderService serviceProviderService;
 
-    private ServiceProvider getLoggedInProvider(Authentication authentication) {
-        Claims claims = (Claims) authentication.getPrincipal();
-        Long userId = ((Number) claims.get("userId")).longValue();
-
-        return serviceProviderRepo.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Service provider not found"));
-    }
-    
 
     public ServiceController(
     ServiceProviderService serviceProviderService

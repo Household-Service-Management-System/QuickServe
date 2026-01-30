@@ -43,7 +43,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingResponseDTO createBooking(BookingRequestFinalDTO request) {
+    public BookingResponseDTO createBooking(BookingRequestFinalDTO request, Long userId) {
 
         LocalDate date = LocalDate.parse(request.getDate());
         LocalTime time = LocalTime.parse(request.getStartTime());
@@ -73,7 +73,7 @@ public class BookingServiceImpl implements BookingService {
         ServiceProvider provider = providerRepository.findById(request.getProviderId())
                 .orElseThrow(() -> new RuntimeException("Provider not found"));
 
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Booking booking = new Booking();

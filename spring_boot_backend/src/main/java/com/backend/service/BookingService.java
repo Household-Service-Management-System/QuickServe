@@ -8,5 +8,5 @@ import com.backend.dtos.BookingResponseDTO;
 
 
 public interface BookingService {
-	public BookingResponseDTO createBooking(BookingRequestFinalDTO request);
+	public BookingResponseDTO createBooking(BookingRequestFinalDTO request, Long userId);
 }
