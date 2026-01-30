@@ -32,7 +32,7 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(res));
 
       // role-based redirect
-      if (res.role === "ROLE_USER") navigate("/customer", { replace: true });
+      if (res.role === "ROLE_USER") navigate("/", { replace: true });
       else if (res.role === "ROLE_SERVICEPROVIDER")
         navigate("/service-provider", { replace: true });
       else navigate("/admin", { replace: true });
