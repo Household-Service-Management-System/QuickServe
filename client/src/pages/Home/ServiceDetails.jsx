@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./Nav";
 import Footer from "./Footer";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ServiceDetails = () => {
   const userId = 1; // TODO: replace with logged-in user id from auth
@@ -12,6 +13,8 @@ const ServiceDetails = () => {
   const providersRef = useRef(null);
   const slotsRef = useRef(null);
   const dateRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [service, setService] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,27 +33,33 @@ const ServiceDetails = () => {
   const bookService = async () => {
     if (!selectedSlot || !selectedDate || !selectedProvider) return;
 
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert(" Please login to book a service");
+      return;
+    }
+
     const payload = {
       serviceId: Number(serviceId),
       providerId: selectedProvider,
-      userId: userId,
+      // userId: userId,
       date: selectedDate,
       startTime: selectedSlot.start,
     };
 
     try {
-      const res = await axios.post("http://localhost:8080/bookings", payload);
+      const res = await axiosInstance.post("/bookings", payload);
 
-      alert("✅ Service booked successfully!");
+      alert(" Service booked successfully!");
       console.log("Booking response:", res.data);
 
-      // optional reset
       setSelectedSlot(null);
       setSelectedDate("");
       setSlots([]);
     } catch (err) {
       console.error("Booking failed", err);
-      alert("❌ Failed to book service");
+      alert(" Failed to book service");
     }
   };
 
@@ -196,7 +205,21 @@ const ServiceDetails = () => {
                   </div>
 
                   <button
-                    onClick={fetchProviders}
+                    onClick={() => {
+                      const token = localStorage.getItem("token");
+
+                      if (!token) {
+                        // Redirect to login with return path
+                        navigate("/login", {
+                          state: {
+                            from: location.pathname,
+                          },
+                        });
+                        return;
+                      }
+
+                      fetchProviders();
+                    }}
                     disabled={providerLoading}
                     className="mt-6 w-full bg-blue-600 text-white py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition disabled:opacity-60"
                   >
