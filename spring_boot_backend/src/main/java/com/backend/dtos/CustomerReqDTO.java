@@ -15,11 +15,11 @@ import lombok.ToString;
 @AllArgsConstructor
 public class CustomerReqDTO {
 	
+	private Long userId;
 	private String firstName;
 	private String lastName;
 	private String email;
 	private String phone;
-	private String password;
 	private String street;
 	private String city;
 	private String state;
@@ -32,4 +32,6 @@ public class CustomerReqDTO {
 	    return this.firstName + " " + this.lastName;
 	}
 
+
+	
 }
