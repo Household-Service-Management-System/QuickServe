@@ -14,7 +14,7 @@ export default function ViewComplaint() {
           <Link to="/admin/customer" className="menu-item">Customer</Link>
           <Link to="/admin/serviceProvider" className="menu-item">Service Provider</Link>
           <Link to="/admin/pendingRequest" className="menu-item">Pending Request</Link>
-          <Link to="/admin/paymentList" className="menu-item">Payment</Link>
+          <Link to="/admin/payment-list" className="menu-item">Payment</Link>
           <Link to="/admin/setting" className="menu-item">Setting</Link>
         </nav>
 
