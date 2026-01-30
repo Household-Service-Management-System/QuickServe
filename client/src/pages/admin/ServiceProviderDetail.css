@@ -1,10 +1,11 @@
-/* MAIN LAYOUT */
+/* RESET */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* LAYOUT */
 .layout {
   display: flex;
   width: 100%;
@@ -13,28 +14,12 @@
   font-family: Arial, sans-serif;
 }
 
-.logout-btn {
-  width: 100%;
-  padding: 12px;
-  background: #4f74d9;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  text-align: center;
-}
-
-.logout-btn:hover {
-  background: #c9c9c9;
-}
-
 /* SIDEBAR */
 .sidebar {
-  width: 230px;
-  background: #0d1b2a;
-  color: white;
-  padding: 25px 20px;
+  width: 240px;
+  background: #1f2937;
+  color: #fff;
+  padding: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -42,116 +27,170 @@
 .logo {
   font-size: 22px;
   font-weight: bold;
+  text-align: center;
+  margin-bottom: 6px;
 }
 
 .panel-text {
-  font-size: 12px;
-  opacity: 0.7;
+  font-size: 13px;
+  text-align: center;
+  color: #9ca3af;
   margin-bottom: 25px;
 }
 
-/* MENU ITEMS */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .menu-item {
-  padding: 12px 15px;
-  margin-bottom: 10px;
+  padding: 10px 14px;
+  text-decoration: none;
+  color: #e5e7eb;
   border-radius: 6px;
-  cursor: pointer;
-  color: #dce1e7;
+  transition: background 0.2s;
 }
 
 .menu-item:hover {
-  background: #1b263b;
+  background: #374151;
 }
 
-.active {
-  background: #1b263b;
-  color: white;
+.menu-item.active {
+  background: #2563eb;
+  color: #fff;
 }
 
 /* LOGOUT BUTTON */
-.logout {
+.logout-btn {
   margin-top: auto;
   padding: 12px;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  color: #dce1e7;
+  font-weight: bold;
 }
 
-.logout:hover {
-  color: white;
+.logout-btn:hover {
+  background: #b91c1c;
 }
 
-/* CONTENT AREA */
+/* MAIN CONTENT */
 .content {
   flex: 1;
-  padding: 30px;
+  padding: 25px;
+  overflow-y: auto;
 }
 
 .page-title {
-  font-size: 26px;
+  font-size: 24px;
   margin-bottom: 20px;
-  color: #1a1a1a;
 }
 
-/* DETAILS CARD */
+/* DETAIL CARD */
 .detail-card {
-  background: white;
-  width: 80%;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 25px;
   display: flex;
   justify-content: space-between;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
-/* LEFT DETAILS */
-.info-section {
-  width: 60%;
-  font-size: 17px;
-  line-height: 28px;
+/* INFO SECTION */
+.info-section p {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #374151;
 }
 
-/* RIGHT IMAGE SECTION */
+/* IMAGE SECTION */
 .image-section {
-  width: 30%;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .img-box {
-  width: 150px;
-  height: 150px;
-  border-radius: 12px;
-  border: 1px solid #ccc;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
   overflow: hidden;
-  background: #fafafa;
+  border: 2px solid #e5e7eb;
 }
 
 .img-box img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+}
+
+/* BACK + DELETE BUTTON CONTAINER */
+.back-container {
+  margin-top: 15px;
+  display: flex;
+  gap: 12px;
 }
 
 /* BACK BUTTON */
-.back-container {
-  margin-top: 20px;
-}
-
 .back-btn {
-  padding: 10px 25px;
-  background: #1b263b;
-  color: white;
-  border-radius: 6px;
+  padding: 10px 18px;
+  background: #2563eb;
+  color: #fff;
   border: none;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: bold;
 }
-.menu-item {
-  text-decoration: none;
-  color: #dce1e7;
-}
-
 
 .back-btn:hover {
-  background: #0d1b2a;
+  background: #1e40af;
+}
+
+/* DELETE BUTTON */
+.delete-btn {
+  padding: 10px 18px;
+  background: #e53935;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.delete-btn:hover {
+  background: #c62828;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .menu {
+    flex-direction: row;
+  }
+
+  .detail-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .image-section {
+    margin-top: 15px;
+  }
+
+  .back-container {
+    justify-content: center;
+  }
 }

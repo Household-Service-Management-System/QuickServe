@@ -1,35 +1,40 @@
 import "./PendingRequest.css";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axiosInstance from "../../api/axios";
 
 export default function PendingRequest() {
 
-  const [requests, setRequests] = useState([
-    { id: 1, name: "ABV", email: "ab@gmail.com", status: "" }
-  ]);
+  const [requests, setRequests] = useState([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  // ACCEPT → Show Green Tick
-  const handleAccept = (id) => {
-    setRequests(
-      requests.map(r =>
-        r.id === id ? { ...r, status: "accepted" } : r
-      )
-    );
-  };
+  useEffect(() => {
+    axiosInstance
+      .get("/admin/pendingRequests")
+      .then((response) => {
+        setRequests(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching pending requests", error);
+        setLoading(false);
+      });
+  }, []);
 
-  // REJECT → Show Red Cross
-  const handleReject = (id) => {
-    setRequests(
-      requests.map(r =>
-        r.id === id ? { ...r, status: "rejected" } : r
-      )
-    );
-  };
+  // 🔍 Search filter
+  const filteredRequests = requests.filter(r =>
+    r.firstName.toLowerCase().includes(search.toLowerCase()) ||
+    r.lastName.toLowerCase().includes(search.toLowerCase()) ||
+    r.email.toLowerCase().includes(search.toLowerCase())
+  );
+
+  if (loading) return <h2 style={{ padding: "20px" }}>Loading...</h2>;
 
   return (
     <div className="layout">
 
-      {/* Sidebar */}
+      {/* SIDEBAR */}
       <aside className="sidebar">
         <h2 className="logo">QuickServe</h2>
         <p className="panel-text">Admin Panel</p>
@@ -38,92 +43,73 @@ export default function PendingRequest() {
           <Link to="/admin" className="menu-item">Dashboard</Link>
           <Link to="/admin/customer" className="menu-item">Customer</Link>
           <Link to="/admin/serviceProvider" className="menu-item">Service Provider</Link>
-          <Link to="/admin/pendingRequest" className="menu-item active">Pending Request</Link>
+          <Link to="/admin/pendingRequest" className="menu-item active">
+            Pending Request
+          </Link>
           <Link to="/admin/paymentList" className="menu-item">Payment</Link>
           <Link to="/admin/setting" className="menu-item">Setting</Link>
         </nav>
 
-       <Link to="/admin/logout">
-  <button className="logout-btn">Logout</button>
-</Link>
-
+        <Link to="/admin/logout">
+          <button className="logout-btn">Logout</button>
+        </Link>
       </aside>
 
       {/* MAIN CONTENT */}
       <main className="content">
-
         <h1 className="page-title">Pending Requests</h1>
-  <input
+
+        {/* SEARCH */}
+        <input
           type="text"
           className="search-bar"
-          placeholder="Search..."
+          placeholder="Search by name or email"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
+
+        {/* TABLE */}
         <div className="card">
-          <table className="custom-table">
-            <thead>
-              <tr>
-                <th>Req ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>View Document</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {requests.map((req) => (
-                <tr key={req.id}>
-                  <td>{req.id}</td>
-                  <td>{req.name}</td>
-                  <td>{req.email}</td>
-
-                  <td>
-                    <Link to="/admin/serviceProviderDetail">
-                      <button className="view-btn">View</button>
-                    </Link>
-                  </td>
-
-                  <td>
-                    {/* BEFORE ACTION */}
-                    {req.status === "" && (
-                      <>
-                        <button
-                          className="accept-btn"
-                          onClick={() => handleAccept(req.id)}
-                        >
-                          Accept
-                        </button>
-
-                        <button
-                          className="reject-btn"
-                          onClick={() => handleReject(req.id)}
-                        >
-                          Reject
-                        </button>
-                      </>
-                    )}
-
-                    {/* AFTER ACTION */}
-                    {req.status === "accepted" && (
-                      <span style={{ color: "green", fontSize: "20px" }}>
-                        ✅ Accepted
-                      </span>
-                    )}
-
-                    {req.status === "rejected" && (
-                      <span style={{ color: "red", fontSize: "20px" }}>
-                        ❌ Rejected
-                      </span>
-                    )}
-                  </td>
+          <div className="table-wrapper">
+            <table className="custom-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>View</th>
                 </tr>
-              ))}
-            </tbody>
+              </thead>
 
-          </table>
+              <tbody>
+                {filteredRequests.length === 0 ? (
+                  <tr>
+                    <td colSpan="4" style={{ textAlign: "center" }}>
+                      No Pending Requests
+                    </td>
+                  </tr>
+                ) : (
+                  filteredRequests.map((req) => (
+                    <tr key={req.serviceProviderId}>
+                      <td>{req.serviceProviderId}</td>
+                      <td>{req.firstName} {req.lastName}</td>
+                      <td>{req.email}</td>
+
+                      {/* ONLY VIEW BUTTON */}
+                      <td>
+                       <Link to={`/admin/serviceProviderDetail/${req.serviceProviderId}`}>
+  <button className="view-btn">View</button>
+</Link>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        {/* Back Button */}
+        {/* BACK */}
         <div className="back-container">
           <Link to="/admin">
             <button className="back-btn">Back</button>
