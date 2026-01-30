@@ -28,7 +28,6 @@ public class Booking extends BaseEntity {
 	 @JoinColumn(name = "provider_id", nullable = false)
 	 private ServiceProvider serviceProvider;
 	    
-
 	@Column(name = "scheduled_at", nullable = false)
     private LocalDateTime scheduledAt;
 	

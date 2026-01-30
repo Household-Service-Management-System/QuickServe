@@ -1,65 +1,153 @@
+import React, { useEffect, useRef, useState } from "react";
+import {
+  getProviderProfile,
+  updateProviderProfile,
+} from "../../api/serviceProviderService";
 
-import React, { useState, useRef } from "react";
 
 export default function ServiceProviderProfile() {
-  const initialUser = {
-    name: "Durgesh",
-    email: "user@gmail.com",
-    phone: "9876543210",
-    city: "Indore",
-    state: "Madhya Pradesh",
-  };
 
-  const [user, setUser] = useState(initialUser);
-  const [avatar, setAvatar] = useState(null);
+
+
+  // ---------------- STATE ----------------
+  const [user, setUser] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    street: "",
+    city: "",
+    state: "",
+    pincode: "",
+    dob: "",
+    gender: "",
+  });
+
+  const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
   const [toast, setToast] = useState({ show: false, type: "", message: "" });
 
+  const [avatar, setAvatar] = useState(null);        // preview + existing image
+  const [selectedFile, setSelectedFile] = useState(null); // actual file
   const inputRef = useRef(null);
 
+  // ---------------- TOAST ----------------
   const showToast = (type, message) => {
     setToast({ show: true, type, message });
     setTimeout(() => setToast({ show: false, type: "", message: "" }), 2500);
   };
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await getProviderProfile();
+
+        setUser({
+          firstName: res.data.firstName || "",
+          lastName: res.data.lastName || "",
+          phone: res.data.phone || "",
+          street: res.data.street || "",
+          city: res.data.city || "",
+          state: res.data.state || "",
+          pincode: res.data.pincode || "",
+          dob: res.data.dob || "",
+          gender: res.data.gender || "",
+        });
+
+        setAvatar(res.data.profileImage || null);
+      } catch (err) {
+        console.error("Failed to fetch profile", err);
+        showToast("error", "Failed to load profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+
+  // ---------------- VALIDATION ----------------
   const validate = () => {
     const e = {};
-    if (!user.name || user.name.trim().length < 2) e.name = "Enter a valid name";
-    if (!/^[6-9]\d{9}$/.test(user.phone)) e.phone = "Enter a valid 10-digit phone starting 6-9";
+
+    if (!user.firstName || user.firstName.trim().length < 2)
+      e.firstName = "Enter a valid first name";
+
+    if (!user.lastName || user.lastName.trim().length < 2)
+      e.lastName = "Enter a valid last name";
+
+    if (!/^[6-9]\d{9}$/.test(user.phone))
+      e.phone = "Enter a valid 10-digit phone number";
+
+    if (!user.city) e.city = "City is required";
+    if (!user.state) e.state = "State is required";
+
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
+  // ---------------- INPUT CHANGE ----------------
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((p) => ({ ...p, [name]: value }));
     setErrors((p) => ({ ...p, [name]: undefined }));
   };
 
-  const handleSave = () => {
-    if (!validate()) {
-      showToast("error", "Please fix validation errors");
-      return;
-    }
-    showToast("success", "Profile saved locally (static)");
-  };
-
+  // ---------------- AVATAR ----------------
   const onAvatarClick = () => inputRef.current?.click();
 
   const handleAvatar = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    setSelectedFile(file);
+
     const reader = new FileReader();
     reader.onload = (ev) => setAvatar(ev.target.result);
     reader.readAsDataURL(file);
   };
 
-  const handleReset = () => {
-    setUser(initialUser);
-    setAvatar(null);
-    setErrors({});
-    showToast("info", "Form reset");
+  // ---------------- SAVE PROFILE (MULTIPART) ----------------
+  const handleSave = async () => {
+    if (!validate()) {
+      showToast("error", "Please fix validation errors");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+
+      formData.append(
+        "data",
+        new Blob([JSON.stringify(user)], { type: "application/json" })
+      );
+
+      if (selectedFile) {
+        formData.append("image", selectedFile);
+      }
+
+      // await axios.put(
+      //   `http://localhost:8080/service-provider/profile/${providerId}`,
+      //   formData,
+      //   { headers: { "Content-Type": "multipart/form-data" } }
+      // );
+      await updateProviderProfile(formData);
+
+
+      showToast("success", "Profile updated successfully!");
+    } catch (err) {
+      console.error("Update failed", err);
+      showToast("error", "Failed to update profile");
+    }
   };
+
+  const handleReset = () => {
+    window.location.reload();
+  };
+
+  if (loading) {
+    return <div className="text-center py-10">Loading profile...</div>;
+  }
 
   return (
     <div className="flex justify-center w-full mt-6 px-4">
@@ -72,14 +160,18 @@ export default function ServiceProviderProfile() {
 
         <div className="flex flex-col md:flex-row gap-8">
 
-
+          {/* AVATAR */}
           <div className="flex flex-col items-center gap-2 w-full md:w-1/3">
             <div className="w-28 h-28 rounded-full bg-gray-200 overflow-hidden shadow-md flex items-center justify-center">
               {avatar ? (
-                <img src={avatar} alt="avatar" className="w-full h-full object-cover" />
+                <img
+                  src={avatar}
+                  alt="avatar"
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <span className="text-3xl font-semibold text-gray-600">
-                  {user.name[0]}
+                  {user.firstName?.[0] || "U"}
                 </span>
               )}
             </div>
@@ -94,84 +186,109 @@ export default function ServiceProviderProfile() {
 
             <button
               onClick={onAvatarClick}
-              className="px-3 py-1.5 border rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition"
+              className="px-3 py-1.5 border rounded-lg text-sm text-gray-700 hover:bg-gray-100"
             >
               Upload Avatar
             </button>
           </div>
 
-
+          {/* FORM */}
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-
-            <div className="col-span-2">
-              <label className="text-sm font-medium text-gray-700">Full Name</label>
+            <div>
+              <label className="text-sm font-medium">First Name</label>
               <input
-                type="text"
-                name="name"
-                value={user.name}
+                name="firstName"
+                value={user.firstName}
                 onChange={handleChange}
-                className={`w-full mt-1 px-3 py-2 border rounded-lg focus:ring-2 ${errors.name ? "border-red-500 ring-red-200" : "border-gray-300 focus:ring-blue-300"
-                  }`}
+                className="w-full mt-1 px-3 py-2 border rounded-lg"
               />
-              {errors.name && (
-                <p className="text-xs text-red-600 mt-1">{errors.name}</p>
+              {errors.firstName && (
+                <p className="text-xs text-red-600">{errors.firstName}</p>
               )}
             </div>
 
-
             <div>
-              <label className="text-sm font-medium text-gray-700">Email</label>
+              <label className="text-sm font-medium">Last Name</label>
               <input
-                type="email"
-                value={user.email}
-                disabled
-                className="w-full mt-1 px-3 py-2 border rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
+                name="lastName"
+                value={user.lastName}
+                onChange={handleChange}
+                className="w-full mt-1 px-3 py-2 border rounded-lg"
               />
-              <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
+              {errors.lastName && (
+                <p className="text-xs text-red-600">{errors.lastName}</p>
+              )}
             </div>
 
-
             <div>
-              <label className="text-sm font-medium text-gray-700">Phone</label>
+              <label className="text-sm font-medium">Phone</label>
               <input
-                type="text"
                 name="phone"
                 value={user.phone}
                 maxLength={10}
                 onChange={handleChange}
-                className={`w-full mt-1 px-3 py-2 border rounded-lg focus:ring-2 ${errors.phone ? "border-red-500 ring-red-200" : "border-gray-300 focus:ring-blue-300"
-                  }`}
+                className="w-full mt-1 px-3 py-2 border rounded-lg"
               />
-              {errors.phone ? (
-                <p className="text-xs text-red-600 mt-1">{errors.phone}</p>
-              ) : (
-                <p className="text-xs text-gray-500 mt-1">10 digits</p>
+              {errors.phone && (
+                <p className="text-xs text-red-600">{errors.phone}</p>
               )}
             </div>
 
-
             <div>
-              <label className="text-sm font-medium text-gray-700">City</label>
+              <label className="text-sm font-medium">Date of Birth</label>
               <input
-                type="text"
-                name="city"
-                value={user.city}
+                type="date"
+                name="dob"
+                value={user.dob}
                 onChange={handleChange}
-                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-300"
+                className="w-full mt-1 px-3 py-2 border rounded-lg"
               />
             </div>
 
+            <div>
+              <label className="text-sm font-medium">City</label>
+              <input
+                name="city"
+                value={user.city}
+                onChange={handleChange}
+                className="w-full mt-1 px-3 py-2 border rounded-lg"
+              />
+            </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-700">State</label>
+              <label className="text-sm font-medium">State</label>
               <input
-                type="text"
                 name="state"
                 value={user.state}
                 onChange={handleChange}
-                className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-300"
+                className="w-full mt-1 px-3 py-2 border rounded-lg"
               />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Pincode</label>
+              <input
+                name="pincode"
+                value={user.pincode}
+                onChange={handleChange}
+                className="w-full mt-1 px-3 py-2 border rounded-lg"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Gender</label>
+              <select
+                name="gender"
+                value={user.gender}
+                onChange={handleChange}
+                className="w-full mt-1 px-3 py-2 border rounded-lg"
+              >
+                <option value="">Select</option>
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+                <option value="OTHER">Other</option>
+              </select>
             </div>
           </div>
         </div>
@@ -179,26 +296,28 @@ export default function ServiceProviderProfile() {
         <div className="mt-8 flex justify-end gap-3">
           <button
             onClick={handleReset}
-            className="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100"
+            className="px-4 py-2 border rounded-lg text-gray-700"
           >
             Reset
           </button>
 
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg"
           >
             Save Changes
           </button>
         </div>
       </div>
 
-
       {toast.show && (
         <div
-          className={`fixed bottom-6 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg shadow-lg text-white text-sm
-            ${toast.type === "success" ? "bg-green-600" :
-              toast.type === "error" ? "bg-red-600" : "bg-blue-600"
+          className={`fixed bottom-6 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg text-white
+            ${toast.type === "success"
+              ? "bg-green-600"
+              : toast.type === "error"
+                ? "bg-red-600"
+                : "bg-blue-600"
             }`}
         >
           {toast.message}

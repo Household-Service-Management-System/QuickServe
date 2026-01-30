@@ -3,23 +3,42 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Nav from "../Home/Nav";
 import Footer from "../Home/Footer";
+import { loginUser } from "../../api/authService";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     email: "",
     password: "",
-    role: "customer",
+    // role: "customer",
   });
 
-  const handleLogin = (e) => {
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (form.role === "customer") {
-      window.location.href = "/user";
-    } else if (form.role === "provider") {
-      window.location.href = "/service-provider";
-    } else {
-      window.location.href = "/admin";
+    try {
+      const res = await loginUser({
+        email: form.email,
+        password: form.password,
+      });
+
+      // store token
+      localStorage.setItem("token", res.token);
+      localStorage.setItem("role", res.role);
+      localStorage.setItem("user", JSON.stringify(res));
+
+      // role-based redirect
+      if (res.role === "ROLE_USER") navigate("/customer", { replace: true });
+      else if (res.role === "ROLE_SERVICEPROVIDER")
+        navigate("/service-provider", { replace: true });
+      else navigate("/admin", { replace: true });
+
+    } catch (err) {
+      alert(err.response?.data?.message || "Login failed");
     }
   };
 
@@ -64,7 +83,7 @@ const Login = () => {
               />
             </div>
 
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Login As
               </label>
@@ -77,10 +96,10 @@ const Login = () => {
                 <option value="provider">Service Provider</option>
                 <option value="admin">Admin</option>
               </select>
-            </div>
+            </div> */}
 
             <button className="w-full bg-blue-600 text-white py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition"
-            onClick={handleLogin}
+              onClick={handleLogin}
             >
               Login
             </button>

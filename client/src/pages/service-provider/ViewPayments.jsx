@@ -1,64 +1,88 @@
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
+import {
+    getPayments,
+    searchPayments
+} from "../../api/serviceProviderService";
+
 
 export default function ViewPayments() {
-    const payments = [
-        { date: "2025-12-05", bookingId: 110, amount: "₹500", status: "Paid", customer: "Amit Verma" },
-        { date: "2025-12-03", bookingId: 109, amount: "₹1200", status: "Paid", customer: "Riya Patel" },
-        { date: "2025-11-28", bookingId: 105, amount: "₹700", status: "Pending", customer: "John Doe" },
-        { date: "2025-11-22", bookingId: 102, amount: "₹900", status: "Paid", customer: "Meera Sharma" },
-        { date: "2025-11-18", bookingId: 98, amount: "₹1200", status: "Paid", customer: "Arun Kumar" },
-        { date: "2025-11-16", bookingId: 95, amount: "₹700", status: "Pending", customer: "Emily Johnson" },
-    ];
 
-    const [period, setPeriod] = useState("last7");
+
+
+    const [payments, setPayments] = useState([]);
     const [query, setQuery] = useState("");
+    const [period, setPeriod] = useState("All");
+    const [loading, setLoading] = useState(true);
 
-    const today = new Date();
 
-    const filtered = useMemo(() => {
-        const q = query.trim().toLowerCase();
+    const formatDateTime = (isoDate) => {
+        const d = new Date(isoDate);
 
-        return payments.filter((p) => {
-            const d = new Date(p.date + "T00:00:00");
+        const date = d.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        });
 
-            if (period === "last7") {
-                const diff = Math.floor((today - d) / (1000 * 60 * 60 * 24));
-                if (diff < 0 || diff > 7) return false;
-            } else if (period === "month") {
-                if (d.getMonth() !== today.getMonth() || d.getFullYear() !== today.getFullYear()) return false;
+        const time = d.toLocaleTimeString("en-IN", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+
+        return { date, time };
+    };
+
+    //fetching payments 
+    const fetchPayments = async () => {
+        try {
+            let res;
+
+            if (query || period !== "All") {
+                res = await searchPayments(query, period);
+            } else {
+                res = await getPayments();
             }
 
-            if (!q) return true;
-            return (
-                String(p.bookingId).includes(q) ||
-                p.amount.toLowerCase().includes(q) ||
-                p.status.toLowerCase().includes(q) ||
-                p.customer.toLowerCase().includes(q)
-            );
-        });
-    }, [payments, period, query, today]);
+            setPayments(res.data);
+        } catch (err) {
+            console.error("Failed to fetch payments", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    const total = useMemo(() => {
-        return filtered.reduce((sum, p) => {
-            const num = Number(p.amount.replace(/[^0-9.-]+/g, ""));
-            return sum + num;
-        }, 0);
-    }, [filtered]);
+
+    useEffect(() => {
+        fetchPayments();
+    }, []);
+
+    useEffect(() => {
+        fetchPayments();
+    }, [query, period]);
+
+
+    const totalAmount = payments.reduce((sum, p) => sum + p.amount, 0);
+
+    if (loading) {
+        return <div className="text-center py-10">Loading payments...</div>;
+    }
 
     return (
         <div className="w-full">
 
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">Payments</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-6">
+                Payments
+            </h1>
 
             <div className="bg-white shadow-md rounded-xl p-6">
 
-
+                {/* SEARCH + FILTER */}
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
 
                     <input
                         type="text"
-                        placeholder="Search payments..."
+                        placeholder="Search by customer, booking ID, status..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         className="w-full md:w-80 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -69,18 +93,21 @@ export default function ViewPayments() {
                         onChange={(e) => setPeriod(e.target.value)}
                         className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        <option value="last7">Last 7 days</option>
-                        <option value="month">This month</option>
-                        <option value="all">All</option>
+                        <option value="All">All</option>
+                        <option value="Last 7 days">Last 7 days</option>
+                        <option value="This month">This month</option>
                     </select>
                 </div>
 
-
+                {/* TOTAL */}
                 <div className="mb-4 text-gray-700 font-medium">
-                    Total Amount: <span className="font-bold text-gray-900">₹{total}</span>
+                    Total Amount:&nbsp;
+                    <span className="font-bold text-gray-900">
+                        ₹{totalAmount}
+                    </span>
                 </div>
 
-
+                {/* TABLE */}
                 <div className="overflow-x-auto border border-gray-200 rounded-lg">
                     <table className="w-full text-sm text-left">
                         <thead className="bg-gray-100 text-gray-700 font-semibold border-b">
@@ -90,45 +117,70 @@ export default function ViewPayments() {
                                 <th className="py-3 px-4">Booking ID</th>
                                 <th className="py-3 px-4">Amount</th>
                                 <th className="py-3 px-4">Status</th>
-                                <th className="py-3 px-4 text-right">Receipt</th>
+                                <th className="py-3 px-4">Transaction ID</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            {filtered.map((p, idx) => (
-                                <tr key={idx} className="border-b hover:bg-gray-50 transition">
-                                    <td className="py-3 px-4">{p.date}</td>
-                                    <td className="py-3 px-4">{p.customer}</td>
-                                    <td className="py-3 px-4">{p.bookingId}</td>
-                                    <td className="py-3 px-4">{p.amount}</td>
+                            {payments.map((p, idx) => {
+                                const { date, time } = formatDateTime(p.date);
 
-                                    <td className="py-3 px-4">
-                                        <span
-                                            className={`px-3 py-1 rounded-full text-xs font-semibold 
-                        ${p.status === "Paid" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}
-                      `}
-                                        >
-                                            {p.status}
-                                        </span>
-                                    </td>
+                                return (
+                                    <tr
+                                        key={idx}
+                                        className="border-b hover:bg-gray-50 transition"
+                                    >
+                                        <td className="py-3 px-4">
+                                            <div>{date}</div>
+                                            <div className="text-xs text-gray-500">{time}</div>
+                                        </td>
 
-                                    <td className="py-3 px-4 text-right">
-                                        <button
-                                            onClick={() => alert("Download receipt (placeholder)")}
-                                            className="text-blue-600 hover:underline"
-                                        >
-                                            Download
-                                        </button>
+                                        <td className="py-3 px-4">
+                                            {p.customerName}
+                                        </td>
+
+                                        <td className="py-3 px-4">
+                                            {p.bookingId}
+                                        </td>
+
+                                        <td className="py-3 px-4">
+                                            ₹{p.amount}
+                                        </td>
+
+                                        <td className="py-3 px-4">
+                                            <span
+                                                className={`px-3 py-1 rounded-full text-xs font-semibold ${p.status === "PAID"
+                                                    ? "bg-green-100 text-green-700"
+                                                    : "bg-yellow-100 text-yellow-700"
+                                                    }`}
+                                            >
+                                                {p.status}
+                                            </span>
+                                        </td>
+
+                                        <td className="py-3 px-4">
+                                            {p.transactionId || "-"}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+
+                            {payments.length === 0 && (
+                                <tr>
+                                    <td
+                                        colSpan="6"
+                                        className="text-center py-6 text-gray-500"
+                                    >
+                                        No payments found
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
 
                     </table>
                 </div>
 
             </div>
-
         </div>
     );
 }
