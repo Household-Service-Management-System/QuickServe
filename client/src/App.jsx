@@ -40,7 +40,8 @@ import ServiceProviderDetail from "./pages/admin/ServiceProviderDetail";
 import PendingRequest from "./pages/admin/PendingRequest";
 import Setting from "./pages/admin/Setting";
 import Logout from "./pages/admin/Logout";
-
+import ServiceProviderDetailList from "./pages/admin/ServiceProviderDetailList";
+import AdminProfile from "./pages/admin/AdminProfile" 
 function App() {
   return (
     <BrowserRouter>
@@ -84,15 +85,22 @@ function App() {
 
         <Route path="/admin">
           <Route index element={<AdminDashboard />} />
-          <Route path="customer" element={<Customer />} />
+          <Route path="complaint" element={<Customer />} />
           <Route path="serviceProvider" element={<ServiceProvider />} />
           <Route path="paymentList" element={<PaymentList />} />
-          <Route path="viewComplaint" element={<ViewComplaint />} />
-          <Route path="serviceProviderDetail" element={<ServiceProviderDetail />} />
+         
+          <Route path="viewComplaint/:id" element={<ViewComplaint />} />
+          <Route path="serviceProviders" element={<ServiceProviderDetail />} />
           <Route path="pendingRequest" element={<PendingRequest />} />
+          <Route path="AdminProfile" element={<AdminProfile />} />
           <Route path="setting" element={<Setting />} />
           <Route path="logout" element={<Logout />} />
+          <Route
+   path="serviceProviderDetail/:id"
+  element={<ServiceProviderDetailList />}
+/>
         </Route>
+           
 
       </Routes>
     </BrowserRouter>
