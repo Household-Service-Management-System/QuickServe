@@ -1,34 +1,48 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import {
-  CalendarDaysIcon,
-  CheckCircleIcon,
-  ClockIcon,
-  CurrencyRupeeIcon,
-} from "@heroicons/react/24/outline";
+  getCustomerBookings,
+  getCustomerPayments,
+} from "../../api/customerService";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import { useNavigate } from "react-router-dom";
 
-//import { useSelector } from "react-redux";
+/* ================= HELPERS ================= */
 
-const USER_ID = 4; // replace later with auth context
+// Latest payment per booking (prefer SUCCESS)
+const latestPaymentsByBooking = (payments) => {
+  const map = new Map();
+
+  payments.forEach((p) => {
+    const id = p.bookingId;
+    if (!id) return;
+
+    const existing = map.get(id);
+    if (!existing || existing.status !== "SUCCESS") {
+      map.set(id, p);
+    }
+  });
+
+  return map;
+};
 
 export default function CustomerDashboard() {
-  const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState([]);
   const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
+  const navigate = useNavigate();
 
-  const fetchDashboardData = async () => {
+  /* ================= FETCH ================= */
+  const fetchData = async () => {
     try {
-      const [bookingsRes, paymentsRes] = await Promise.all([
-        axios.get(`http://localhost:8080/customer/bookings/${USER_ID}`),
-        axios.get(`http://localhost:8080/customer/paymentByUser/${USER_ID}`),
+      setLoading(true);
+      const [bRes, pRes] = await Promise.all([
+        getCustomerBookings(),
+        getCustomerPayments(),
       ]);
 
-      setBookings(bookingsRes.data || []);
-      setPayments(paymentsRes.data || []);
+      setBookings(bRes.data || []);
+      setPayments(pRes.data || []);
     } catch (err) {
       console.error("Dashboard load failed", err);
     } finally {
@@ -36,141 +50,138 @@ export default function CustomerDashboard() {
     }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const paymentMap = latestPaymentsByBooking(payments);
+
+  const isPaid = (bookingId) =>
+    paymentMap.get(bookingId)?.status === "SUCCESS";
+
   /* ================= STATS ================= */
+
   const totalBookings = bookings.length;
   const completedBookings = bookings.filter(
     (b) => b.status === "COMPLETED"
   ).length;
-  const activeBookings = bookings.filter(
-    (b) => b.status === "PENDING" || b.status === "ACCEPTED"
-  ).length;
 
-  const totalSpent = payments
+  const totalSpent = Array.from(paymentMap.values())
     .filter((p) => p.status === "SUCCESS")
-    .reduce((sum, p) => sum + p.amount, 0);
-
-  const upcomingBookings = bookings
-    .filter((b) => b.status === "ACCEPTED" || b.status === "PENDING")
-    .slice(0, 5);
-
-  const stats = [
-    {
-      label: "Total Bookings",
-      value: totalBookings,
-      icon: CalendarDaysIcon,
-    },
-    {
-      label: "Active Bookings",
-      value: activeBookings,
-      icon: ClockIcon,
-    },
-    {
-      label: "Completed Services",
-      value: completedBookings,
-      icon: CheckCircleIcon,
-    },
-    {
-      label: "Total Spent",
-      value: `₹${totalSpent.toLocaleString()}`,
-      icon: CurrencyRupeeIcon,
-    },
-  ];
+    .reduce((sum, p) => sum + (p.amount || 0), 0);
 
   if (loading) {
-    return (
-      <div className="flex h-[60vh] items-center justify-center text-gray-500">
-        Loading dashboard...
-      </div>
-    );
+    return <p className="p-6 text-gray-500">Loading dashboard...</p>;
   }
 
+  /* ================= UI ================= */
+
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="p-4 md:p-6 space-y-6">
+      <h1 className="text-2xl font-semibold text-gray-800">
+        Customer Dashboard
+      </h1>
 
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-gray-800">
-            Customer Dashboard
-          </h1>
-          <p className="text-sm text-gray-500">
-            Overview of your bookings and payments
-          </p>
-        </div>
+      {/* ================= STATS ================= */}
+      <div className="grid md:grid-cols-4 gap-4">
+        <Stat title="Total Bookings" value={totalBookings} />
+        <Stat title="Completed" value={completedBookings} />
+        <Stat title="Total Spent" value={`₹${totalSpent}`} />
+        <Stat title="Payments Done" value={paymentMap.size} />
+      </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {stats.map((item, idx) => {
-            const Icon = item.icon;
-            return (
-              <div
-                key={idx}
-                className="bg-white p-4 rounded-xl border shadow-sm hover:shadow-md transition"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs text-gray-500">{item.label}</p>
-                    <p className="text-xl font-semibold text-gray-800">
-                      {item.value}
-                    </p>
-                  </div>
-                  <div className="p-2 bg-gray-100 rounded-lg">
-                    <Icon className="w-6 h-6 text-gray-700" />
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+      {/* ================= MAIN GRID ================= */}
+      <div className="grid md:grid-cols-3 gap-6">
 
-        {/* Upcoming Bookings */}
-        <div className="bg-white p-5 rounded-xl shadow-sm border">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            Upcoming Bookings
+        {/* ===== LEFT: RECENT BOOKINGS ===== */}
+        <div className="md:col-span-2 bg-white border rounded-xl p-4">
+          <h2 className="text-lg font-semibold mb-3">
+            Recent Bookings
           </h2>
 
-          {upcomingBookings.length === 0 ? (
-            <p className="text-sm text-gray-500">
-              No upcoming bookings
-            </p>
+          {bookings.length === 0 ? (
+            <p className="text-gray-500">No bookings yet</p>
           ) : (
-            <div className="space-y-3">
-              {upcomingBookings.map((b, idx) => (
-                <div
-                  key={idx}
-                  className="flex justify-between items-center p-3 border rounded-lg hover:bg-gray-50 transition"
-                >
-                  <div>
-                    <p className="font-medium text-gray-800">
-                      {b.service}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Provider: {b.serviceProvider}
-                    </p>
-                  </div>
-
-                  <div className="text-right">
-                    <p className="text-xs text-gray-500">
-                      {new Date(b.scheduledAt).toLocaleDateString()}
-                    </p>
-                    <span
-                      className={`text-xs px-2 py-1 rounded-md mt-1 inline-block
-                        ${
-                          b.status === "ACCEPTED"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-yellow-100 text-yellow-700"
-                        }`}
-                    >
-                      {b.status}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <table className="w-full text-sm">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="p-2 text-left">Service</th>
+                  <th className="p-2 text-left">Price</th>
+                  <th className="p-2 text-left">Payment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {bookings.slice(0, 5).map((b) => (
+                  <tr key={b.bookingId} className="border-t">
+                    <td className="p-2">
+                      {b.service || b.serviceName}
+                    </td>
+                    <td className="p-2">₹{b.price}</td>
+                    <td className="p-2">
+                      {isPaid(b.bookingId) ? (
+                        <span className="text-green-600 flex items-center gap-1">
+                          <CheckCircleIcon className="w-4 h-4" />
+                          Paid
+                        </span>
+                      ) : (
+                        <span className="text-red-500">Unpaid</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
         </div>
 
+        {/* ===== RIGHT: BOOK NEW SERVICE ===== */}
+        <div className="bg-white border rounded-xl p-4">
+          <h2 className="text-lg font-semibold mb-3">
+            Book New Service
+          </h2>
+
+          <p className="text-sm text-gray-500 mb-4">
+            Choose a category to continue
+          </p>
+
+          <div className="space-y-3">
+            {[
+              "Home Cleaning",
+              "Electrician",
+              "Plumber",
+              "AC Repair",
+              "Appliance Service",
+            ].map((cat, idx) => (
+              <button
+                key={idx}
+                onClick={() =>
+                  navigate("/services", {
+                    state: { category: cat },
+                  })
+                }
+                className="w-full text-left border rounded-lg px-4 py-2 hover:bg-blue-50 hover:border-blue-400"
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* FUTURE FRIEND-INTEGRATION NOTE */}
+          <p className="mt-4 text-xs text-gray-400">
+            *Booking flow handled by service module
+          </p>
+        </div>
       </div>
+    </div>
+  );
+}
+
+/* ================= SMALL COMPONENT ================= */
+function Stat({ title, value }) {
+  return (
+    <div className="bg-white border rounded-xl p-4">
+      <p className="text-sm text-gray-500">{title}</p>
+      <p className="text-2xl font-semibold text-gray-800">{value}</p>
     </div>
   );
 }

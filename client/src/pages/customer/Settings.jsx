@@ -1,151 +1,158 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-const COLORS = [
-  { name: "Blue", value: "#2563eb" },
-  { name: "Indigo", value: "#4f46e5" },
-  { name: "Green", value: "#16a34a" },
-  { name: "Purple", value: "#7c3aed" },
-];
-
-export default function CustomerSettings() {
-  const [sidebarColor, setSidebarColor] = useState(
-    localStorage.getItem("sidebarColor") || "#2563eb"
-  );
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("darkMode") === "true"
-  );
-  const [compact, setCompact] = useState(
-    localStorage.getItem("compactSidebar") === "true"
-  );
-  const [toast, setToast] = useState("");
-
-  /* APPLY SETTINGS */
-  useEffect(() => {
-    document.documentElement.style.setProperty(
-      "--sidebar-color",
-      sidebarColor
-    );
-    localStorage.setItem("sidebarColor", sidebarColor);
-
-    document.documentElement.classList.toggle("dark", darkMode);
-    localStorage.setItem("darkMode", darkMode);
-
-    localStorage.setItem("compactSidebar", compact);
-  }, [sidebarColor, darkMode, compact]);
-
-  const showToast = (msg) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 2500);
-  };
+export default function Settings() {
+  // simple, fixed local state (safe)
+  const [theme, setTheme] = useState("Light");
+  const [language, setLanguage] = useState("English");
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
-
-      {/* TOAST */}
-      {toast && (
-        <div className="fixed top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow">
-          {toast}
-        </div>
-      )}
+    <div className="p-4 md:p-6 max-w-4xl mx-auto space-y-6">
 
       {/* HEADER */}
       <div>
-        <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+        <h1 className="text-2xl font-semibold text-gray-800">
           Settings
         </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          Personalize your experience
+        <p className="text-sm text-gray-500">
+          Manage your preferences
         </p>
       </div>
 
+      {/* ACCOUNT */}
+      <Card title="Account">
+        <Row label="Email">
+          <span className="text-gray-600">user@example.com</span>
+        </Row>
+        <Row label="Password">
+          <button className="text-blue-600 underline">
+            Change Password
+          </button>
+        </Row>
+      </Card>
+
       {/* APPEARANCE */}
-      <div className="bg-white dark:bg-gray-900 border rounded-xl p-6">
-        <h2 className="text-lg font-semibold mb-4">Appearance</h2>
+      <Card title="Appearance">
+        <Row label="Theme">
+          <select
+            value={theme}
+            onChange={(e) => setTheme(e.target.value)}
+            className="border rounded-lg px-3 py-1"
+          >
+            <option>Light</option>
+            <option>Dark</option>
+            <option>System</option>
+          </select>
+        </Row>
 
-        <div className="space-y-4">
-
-          {/* Sidebar Color */}
-          <div>
-            <p className="text-sm font-medium mb-2">Sidebar Color</p>
-            <div className="flex gap-3">
-              {COLORS.map((c) => (
-                <button
-                  key={c.value}
-                  onClick={() => {
-                    setSidebarColor(c.value);
-                    showToast("Sidebar color updated");
-                  }}
-                  className={`w-9 h-9 rounded-full border-2 transition
-                    ${sidebarColor === c.value
-                      ? "border-black scale-110"
-                      : "border-transparent"
-                    }`}
-                  style={{ backgroundColor: c.value }}
-                />
-              ))}
-            </div>
+        <Row label="Accent Color">
+          <div className="flex gap-2">
+            <ColorDot />
+            <ColorDot />
+            <ColorDot />
+            <ColorDot />
           </div>
+        </Row>
+      </Card>
 
-          {/* Dark Mode */}
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Dark Mode</span>
-            <button
-              onClick={() => {
-                setDarkMode(!darkMode);
-                showToast("Theme updated");
-              }}
-              className={`w-12 h-6 rounded-full relative transition
-                ${darkMode ? "bg-blue-600" : "bg-gray-300"}`}
-            >
-              <span
-                className={`absolute top-1 w-4 h-4 bg-white rounded-full transition
-                  ${darkMode ? "right-1" : "left-1"}`}
-              />
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* NOTIFICATIONS */}
+      <Card title="Notifications">
+        <Toggle label="Email Notifications" />
+        <Toggle label="SMS Notifications" />
+        <Toggle label="Push Notifications" />
+      </Card>
+
+      {/* PRIVACY */}
+      <Card title="Privacy">
+        <Toggle label="Public Profile" />
+        <Toggle label="Show Booking History" />
+      </Card>
 
       {/* PREFERENCES */}
-      <div className="bg-white dark:bg-gray-900 border rounded-xl p-6">
-        <h2 className="text-lg font-semibold mb-4">Preferences</h2>
+      <Card title="Preferences">
+        <Row label="Language">
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="border rounded-lg px-3 py-1"
+          >
+            <option>English</option>
+            <option>Hindi</option>
+            <option>Marathi</option>
+          </select>
+        </Row>
 
-        <div className="space-y-4">
+        <Row label="Time Format">
+          <select className="border rounded-lg px-3 py-1">
+            <option>12 Hour</option>
+            <option>24 Hour</option>
+          </select>
+        </Row>
+      </Card>
 
-          {/* Compact Sidebar */}
-          <div className="flex items-center justify-between">
-            <span className="text-sm">Compact Sidebar</span>
-            <input
-              type="checkbox"
-              checked={compact}
-              onChange={() => {
-                setCompact(!compact);
-                showToast("Sidebar layout updated");
-              }}
-              className="w-4 h-4"
-            />
-          </div>
+      {/* DANGER ZONE */}
+      <div className="border border-red-200 rounded-xl p-6 space-y-3">
+        <h2 className="text-lg font-semibold text-red-600">
+          Danger Zone
+        </h2>
 
-          {/* Animations */}
-          <div className="flex items-center justify-between">
-            <span className="text-sm">Reduce Animations</span>
-            <input type="checkbox" className="w-4 h-4" />
-          </div>
-        </div>
-      </div>
+        <button className="w-full border rounded-lg px-4 py-2">
+          Logout
+        </button>
 
-      {/* RESET */}
-      <div className="bg-white dark:bg-gray-900 border rounded-xl p-6 flex justify-end">
-        <button
-          onClick={() => {
-            localStorage.clear();
-            window.location.reload();
-          }}
-          className="text-red-600 hover:underline text-sm"
-        >
-          Reset to default
+        <button className="w-full bg-red-600 hover:bg-red-700 text-white rounded-lg px-4 py-2">
+          Delete Account
         </button>
       </div>
     </div>
+  );
+}
+
+/* ================= SMALL SAFE COMPONENTS ================= */
+
+function Card({ title, children }) {
+  return (
+    <div className="bg-white border rounded-xl p-6 space-y-4">
+      <h2 className="text-lg font-semibold text-gray-800">
+        {title}
+      </h2>
+      {children}
+    </div>
+  );
+}
+
+function Row({ label, children }) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <span className="text-gray-600">{label}</span>
+      {children}
+    </div>
+  );
+}
+
+function Toggle({ label }) {
+  const [on, setOn] = useState(true);
+
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-gray-600">{label}</span>
+      <button
+        onClick={() => setOn(!on)}
+        className={`w-12 h-6 rounded-full ${
+          on ? "bg-blue-600" : "bg-gray-300"
+        }`}
+      >
+        <span
+          className={`block w-5 h-5 bg-white rounded-full transition ${
+            on ? "translate-x-6" : "translate-x-1"
+          }`}
+        />
+      </button>
+    </div>
+  );
+}
+
+function ColorDot() {
+  return (
+    <span className="w-6 h-6 rounded-full bg-gray-300 border cursor-pointer" />
   );
 }
