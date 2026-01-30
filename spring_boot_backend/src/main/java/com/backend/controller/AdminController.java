@@ -44,7 +44,7 @@ public class AdminController {
         );
     }
 
-    /*
+    
     // ================= COMPLAINTS =================
 
     @GetMapping("/complaints")
@@ -53,18 +53,20 @@ public class AdminController {
         getLoggedInAdmin(authentication);
         return ResponseEntity.ok(adminService.dispute());
     }
-
-    @GetMapping("/complaintMoreDetail/{disputeId}")
-    public ResponseEntity<DisputeFullDetailsDTO> getComplaintDetails(
-            Authentication authentication,
-            @PathVariable Long disputeId) {
-
-        getLoggedInAdmin(authentication);
-        return ResponseEntity.ok(
-                adminService.getDisputeFullDetails(disputeId)
-        );
-    }
     
+//    @GetMapping("/complaintMoreDetail/{disputeId}")
+//    public ResponseEntity<DisputeFullDetailsDTO> getComplaintDetails(
+//            Authentication authentication,
+//            @PathVariable Long disputeId) {
+//
+//        getLoggedInAdmin(authentication);
+//        return ResponseEntity.ok(
+//                adminService.getDisputeFullDetails(disputeId)
+//        );
+//    }
+
+   
+    /*
     //i comment
 
 //    @PostMapping("/{disputeId}/response")
@@ -130,7 +132,7 @@ public class AdminController {
         adminService.deactivateServiceProvider(id);
         return ResponseEntity.ok("Service Provider deleted successfully");
     }
-
+   */
     // ================= PAYMENTS =================
 
     @GetMapping("/paymentRecords")
@@ -141,6 +143,8 @@ public class AdminController {
                 adminService.getPaymentList()
         );
     }
+    
+    /*
 
     // ================= CUSTOMERS =================
 

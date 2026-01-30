@@ -1,13 +1,28 @@
 package com.backend.service;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.backend.dtos.AdminDashBoardInfo;
+import com.backend.dtos.AdminSetServiceDTO;
+import com.backend.dtos.DisputeDetailsDTO;
+import com.backend.dtos.DisputeFullDetailsDTO;
+import com.backend.dtos.PaymentBookingUserDTO;
+import com.backend.dtos.ServiceDTO;
+import com.backend.entities.Dispute;
 import com.backend.entities.PaymentStatus;
+import com.backend.entities.ServiceProvider;
+import com.backend.repository.DisputeRepository;
 import com.backend.repository.PaymentRepository;
 import com.backend.repository.ServiceProviderRepository;
 import com.backend.repository.UserRepository;
+import com.backend.dtos.AdminSetServiceDTO;
+import com.backend.dtos.DisputeDetailsDTO;
+import com.backend.dtos.DisputeFullDetailsDTO;
 
 import jakarta.transaction.Transactional;
 
@@ -24,6 +39,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private  DisputeRepository  disputeRepository; 
 
     @Override
     public AdminDashBoardInfo adminInfo(Long adminId) {
@@ -39,7 +56,8 @@ public class AdminServiceImpl implements AdminService {
 
         double totalRevenue =
                 paymentRepository.getTotalAmountByStatus(PaymentStatus.SUCCESS);
-
+       
+        
         return new AdminDashBoardInfo(
                 totalServiceProviders,
                 totalRevenue,
@@ -50,50 +68,90 @@ public class AdminServiceImpl implements AdminService {
 	    }
 
 	    
-	    /*
-
+	    
+   
 	    // ================= COMPLAINTS =================
 
 	    public List<DisputeDetailsDTO> dispute() {
 	        return disputeRepository.fetchDisputeDetails();
 	    }
+	    
+	    
+//	    @Override
+//	    public DisputeFullDetailsDTO getDisputeFullDetails(Long disputeId) {
+//
+//	        Dispute dispute = disputeRepository
+//	                .findDisputeWithAllJoins(disputeId)
+//	                .orElseThrow(() -> new RuntimeException("Dispute not found"));
+//
+//	        ServiceProvider sp = dispute.getBooking().getServiceProvider();
+//
+//	        DisputeFullDetailsDTO dto = new DisputeFullDetailsDTO();
+//
+//	        /* ================= DISPUTE ================= 
+//	        dto.setDisputeId(dispute.getId());
+//	        dto.setDisputeDescription(dispute.getDescription());
+//	        dto.setDisputeStatus(dispute.getStatus());
+//	        dto.setDisputeCreatedOn(dispute.getCreatedOn());
+//	        dto.setDisputeUpdatedOn(dispute.getUpdatedOn());
+//
+//	        /* ================= CUSTOMER ================= */
+//	        dto.setCustomerId(dispute.getRaisedBy().getId());
+//	        dto.setCustomerFirstName(dispute.getRaisedBy().getFirstName());
+//	        dto.setCustomerLastName(dispute.getRaisedBy().getLastName());
+//	        dto.setCustomerEmail(dispute.getRaisedBy().getEmail());
+//	        dto.setCustomerPhone(dispute.getRaisedBy().getPhone());
+//	        dto.setCustomerStreet(dispute.getRaisedBy().getStreet());
+//	        dto.setCustomerCity(dispute.getRaisedBy().getCity());
+//	        dto.setCustomerState(dispute.getRaisedBy().getState());
+//	        dto.setCustomerPincode(dispute.getRaisedBy().getPincode());
+//	        dto.setCustomerDob(dispute.getRaisedBy().getDob());
+//	        dto.setCustomerGender(dispute.getRaisedBy().getGender());
+//	        dto.setCustomerStatus(dispute.getRaisedBy().getStatus());
+//
+//	        /* ================= BOOKING ================= */
+//	        dto.setBookingId(dispute.getBooking().getId());
+//	        dto.setScheduledAt(dispute.getBooking().getScheduledAt());
+//	        dto.setPrice(dispute.getBooking().getPrice());
+//	        dto.setBookingStatus(dispute.getBooking().getStatus());
+//	        dto.setRejectionReason(dispute.getBooking().getRejectionReason());
+//
+//	        /* ================= SERVICE PROVIDER ================= */
+//	        dto.setServiceProviderId(sp.getId());
+//	        dto.setGovIdType(sp.getGovIdType());
+//	        dto.setGovId(sp.getGovId());
+//	        dto.setVerificationStatus(sp.isVerificationStatus());
+//	        dto.setCertification(sp.getCertification());
+//
+//	        /* ================= PROVIDER USER ================= */
+//	        dto.setProviderUserId(sp.getUser().getId());
+//	        dto.setProviderFirstName(sp.getUser().getFirstName());
+//	        dto.setProviderLastName(sp.getUser().getLastName());
+//	        dto.setProviderEmail(sp.getUser().getEmail());
+//	        dto.setProviderPhone(sp.getUser().getPhone());
+//
+//	        /* ================= SERVICES ================= */
+//	        dto.setServices(mapServices(sp));
 
-	    @Transactional(readOnly = true)
-	    public DisputeFullDetailsDTO getDisputeFullDetails(Long disputeId) {
 
-	        Dispute dispute = disputeRepository
-	                .findDisputeWithAllJoins(disputeId)
-	                .orElseThrow(() ->
-	                        new RuntimeException("Dispute not found"));
 
-	        ServiceProvider sp = dispute.getBooking().getServiceProvider();
 
-	        Set<ServiceDTO> services = sp.getServices()
-	                .stream()
-	                .map(s -> new ServiceDTO(s.getId(), s.getName()))
-	                .collect(Collectors.toSet());
 
-	        DisputeFullDetailsDTO dto = new DisputeFullDetailsDTO();
-	        dto.setDisputeId(dispute.getId());
-	        dto.setDisputeDescription(dispute.getDescription());
-	        dto.setDisputeStatus(dispute.getStatus());
+//	        /* ================= RESOLVED BY (ADMIN) ================= */
+//	        if (dispute.getResolvedBy() != null) {
+//	            dto.setResolvedById(dispute.getResolvedBy().getId());
+//	            dto.setResolvedByName(
+//	                    dispute.getResolvedBy().getFirstName() + " " +
+//	                    dispute.getResolvedBy().getLastName()
+//	            );
+//	        }
+//
+//	        return dto;
+//	    }
 
-	        dto.setCustomerFirstName(dispute.getRaisedBy().getFirstName());
-	        dto.setCustomerLastName(dispute.getRaisedBy().getLastName());
-	        dto.setCustomerEmail(dispute.getRaisedBy().getEmail());
-	        dto.setCustomerPhone(dispute.getRaisedBy().getPhone());
+	    
 
-	        dto.setBookingId(dispute.getBooking().getId());
-	        dto.setPrice(dispute.getBooking().getPrice());
-	        dto.setBookingStatus(dispute.getBooking().getStatus());
-
-	        dto.setServiceProviderId(sp.getId());
-	        dto.setVerificationStatus(sp.isVerificationStatus());
-	        dto.setServices(services);
-
-	        return dto;
-	    }
-
+	    /*
 	    // ================= SERVICE PROVIDERS =================
 
 	    public List<ServiceProviderResponseDTO> getAllUnVerifiedServiceProviders() {
@@ -122,12 +180,14 @@ public class AdminServiceImpl implements AdminService {
 	            throw new RuntimeException("Service Provider not found");
 	        }
 	    }
-
+           */
 	    // ================= PAYMENTS =================
 
 	    public List<PaymentBookingUserDTO> getPaymentList() {
 	        return paymentRepository.fetchPaymentBookingUserDetails();
 	    }
+	    
+	    /*
 
 	    // ================= USERS =================
 
