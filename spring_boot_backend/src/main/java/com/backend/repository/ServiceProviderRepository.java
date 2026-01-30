@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.backend.dto.ServiceProviderDetailsDTO;
 import com.backend.dto.ServiceProviderResponseDTO;
+import com.backend.entities.Booking;
 import com.backend.dtos.Booking_1_provider_detailsDTO;
 import com.backend.entities.ServiceProvider;
 
@@ -56,6 +57,7 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
     	    WHERE sp.verificationStatus = false
     	""")
     	List<ServiceProviderResponseDTO> findUnVerifiedProviders();
+    
 
     @Query("""
     	    SELECT new com.backend.dto.ServiceProviderDetailsDTO(
@@ -100,12 +102,15 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
     """)
     int activateServiceProvider(@Param("serviceProviderId") Long serviceProviderId)
 
+    
 
     @Query("SELECT p FROM ServiceProvider p " +
             "LEFT JOIN FETCH p.services s " +
             "LEFT JOIN FETCH s.category " + // Added this line to fetch categories
             "WHERE p.id = :id")
     Optional<ServiceProvider> findByIdWithServices(@Param("id") Long id);
+
+	Optional<ServiceProvider> findByUserId(Long userId);
     
     // Booking API to get service providers for certain service
     @Query(value = """

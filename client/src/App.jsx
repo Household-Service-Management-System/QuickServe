@@ -51,6 +51,8 @@ import CustomerSettings from "./pages/customer/Settings";
 import ServicesByCategory from "./pages/Home/ServiceByCategories";
 import ServiceDetails from "./pages/Home/ServiceDetails";
 
+import ProtectedRoute from "./routes/ProtectedRoute";
+import Unauthorized from "./pages/Unauthorized";
 
 function App() {
 
@@ -75,7 +77,17 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        <Route path="/user" element={<UserLayout />}>
+
+
+
+        {/* <Route
+          path="/customer"
+          element={
+            <ProtectedRoute allowedRoles={["ROLE_USER"]}>
+              <CustomerLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<UserDashboard />} />
           <Route path="services" element={<ServicesList />} />
           <Route path="service/:id" element={<ServiceDetail />} />
@@ -83,7 +95,7 @@ function App() {
           <Route path="bookings" element={<MyBookings />} />
           <Route path="payments" element={<Payments />} />
           <Route path="profile" element={<Profile />} />
-        </Route>
+        </Route> */}
 
         {/* Home page routes  */}
         <Route
@@ -96,7 +108,17 @@ function App() {
           element={<ServiceDetails />}
         />
 
-        <Route path="/customer" element={<CustomerLayout />}>
+        <Route path="/unauthorized" element={<Unauthorized />} />
+
+
+        <Route
+          path="/customer"
+          element={
+            <ProtectedRoute allowedRoles={["ROLE_USER"]}>
+              <CustomerLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Dashboard />} />
           <Route path="bookings" element={<CustomerBookings />} />
           <Route path="payments" element={<CustomerPayments />} />
@@ -105,23 +127,39 @@ function App() {
           <Route path="settings" element={<CustomerSettings />} />
         </Route>
 
-        <Route path="/service-provider" element={<ServiceProviderLayout />}>
+
+
+        <Route
+          path="/service-provider"
+          element={
+            <ProtectedRoute allowedRoles={["ROLE_SERVICEPROVIDER"]}>
+              <ServiceProviderLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<ServiceProviderDashboard />} />
           <Route path="requests" element={<ServiceRequest />} />
           <Route path="services" element={<ManageServices />} />
-
           <Route path="services/add" element={<AddService />} />
           <Route path="services/edit/:id" element={<EditService />} />
-
           <Route path="payments" element={<ViewPayments />} />
           <Route path="profile" element={<ServiceProviderProfile />} />
-
           <Route path="documents" element={<Documents />} />
           <Route path="support" element={<Support />} />
           <Route path="settings" element={<Settings />} />
         </Route>
 
-        <Route path="/admin">
+
+
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<AdminDashboard />} />
           <Route path="customer" element={<Customer />} />
           <Route path="serviceProvider" element={<ServiceProvider />} />

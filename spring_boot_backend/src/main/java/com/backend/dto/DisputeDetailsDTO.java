@@ -1,6 +1,7 @@
 package com.backend.dto;
 
 import com.backend.entities.DisputeStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -8,7 +9,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class DisputeDetailsDTO {
 
-    private String firstName;
+    
+	private String firstName;
     private String lastName;
     private String email;
     private String phone;

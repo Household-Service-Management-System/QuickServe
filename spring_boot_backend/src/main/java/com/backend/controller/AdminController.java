@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +25,9 @@ import com.backend.entities.DisputeResponse;
 import com.backend.entities.Role;
 import com.backend.entities.ServiceProvider;
 import com.backend.entities.User;
+import com.backend.dto.ServiceProviderDetailsDTO;
+import com.backend.dto.ServiceProviderResponseDTO;
+import com.backend.entities.ServiceProvider;
 import com.backend.service.AdminService;
 
 import lombok.RequiredArgsConstructor;
@@ -130,6 +135,19 @@ public class AdminController {
 
     
 
+    }
+    
+//     @GetMapping("/serviceProviderDetail/{userId}")
+//     public ResponseEntity<ServiceProviderDetailsDTO> serviceProviderDetail(
+//             @PathVariable Long userId
+//     ) {
+    	
+//         return ResponseEntity.ok(
+//         		adminService.getServiceProviderDetails(userId)
+//         );
+//     }
+    
+  
 
 
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.backend.dto.DisputeComplaintDTO;
@@ -34,6 +35,7 @@ public interface DisputeRepository extends JpaRepository<Dispute, Long> {
 		    JOIN d.raisedBy u
 		""")
 		List<DisputeDetailsDTO> fetchDisputeDetails();
+         
 	@Query("""
 		    SELECT d
 		    FROM Dispute d
@@ -61,10 +63,14 @@ public interface DisputeRepository extends JpaRepository<Dispute, Long> {
             @Param("disputeId") Long disputeId,
             @Param("status") DisputeStatus status
     );
+	
+	
 
 
 	List<Dispute> findAllByRaisedById(Long id);
 
 	Optional<Dispute> findByBookingId(Long id);
+	
+	List<Dispute> findByRaisedById(Long userId);
 }
 

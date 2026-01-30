@@ -1,3 +1,4 @@
+
 package com.backend.controller;
 
 import java.util.List;
@@ -5,20 +6,20 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.backend.dtos.*;
+import com.backend.entities.ServiceProvider;
+import com.backend.repository.ServiceProviderRepository;
 import com.backend.dtos.Booking_1_provider_detailsDTO;
 import com.backend.dtos.CategoryResponseDTO;
 import com.backend.dtos.PaymentHistoryDTO;
@@ -27,169 +28,194 @@ import com.backend.dtos.ServiceProviderBookingResponseDTO;
 import com.backend.dtos.ServiceProviderDashboardDTO;
 import com.backend.dtos.ServiceProviderProfileUpdateDTO;
 import com.backend.service.ServiceProviderService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 
-import com.backend.dtos.ServiceProviderUpcomingBookingDTO;
+import io.jsonwebtoken.Claims;
+import org.springframework.data.domain.Page;
 
 @RestController
 @RequestMapping("/service-provider")
 public class ServiceProviderController {
 
-    private final ServiceProviderService serviceProviderService;
+    @Autowired
+    private ServiceProviderService serviceProviderService;
 
     @Autowired
-    public ServiceProviderController(ServiceProviderService serviceProviderService) {
-        this.serviceProviderService = serviceProviderService;
+    private ServiceProviderRepository serviceProviderRepo;
+
+    
+      //Just a helper method to get the logged-in service provider
+    
+    private ServiceProvider getLoggedInProvider(Authentication authentication) {
+        Claims claims = (Claims) authentication.getPrincipal();
+        Long userId = ((Number) claims.get("userId")).longValue();
+
+        return serviceProviderRepo.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Service provider not found"));
     }
 
-	
-	//All below endpoints are for Service Provider Dashboard
-	
-	//1. It is for the Ist upper portion : revenue and all for a particular service-provider  
-    @GetMapping("/dashboard/{id}")
-    public ResponseEntity<ServiceProviderDashboardDTO> getProviderDashboard(@PathVariable Long id) {
-        return ResponseEntity.ok(serviceProviderService.getDashboardSummary(id));
+   //Dashboard
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<ServiceProviderDashboardDTO> getProviderDashboard(
+            Authentication authentication) {
+
+        ServiceProvider provider = getLoggedInProvider(authentication);
+        return ResponseEntity.ok(
+                serviceProviderService.getDashboardSummary(provider.getId())
+        );
     }
-    
-//    @GetMapping
-//    public ResponseEntity<List<CategoryResponseDTO>> getAllCategories() {
-//    return ResponseEntity.ok(categoryService.getAllCategories());
-//    }
-    
-    //2. It is for Mid portion : upcoming bookings for a particular service-provider 
-    @GetMapping("/bookings/{id}/upcoming")
+
+    @GetMapping("/dashboard/popular-services")
+    public ResponseEntity<List<PopularServiceDTO>> getPopularServices(
+            Authentication authentication) {
+
+        ServiceProvider provider = getLoggedInProvider(authentication);
+        return ResponseEntity.ok(
+                serviceProviderService.getPopularServices(provider.getId())
+        );
+    }
+
+   //bookings
+
+    @GetMapping("/bookings/upcoming")
     public ResponseEntity<Page<ServiceProviderUpcomingBookingDTO>> getUpcomingBookings(
-            @PathVariable Long id,
+            Authentication authentication,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size) {
 
+        ServiceProvider provider = getLoggedInProvider(authentication);
         return ResponseEntity.ok(
-            ServiceProviderService.getUpcomingBookings(id, page, size)
+                serviceProviderService.getUpcomingBookings(provider.getId(), page, size)
         );
     }
 
-    
-    @GetMapping("/dashboard/{id}/popular-services")
-    public ResponseEntity<List<PopularServiceDTO>> getPopularServices(
-            @PathVariable Long id) {
+    @GetMapping("/bookings")
+    public List<ServiceProviderBookingResponseDTO> getAllBookings(
+            Authentication authentication) {
 
-        return ResponseEntity.ok(
-            ServiceProviderService.getPopularServices(id)
-        );
+        ServiceProvider provider = getLoggedInProvider(authentication);
+        return serviceProviderService.getAllBookings(provider.getId());
     }
 
-    
-    
-    
-    @GetMapping("/bookings/{id}")
-    public List<ServiceProviderBookingResponseDTO> getBookings(@PathVariable Long id) {
-        return ServiceProviderService.getAllBookings(id);
-    }
-    
-    
-    // GET /service-provider/bookings/details/{bookingId}
     @GetMapping("/bookings/details/{bookingId}")
     public ResponseEntity<ServiceProviderBookingResponseDTO> getBookingDetails(
             @PathVariable Long bookingId) {
 
         return ResponseEntity.ok(
-            ServiceProviderService.getSingleBookingDetails(bookingId)
+                serviceProviderService.getSingleBookingDetails(bookingId)
         );
     }
 
-    
-    @PatchMapping("/bookings/{id}/accept")
-    public ResponseEntity<String> acceptBooking(@PathVariable Long id) {
-        serviceProviderService.acceptBooking(id);
+    @PatchMapping("/bookings/{bookingId}/accept")
+    public ResponseEntity<String> acceptBooking(@PathVariable Long bookingId) {
+        serviceProviderService.acceptBooking(bookingId);
         return ResponseEntity.ok("Booking accepted successfully");
     }
 
-    @PatchMapping("/bookings/{id}/reject")
+    @PatchMapping("/bookings/{bookingId}/reject")
     public ResponseEntity<String> rejectBooking(
-            @PathVariable Long id,
+            @PathVariable Long bookingId,
             @RequestBody String reason) {
 
-        serviceProviderService.rejectBooking(id, reason);
+        serviceProviderService.rejectBooking(bookingId, reason);
         return ResponseEntity.ok("Booking rejected successfully");
     }
-    
-    
-    
-    
-    
-    @GetMapping("/payments/{providerId}")
-    public ResponseEntity<List<PaymentHistoryDTO>> getPaymentHistory(@PathVariable Long providerId) {
-        return ResponseEntity.ok(ServiceProviderService.getPaymentHistory(providerId));
+
+    //payments
+
+    @GetMapping("/payments")
+    public ResponseEntity<List<PaymentHistoryDTO>> getPaymentHistory(
+            Authentication authentication) {
+
+        ServiceProvider provider = getLoggedInProvider(authentication);
+        return ResponseEntity.ok(
+                serviceProviderService.getPaymentHistory(provider.getId())
+        );
     }
-    
-    
- // GET /service-provider/payments/{id}/search?query=rohit&filter=This month
-    @GetMapping("/payments/{id}/search")
+
+    @GetMapping("/payments/search")
     public ResponseEntity<List<PaymentHistoryDTO>> searchPayments(
-            @PathVariable Long id,
+            Authentication authentication,
             @RequestParam(required = false) String query,
             @RequestParam(defaultValue = "All") String filter) {
-        return ResponseEntity.ok(ServiceProviderService.getFilteredPayments(id, query, filter));
-    }
-    
-    
-   
-    @GetMapping("/profile/{id}")
-    public ResponseEntity<ServiceProviderProfileUpdateDTO> getProfile(
-            @PathVariable Long id) {
 
+        ServiceProvider provider = getLoggedInProvider(authentication);
         return ResponseEntity.ok(
-            ServiceProviderService.getProfile(id)
+                serviceProviderService.getFilteredPayments(
+                        provider.getId(), query, filter)
+        );
+    }
+
+    //profile
+
+    @GetMapping("/profile")
+    public ResponseEntity<ServiceProviderProfileUpdateDTO> getProfile(
+            Authentication authentication) {
+
+        ServiceProvider provider = getLoggedInProvider(authentication);
+        return ResponseEntity.ok(
+                serviceProviderService.getProfile(provider.getId())
+        );
+    }
+
+//    @PutMapping("/profile")
+//    public ResponseEntity<String> updateProfile(
+//            Authentication authentication,
+//            @RequestBody ServiceProviderProfileUpdateDTO profileDto) {
+//
+//        ServiceProvider provider = getLoggedInProvider(authentication);
+//        serviceProviderService.updateProfile(provider.getId(), profileDto);
+//        return ResponseEntity.ok("Profile updated successfully");
+//    }
+
+    @PutMapping(value = "/profile", consumes = "multipart/form-data")
+    public ResponseEntity<String> updateProfile(
+            Authentication authentication,
+            @RequestPart("data") ServiceProviderProfileUpdateDTO profileDto,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+
+        ServiceProvider provider = getLoggedInProvider(authentication);
+        serviceProviderService.updateProfile(provider.getId(), profileDto, image);
+        return ResponseEntity.ok("Profile updated successfully");
+    }
+
+    //available servic
+    @GetMapping("/services")
+    public ResponseEntity<Set<com.backend.entities.Service>> getMyServices(
+            Authentication authentication) {
+
+        ServiceProvider provider = getLoggedInProvider(authentication);
+        return ResponseEntity.ok(
+                serviceProviderService.getProviderServices(provider.getId())
         );
     }
 
     
- // Endpoint: PUT /service-provider/profile/{id}
-    @PutMapping("/profile/{id}")
-    public ResponseEntity<String> updateProfile(
-            @PathVariable Long id, 
-            @RequestBody ServiceProviderProfileUpdateDTO profileDto) {
-        
-        ServiceProviderService.updateProfile(id, profileDto);
-        return ResponseEntity.ok("Profile updated successfully!");
-    }
-    
-    
-    @PutMapping(value = "/profile/{id}", consumes = "multipart/form-data")
-    public ResponseEntity<String> updateProfile(
-            @PathVariable Long id,
-            @RequestPart("data") ServiceProviderProfileUpdateDTO profileDto,
-            @RequestPart(value = "image", required = false) MultipartFile image) {
+    //manage services
+    @PostMapping("/services/{serviceId}")
+    public ResponseEntity<String> addService(
+            Authentication authentication,
+            @PathVariable Long serviceId) {
 
-        ServiceProviderService.updateProfile(id, profileDto, image);
-        return ResponseEntity.ok("Profile updated successfully!");
-    }
-
- 
-    @GetMapping("/{id}/services")
-    public ResponseEntity<Set<com.backend.entities.Service>> getMyServices(@PathVariable Long id) {
-        return ResponseEntity.ok(ServiceProviderService.getProviderServices(id));
-    }
-
-   
-    @PostMapping("/{id}/services/{serviceId}")
-    public ResponseEntity<String> addSkill(@PathVariable Long id, @PathVariable Long serviceId) {
-        ServiceProviderService.addServiceToProvider(id, serviceId);
+        ServiceProvider provider = getLoggedInProvider(authentication);
+        serviceProviderService.addServiceToProvider(provider.getId(), serviceId);
         return ResponseEntity.ok("Service added to your profile");
     }
 
-  
-    @DeleteMapping("/{id}/services/{serviceId}")
-    public ResponseEntity<String> removeSkill(@PathVariable Long id, @PathVariable Long serviceId) {
-        ServiceProviderService.removeServiceFromProvider(id, serviceId);
+    
+    //remove service
+    @DeleteMapping("/services/{serviceId}")
+    public ResponseEntity<String> removeService(
+            Authentication authentication,
+            @PathVariable Long serviceId) {
+
+        ServiceProvider provider = getLoggedInProvider(authentication);
+        serviceProviderService.removeServiceFromProvider(provider.getId(), serviceId);
         return ResponseEntity.ok("Service removed from your profile");
     }
+}
     
     
     
 
-    
-}
+ 
