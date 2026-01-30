@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class AdminDashBoardInfo{
 
     private Long totalServiceProviders;
-    private Long totalRevenue;
+    private Double totalRevenue;
     private Long totalCustomers;
     private Long pendingRequests;
 }

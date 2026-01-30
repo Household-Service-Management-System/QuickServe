@@ -3,12 +3,16 @@ package com.backend.service;
 import com.backend.dtos.ServiceProviderDashboardDTO;
 import com.backend.dtos.ServiceProviderProfileUpdateDTO;
 import com.backend.dtos.ServiceProviderDashboardDTO;
+
+import com.backend.dtos.ServiceProviderBookingResponseDTO;
+
 import com.backend.custom_exceptions.ResourceNotFoundException;
 import com.backend.dtos.Booking_1_provider_detailsDTO;
 import com.backend.dtos.PaymentHistoryDTO;
 import com.backend.dtos.PopularServiceDTO;
 import com.backend.dtos.ServiceProviderBookingResponseDTO;
 import com.backend.entities.Booking;
+ 
 import com.backend.entities.BookingStatus;
 import com.backend.entities.ServiceProvider;
 import com.backend.entities.User;
@@ -149,6 +153,13 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
             booking.getPrice(),
             booking.getStatus()
         );
+    }
+
+
+
+    @Override
+    public void updateBookingStatus(Long bookingId, String status) {
+        // We will implement the Accept/Reject logic here next!
     }
 
 
