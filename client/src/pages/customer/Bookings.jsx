@@ -1,38 +1,38 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
-const USER_ID = 4; // replace later with auth
+import {
+  getCustomerBookings,
+  getCustomerPayments,
+  changeBookingStatus,
+  addPaymentByBooking,
+  createRazorpayOrder,
+} from "../../api/customerService";
 
 export default function CustomerBookings() {
   const [bookings, setBookings] = useState([]);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [payingId, setPayingId] = useState(null);
-
-  /* ================= LOAD RAZORPAY ================= */
-  const loadRazorpay = () =>
-    new Promise((resolve) => {
-      if (window.Razorpay) return resolve(true);
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
+  const [error, setError] = useState("");
 
   /* ================= FETCH DATA ================= */
+
   const fetchData = async () => {
     try {
-      const [bookingRes, paymentRes] = await Promise.all([
-        axios.get(`http://localhost:8080/customer/bookings/${USER_ID}`),
-        axios.get(`http://localhost:8080/customer/paymentByUser/${USER_ID}`),
-      ]);
+      setLoading(true);
+      setError("");
 
-      setBookings(bookingRes.data || []);
-      setPayments(paymentRes.data || []);
+      const bookingsRes = await getCustomerBookings();
+      const paymentsRes = await getCustomerPayments();
+
+      console.log("BOOKINGS API RESPONSE ", bookingsRes.data);
+      console.log("PAYMENTS API RESPONSE ", paymentsRes.data);
+
+      setBookings(Array.isArray(bookingsRes.data) ? bookingsRes.data : []);
+      setPayments(Array.isArray(paymentsRes.data) ? paymentsRes.data : []);
     } catch (err) {
-      console.error("Failed to load data", err);
+      console.error("FETCH FAILED ", err);
+      setError("Failed to load bookings. Check console.");
     } finally {
       setLoading(false);
     }
@@ -43,95 +43,79 @@ export default function CustomerBookings() {
   }, []);
 
   /* ================= HELPERS ================= */
+
   const isPaid = (bookingId) =>
-  payments.some(
-    (p) =>
-      p.bookingId === bookingId &&
-      p.status &&
-      p.status.toUpperCase() === "SUCCESS"
-  );
-
-  const statusBadge = (status) => {
-    const map = {
-      PENDING: "bg-yellow-100 text-yellow-700",
-      ACCEPTED: "bg-blue-100 text-blue-700",
-      COMPLETED: "bg-green-100 text-green-700",
-      CANCELLED: "bg-gray-200 text-gray-700",
-      REJECTED: "bg-red-100 text-red-700",
-    };
-    return map[status] || "bg-gray-100";
-  };
-
-  /* ================= CANCEL ================= */
-  const cancelBooking = async (id) => {
-    await axios.put(
-      `http://localhost:8080/customer/booking/${id}/CANCELLED`
+    payments.some(
+      (p) =>
+        (p.bookingId === bookingId || p.booking?.bookingId === bookingId) &&
+        p.status === "SUCCESS"
     );
-    fetchData();
-  };
 
-  /* ================= PAY ================= */
-  const payNow = async (booking) => {
-  setPayingId(booking.bookingId);
+  /* ================= UI STATES ================= */
 
+  if (loading) {
+    return <p className="p-6 text-gray-500">Loading bookings…</p>;
+  }
+
+  if (error) {
+    return <p className="p-6 text-red-600">{error}</p>;
+  }
+
+
+  const loadRazorpay = () =>
+  new Promise((resolve) => {
+    if (window.Razorpay) return resolve(true);
+
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+
+const handlePay = async (booking) => {
   const loaded = await loadRazorpay();
   if (!loaded) {
-    alert("Razorpay failed to load");
-    setPayingId(null);
+    alert("Razorpay SDK failed to load");
     return;
   }
 
   try {
-    /* 1️⃣ Create Razorpay order */
-    const orderRes = await axios.post(
-      "http://localhost:8080/payment/create-order",
-      {
-        bookingId: booking.bookingId,
-        amount: booking.price,
-      }
+    // Create Razorpay order
+    const orderRes = await createRazorpayOrder(
+      booking.bookingId || booking.id,
+      booking.price || booking.amount
     );
 
     const order = orderRes.data;
 
-    /* 2️⃣ Razorpay options */
+    // Razorpay checkout
     const options = {
       key: order.razorpayKey,
       amount: order.amount,
       currency: order.currency,
-      name: "QuickServe",
-      description: booking.service,
       order_id: order.orderId,
+      name: "QuickServe",
+      description: `Booking #${booking.bookingId}`,
 
-      handler: async (response) => {
-        try {
-          /* 3️⃣ SAVE PAYMENT (DTO aligned) */
-          await axios.post(
-            "http://localhost:8080/customer/paymentAddByBooking",
-            {
-              bookingId: booking.bookingId,
-              amount: booking.price,
-              method: "UPI", // ✅ enum-safe
-              transactionId: response.razorpay_payment_id,
-              status: "SUCCESS",
-            }
-          );
+      handler: async function (response) {
+        // 3️⃣ Save payment
+        await addPaymentByBooking({
+          bookingId: booking.bookingId || booking.id,
+          amount: booking.price || booking.amount,
+          method: "UPI",
+          transactionId: response.razorpay_payment_id,
+          status: "SUCCESS",
+        });
 
-          /* 4️⃣ UPDATE BOOKING STATUS */
-          await axios.put(
-            `http://localhost:8080/customer/booking/${booking.bookingId}/COMPLETED`
-          );
+        // Update booking status
+        await changeBookingStatus(
+          booking.bookingId || booking.id,
+          "COMPLETED"
+        );
 
-          alert("Payment successful 🎉");
-
-          /* 5️⃣ Refresh UI */
-          setTimeout(() => {
-            fetchData();
-          }, 300);
-
-        } catch (err) {
-          console.error("Post-payment error", err);
-          alert("Payment saved failed");
-        }
+        //Refresh table
+        fetchData();
       },
 
       theme: { color: "#2563eb" },
@@ -139,114 +123,78 @@ export default function CustomerBookings() {
 
     new window.Razorpay(options).open();
   } catch (err) {
-    console.error(err);
+    console.error("Payment failed", err);
     alert("Payment failed");
-  } finally {
-    setPayingId(null);
   }
 };
 
 
-  /* ================= UI ================= */
   return (
-    <div className="p-4 md:p-6">
-      <h1 className="text-2xl font-semibold mb-4">My Bookings</h1>
+    <div className="p-6">
+      <h1 className="text-xl font-semibold mb-4">My Bookings</h1>
 
-      <div className="bg-white border rounded-xl overflow-x-auto">
-        <table className="min-w-full text-sm">
-          <thead className="bg-gray-100">
+      {/*TABLE ALWAYS VISIBLE */}
+      <table className="w-full text-sm bg-white border rounded-lg">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="p-3">ID</th>
+            <th>Service</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Payment</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {bookings.length === 0 && (
             <tr>
-              <th className="p-3 text-left">Booking</th>
-              <th className="p-3 text-left">Service</th>
-              <th className="p-3 text-left">Provider</th>
-              <th className="p-3 text-left">Date</th>
-              <th className="p-3 text-left">Price</th>
-              <th className="p-3 text-left">Status</th>
-              <th className="p-3 text-left">Payment</th>
-              <th className="p-3 text-left">Action</th>
+              <td colSpan="6" className="p-4 text-center text-gray-500">
+                No bookings found
+              </td>
             </tr>
-          </thead>
+          )}
 
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan="8" className="p-6 text-center text-gray-500">
-                  Loading...
+          {bookings.map((b, index) => {
+            const bookingId = b.bookingId || b.id;
+            const service =
+              b.service || b.serviceName || b.categoryName || "—";
+            const price = b.price || b.amount || 0;
+            const status = b.status || b.bookingStatus || "—";
+
+            return (
+              <tr key={bookingId || index} className="border-t">
+                <td className="p-3">#{bookingId}</td>
+                <td>{service}</td>
+                <td>₹{price}</td>
+                <td>{status}</td>
+
+                <td>
+                  {isPaid(bookingId) ? (
+                    <span className="text-green-600 flex items-center gap-1">
+                      <CheckCircleIcon className="w-4 h-4" />
+                      Paid
+                    </span>
+                  ) : (
+                    <span className="text-red-500">Unpaid</span>
+                  )}
+                </td>
+
+                <td>
+                  {!isPaid(bookingId) && (
+                    <button
+  className="text-blue-600 underline"
+  onClick={() => handlePay(b)}
+>
+  Pay
+</button>
+                  )}
                 </td>
               </tr>
-            ) : bookings.length === 0 ? (
-              <tr>
-                <td colSpan="8" className="p-6 text-center text-gray-500">
-                  No bookings found
-                </td>
-              </tr>
-            ) : (
-              bookings.map((b) => {
-                const paid = isPaid(b.bookingId);
-
-                return (
-                  <tr key={b.bookingId} className="border-t">
-                    <td className="p-3">#{b.bookingId}</td>
-                    <td className="p-3">{b.service}</td>
-                    <td className="p-3">{b.serviceProvider}</td>
-                    <td className="p-3">
-                      {new Date(b.scheduledAt).toLocaleString()}
-                    </td>
-                    <td className="p-3">₹{b.price}</td>
-                    <td className="p-3">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs ${statusBadge(
-                          b.status
-                        )}`}
-                      >
-                        {b.status}
-                      </span>
-                    </td>
-
-                    {/* PAYMENT STATUS */}
-                    <td className="p-3">
-                      {paid ? (
-                        <span className="flex items-center text-green-600 gap-1">
-                          <CheckCircleIcon className="w-4 h-4" />
-                          Paid
-                        </span>
-                      ) : (
-                        <span className="text-yellow-600">Unpaid</span>
-                      )}
-                    </td>
-
-                    {/* ACTION */}
-                    <td className="p-3 space-x-3">
-                      {b.status === "PENDING" && (
-                        <button
-                          onClick={() => cancelBooking(b.bookingId)}
-                          className="text-red-600 underline"
-                        >
-                          Cancel
-                        </button>
-                      )}
-
-                      {!paid &&
-                        (b.status === "PENDING" ||
-                          b.status === "ACCEPTED") && (
-                          <button
-                            onClick={() => payNow(b)}
-                            disabled={payingId === b.bookingId}
-                            className="text-blue-600 underline"
-                          >
-                            {payingId === b.bookingId
-                              ? "Processing..."
-                              : "Pay"}
-                          </button>
-                        )}
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
-      </div>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }

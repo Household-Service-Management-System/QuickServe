@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import {
+  GetCustomerProfile,
+  updateCustomerProfile,
+} from "../../api/customerService";
 
-const USER_ID = 8; // TODO: replace with auth
+
 
 export default function CustomerProfile() {
   const [profile, setProfile] = useState({
@@ -26,9 +29,7 @@ export default function CustomerProfile() {
   /* ================= FETCH PROFILE ================= */
   const fetchProfile = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/customer/profile/${USER_ID}`
-      );
+      const res = await GetCustomerProfile();
       setProfile(res.data);
       setPreviewImage(res.data.profileImage || "");
     } catch (err) {
@@ -61,10 +62,7 @@ export default function CustomerProfile() {
     setMessage("");
 
     try {
-      await axios.put(
-        `http://localhost:8080/customer/profile/${USER_ID}`,
-        profile
-      );
+      await updateCustomerProfile(profile, null);
       setMessage("Profile updated successfully");
       setEditMode(false);
     } catch (err) {
@@ -79,7 +77,6 @@ export default function CustomerProfile() {
     return <p className="p-6 text-gray-500">Loading profile...</p>;
   }
 
-  /* ================= UI ================= */
   return (
     <div className="p-4 md:p-6">
       <div className="max-w-5xl mx-auto bg-white border rounded-xl shadow-sm overflow-hidden">
@@ -144,12 +141,10 @@ export default function CustomerProfile() {
             <Input label="Pincode" name="pincode" value={profile.pincode} onChange={handleChange} disabled={!editMode} />
           </div>
 
-          {message && (
-            <p className="mt-4 text-sm text-blue-600">{message}</p>
-          )}
+          {message && <p className="mt-4 text-sm text-blue-600">{message}</p>}
         </div>
 
-        {/* ACTION BAR (NO SCROLL NEEDED) */}
+        {/* ACTION BAR */}
         {editMode && (
           <div className="sticky bottom-0 bg-white border-t px-6 py-4 flex justify-end gap-3">
             <button
@@ -176,7 +171,6 @@ export default function CustomerProfile() {
   );
 }
 
-/* ================= INPUT ================= */
 function Input({ label, name, value, onChange, disabled }) {
   return (
     <div>
