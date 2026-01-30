@@ -42,7 +42,7 @@ export default function AdminDashboard() {
 
         <nav className="menu">
           <Link to="/admin" className="menu-item active">Dashboard</Link>
-          <Link to="/admin/customer" className="menu-item">Customer</Link>
+          <Link to="/admin/complaint" className="menu-item">Complaint</Link>
           <Link to="/admin/serviceProvider" className="menu-item">Service Provider</Link>
           <Link to="/admin/pendingRequest" className="menu-item">Pending Request</Link>
           <Link to="/admin/paymentList" className="menu-item">Payment</Link>
@@ -66,7 +66,7 @@ export default function AdminDashboard() {
 
         <div className="stats-grid">
 
-          <Link to="/admin/serviceProvider" className="stat-link">
+          <Link to="/admin/serviceProviders" className="stat-link">
             <div className="stat-box clickable">
               <h3>Total Service Providers</h3>
               <p className="stat-value">
@@ -84,9 +84,9 @@ export default function AdminDashboard() {
             </div>
           </Link>
 
-          <Link to="/admin/customer" className="stat-link">
+          <Link to="/admin/complaint" className="stat-link">
             <div className="stat-box clickable">
-              <h3>Total Customers</h3>
+              <h3>Total complaint</h3>
               <p className="stat-value">
                 {dashboardData.totalCustomers}
               </p>
