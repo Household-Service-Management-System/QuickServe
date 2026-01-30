@@ -1,0 +1,104 @@
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== LAYOUT ===== */
+.layout {
+  display: flex;
+  height: 100vh;
+  background: #f3f4f7;
+  font-family: Arial, sans-serif;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 230px;
+  background: #0d1b2a;
+  color: white;
+  padding: 25px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.panel-text {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-bottom: 25px;
+}
+
+.menu-item {
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #dce1e7;
+  display: block;
+}
+
+.menu-item:hover,
+.menu-item.active {
+  background: #1b263b;
+}
+
+.logout-btn {
+  margin-top: auto;
+  padding: 12px;
+  background: #4f74d9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ===== CONTENT ===== */
+.content {
+  flex: 1;
+  padding: 30px;
+}
+
+.page-title {
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+/* ===== DETAIL CARD ===== */
+.detail-card {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  width: 70%;
+}
+
+.info-section p {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+/* ===== BACK BUTTON ===== */
+.back-container {
+  margin-top: 20px;
+}
+
+.back-btn {
+  padding: 10px 25px;
+  background: #1b263b;
+  color: white;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: #0d1b2a;
+}
