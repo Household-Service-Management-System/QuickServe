@@ -1,68 +1,334 @@
+// // import "./ServiceProviderDetail.css";
+// // import { Link, useParams, useNavigate } from "react-router-dom";
+// // import { useEffect, useState } from "react";
+// // import {
+// //   getServiceProviderDetail,
+// //   verifyServiceProvider,
+// // } from "../../api/adminService";
+
+// // export default function ServiceProviderDetail() {
+// //   const { id } = useParams();
+// //   const navigate = useNavigate();
+
+// //   const [provider, setProvider] = useState(null);
+// //   const [loading, setLoading] = useState(true);
+// //   const [verifying, setVerifying] = useState(false);
+
+// //   useEffect(() => {
+// //     getServiceProviderDetail(id)
+// //       .then((response) => {
+// //         setProvider(response.data);
+// //       })
+// //       .catch((error) => {
+// //         console.error("Service Provider Detail API error:", error);
+// //         if (error.response?.status === 401) {
+// //           localStorage.removeItem("token");
+// //           navigate("/login");
+// //         }
+// //       })
+// //       .finally(() => setLoading(false));
+// //   }, [id, navigate]);
+
+// //   const handleVerify = async () => {
+// //     try {
+// //       setVerifying(true);
+// //       await verifyServiceProvider(id);
+
+// //       alert("Service Provider verified successfully ✅");
+
+// //       setProvider((prev) => ({
+// //         ...prev,
+// //         verified: true,
+// //       }));
+
+// //       navigate("/admin/pending-requests");
+// //     } catch (error) {
+// //       console.error("Verify error:", error);
+// //       alert("Verification failed ❌");
+// //     } finally {
+// //       setVerifying(false);
+// //     }
+// //   };
+
+// //   if (loading) {
+// //     return <h2 style={{ padding: "20px" }}>Loading Service Provider...</h2>;
+// //   }
+
+// //   if (!provider) {
+// //     return <h2 style={{ padding: "20px" }}>No Data Found</h2>;
+// //   }
+
+// //   return (
+// //     <div className="layout">
+// //       {/* SIDEBAR */}
+// //       <aside className="sidebar">
+// //         <h2 className="logo">QuickServe</h2>
+// //         <p className="panel-text">Admin Panel</p>
+
+// //         <nav className="menu">
+// //           <Link to="/admin/dashboard" className="menu-item">
+// //             Dashboard
+// //           </Link>
+// //           <Link to="/admin/complaint" className="menu-item">
+// //             Complaint
+// //           </Link>
+// //           <Link
+// //             to="/admin/service-providers"
+// //             className="menu-item active"
+// //           >
+// //             Service Provider
+// //           </Link>
+// //           <Link to="/admin/pending-requests" className="menu-item">
+// //             Pending Request
+// //           </Link>
+// //           <Link to="/admin/payment-list" className="menu-item">
+// //             Payment
+// //           </Link>
+// //           <Link to="/admin/settings" className="menu-item">
+// //             Setting
+// //           </Link>
+// //         </nav>
+
+// //         <button
+// //           className="logout-btn"
+// //           onClick={() => {
+// //             localStorage.removeItem("token");
+// //             navigate("/login");
+// //           }}
+// //         >
+// //           Logout
+// //         </button>
+// //       </aside>
+
+// //       {/* MAIN CONTENT */}
+// //       <main className="content">
+// //         <h1 className="page-title">Service Provider Details</h1>
+
+// //         <div className="detail-card">
+// //           <div className="info-section">
+// //             <p>
+// //               <strong>Name:</strong> {provider.firstName}{" "}
+// //               {provider.lastName}
+// //             </p>
+// //             <p>
+// //               <strong>Email:</strong> {provider.email}
+// //             </p>
+// //             <p>
+// //               <strong>Phone:</strong> {provider.phone}
+// //             </p>
+// //             <p>
+// //               <strong>Role:</strong> {provider.role}
+// //             </p>
+// //             <p>
+// //               <strong>Address:</strong> {provider.address || "NA"}
+// //             </p>
+// //             <p>
+// //               <strong>Gov ID Type:</strong> {provider.govIdType}
+// //             </p>
+// //             <p>
+// //               <strong>Gov ID:</strong> {provider.govId}
+// //             </p>
+// //             <p>
+// //               <strong>Certification:</strong>{" "}
+// //               {provider.certification || "Not Uploaded"}
+// //             </p>
+
+// //             {/* VERIFY SECTION */}
+// //             {!provider.verified ? (
+// //               <button
+// //                 className="verify-btn"
+// //                 onClick={handleVerify}
+// //                 disabled={verifying}
+// //               >
+// //                 {verifying ? "Verifying..." : "Verify Provider"}
+// //               </button>
+// //             ) : (
+// //               <p style={{ color: "green", fontWeight: "bold" }}>
+// //                 ✔ Verified
+// //               </p>
+// //             )}
+// //           </div>
+// //         </div>
+
+// //         {/* BACK BUTTON */}
+// //         <div className="back-container">
+// //           <button
+// //             className="back-btn"
+// //             onClick={() => navigate(-1)}
+// //           >
+// //             Back
+// //           </button>
+// //         </div>
+// //       </main>
+// //     </div>
+// //   );
+// // }
+// // src/pages/admin/ServiceProviderDetail.jsx
+
 import "./ServiceProviderDetail.css";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {
+  getServiceProviderDetail,
+  verifyServiceProvider,
+} from "../../api/adminService";
+
 export default function ServiceProviderDetail() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [provider, setProvider] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [verifying, setVerifying] = useState(false);
+
+  // ✅ FETCH SERVICE PROVIDER DETAILS (NO CHANGE)
+  useEffect(() => {
+    getServiceProviderDetail(id)
+      .then((response) => {
+        setProvider(response.data);
+      })
+      .catch((error) => {
+        console.error("Service Provider Detail API error:", error);
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/login");
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [id, navigate]);
+
+  // ✅ VERIFY HANDLER (NO CHANGE IN API)
+  const handleVerify = async () => {
+    try {
+      setVerifying(true);
+      await verifyServiceProvider(id);
+
+      alert("Service Provider verified successfully ✅");
+
+      // update UI state only
+      setProvider((prev) => ({
+        ...prev,
+        verificationStatus: true,
+      }));
+
+      navigate("/admin/pending-requests");
+    } catch (error) {
+      console.error("Verify error:", error);
+      alert("Verification failed ❌");
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  if (loading) {
+    return <h2 style={{ padding: "20px" }}>Loading Service Provider...</h2>;
+  }
+
+  if (!provider) {
+    return <h2 style={{ padding: "20px" }}>No Data Found</h2>;
+  }
+
   return (
     <div className="layout">
-
-      {/* Sidebar */}
+      {/* SIDEBAR (UNCHANGED) */}
       <aside className="sidebar">
         <h2 className="logo">QuickServe</h2>
         <p className="panel-text">Admin Panel</p>
 
-          <nav className="menu">
-          <Link to="/admin" className="menu-item active">Dashboard</Link>
-          <Link to="/admin/customer" className="menu-item">Customer</Link>
-          <Link to="/admin/serviceProvider" className="menu-item">Service Provider</Link>
-          <Link to="/admin/pendingRequest" className="menu-item">Pending Request</Link>
-          <Link to="/admin/paymentList" className="menu-item">Payment</Link>
-          <Link to="/admin/setting" className="menu-item">Setting</Link>
+        <nav className="menu">
+          <Link to="/admin/dashboard" className="menu-item">
+            Dashboard
+          </Link>
+          <Link to="/admin/complaint" className="menu-item">
+            Complaint
+          </Link>
+          <Link
+            to="/admin/service-providers"
+            className="menu-item active"
+          >
+            Service Provider
+          </Link>
+          <Link to="/admin/pending-requests" className="menu-item">
+            Pending Request
+          </Link>
+          <Link to="/admin/payment-list" className="menu-item">
+            Payment
+          </Link>
+          <Link to="/admin/settings" className="menu-item">
+            Setting
+          </Link>
         </nav>
-     <Link to="/admin/logout">
-  <button className="logout-btn">Logout</button>
-</Link>
 
+        <button
+          className="logout-btn"
+          onClick={() => {
+            localStorage.removeItem("token");
+            navigate("/login");
+          }}
+        >
+          Logout
+        </button>
       </aside>
 
       {/* MAIN CONTENT */}
       <main className="content">
+        <h1 className="page-title">Service Provider Details</h1>
 
-        <h1 className="page-title">Dashboard Overview</h1>
-
-        {/* DETAILS CARD */}
         <div className="detail-card">
-
-          {/* LEFT DETAILS */}
           <div className="info-section">
-            <p>Sr/C ID : - 101</p>
-            <p>Name : - AB Worker</p>
-            <p>Rating : - 4.5</p>
-            <p>Date of Joining : - 2023-01-12</p>
-            <p>Contact No : - 9876543210</p>
-            <p>Email : - abworker@gmail.com</p>
-            <p>Date of Termination : - NA</p>
-            <p>Add : - Pune, Maharashtra</p>
-            <p>Document : - worker_doc.pdf</p>
-          </div>
+            <p>
+              <strong>Name:</strong> {provider.firstName}{" "}
+              {provider.lastName}
+            </p>
+            <p>
+              <strong>Email:</strong> {provider.email}
+            </p>
+            <p>
+              <strong>Phone:</strong> {provider.phone}
+            </p>
+            <p>
+              <strong>Role:</strong> {provider.role}
+            </p>
+            <p>
+              <strong>Address:</strong> {provider.address || "NA"}
+            </p>
+            <p>
+              <strong>Gov ID Type:</strong> {provider.govIdType}
+            </p>
+            <p>
+              <strong>Gov ID:</strong> {provider.govId}
+            </p>
+            <p>
+              <strong>Certification:</strong>{" "}
+              {provider.certification || "Not Uploaded"}
+            </p>
 
-          {/* RIGHT IMAGE */}
-          <div className="image-section">
-            <div className="img-box">
-              <img
-                src="https://i.ibb.co/zxCq1rP/smiley.png"
-                alt="profile"
-              />
-            </div>
+            {/* ✅ VERIFY SECTION (ONLY LOGIC CHANGE) */}
+            {!provider.verificationStatus ? (
+              <button
+                className="verify-btn"
+                onClick={handleVerify}
+                disabled={verifying}
+              >
+                {verifying ? "Verifying..." : "Verify Provider"}
+              </button>
+            ) : (
+              <p style={{ color: "green", fontWeight: "bold" }}>
+                ✔ Verified
+              </p>
+            )}
           </div>
-
         </div>
 
         {/* BACK BUTTON */}
-       <div className="back-container">
-  <Link to="/admin">
-    <button className="back-btn">Back</button>
-  </Link>
-</div>
-
+        <div className="back-container">
+          <button
+            className="back-btn"
+            onClick={() => navigate(-1)}
+          >
+            Back
+          </button>
+        </div>
       </main>
     </div>
   );
