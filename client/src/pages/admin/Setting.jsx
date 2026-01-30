@@ -24,8 +24,8 @@ export default function Setting() {
         <nav className="menu">
           <Link to="/admin" className="menu-item">Dashboard</Link>
           <Link to="/admin/customer" className="menu-item">Customer</Link>
-          <Link to="/admin/serviceProvider" className="menu-item">Service Provider</Link>
-          <Link to="/admin/pendingRequest" className="menu-item">Pending Request</Link>
+          <Link to="/admin/service-providers" className="menu-item">Service Provider</Link>
+          <Link to="/admin/pending-requests" className="menu-item">Pending Request</Link>
           <Link to="/admin/payment-list" className="menu-item">Payment</Link>
           <Link to="/admin/setting" className="menu-item active">Setting</Link>
          
