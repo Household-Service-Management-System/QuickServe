@@ -37,3 +37,20 @@ export const getAllServiceProviders = () => {
 export const deleteServiceProvider = (id) => {
   return axiosInstance.delete(`/admin/${id}`);
 };
+
+// ================= COMPLAINT ACTIONS =================
+
+// OPEN → IN_PROGRESS
+export const startComplaint = (id) => {
+  return axiosInstance.put(`/admin/complaints/${id}/start`);
+};
+
+// IN_PROGRESS → RESOLVED
+export const resolveComplaint = (id) => {
+  return axiosInstance.put(`/admin/complaints/${id}/resolve`);
+};
+
+// OPEN → REJECT
+export const rejectComplaint = (id) => {
+  return axiosInstance.put(`/admin/complaints/${id}/reject`);
+};
