@@ -1,10 +1,9 @@
 // Nav.jsx
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
+import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
 const Nav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -30,7 +29,6 @@ const Nav = () => {
 
     navigate("/");
   };
-
   return (
     <nav className="w-full bg-white shadow-md fixed top-0 left-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
@@ -39,7 +37,7 @@ const Nav = () => {
           QuickServe
         </Link>
 
-        <div className="hidden md:flex items-center gap-3 bg-white px-3 py-2 rounded-2xl shadow border border-gray-200 max-w-md w-full">
+        {/* <div className="hidden md:flex items-center gap-3 bg-white px-3 py-2 rounded-2xl shadow border border-gray-200 max-w-md w-full">
           <span className="text-gray-500 text-sm">🔍</span>
           <input
             type="text"
@@ -49,7 +47,7 @@ const Nav = () => {
           <button className="px-4 py-1.5 rounded-xl text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition">
             Search
           </button>
-        </div>
+        </div> */}
 
         {/* Menu Button */}
         <div className="hidden md:flex items-center space-x-6 text-gray-700 font-medium">
@@ -62,6 +60,8 @@ const Nav = () => {
           <Link to="/HowItWorks" className="hover:text-blue-700">
             How It Works
           </Link>
+          {/* {/* <Link to="/about" className="hover:text-green-700">About</Link>
+          <Link to="/support" className="hover:text-green-700">Support</Link> */}
 
           {!isLoggedIn ? (
             <>
@@ -71,7 +71,6 @@ const Nav = () => {
               >
                 Login
               </Link>
-
               <Link
                 to="/signup"
                 className="px-5 py-2 rounded-full bg-blue-700 text-white font-semibold hover:bg-blue-800 transition"
@@ -88,7 +87,6 @@ const Nav = () => {
               >
                 U
               </button>
-
               {/* Dropdown */}
               {userMenuOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border rounded-xl shadow-lg py-2">

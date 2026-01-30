@@ -4,9 +4,10 @@ import axios from "axios";
 import Navbar from "./Nav";
 import Footer from "./Footer";
 import { useNavigate, useLocation } from "react-router-dom";
+import axiosInstance from "../../../src/api/axiosInstance";
 
 const ServiceDetails = () => {
-  const userId = 1; // TODO: replace with logged-in user id from auth
+  // const userId = 1; // TODO: replace with logged-in user id from auth
 
   const { serviceId } = useParams();
 
@@ -34,16 +35,16 @@ const ServiceDetails = () => {
     if (!selectedSlot || !selectedDate || !selectedProvider) return;
 
     const token = localStorage.getItem("token");
-
     if (!token) {
-      alert(" Please login to book a service");
+      navigate("/login", {
+        state: { from: location.pathname },
+      });
       return;
     }
 
     const payload = {
       serviceId: Number(serviceId),
       providerId: selectedProvider,
-      // userId: userId,
       date: selectedDate,
       startTime: selectedSlot.start,
     };
@@ -51,15 +52,16 @@ const ServiceDetails = () => {
     try {
       const res = await axiosInstance.post("/bookings", payload);
 
-      alert(" Service booked successfully!");
-      console.log("Booking response:", res.data);
+      alert("✅ Service booked successfully!");
 
       setSelectedSlot(null);
       setSelectedDate("");
       setSlots([]);
+
+      navigate("/customer/bookings", { replace: true });
     } catch (err) {
       console.error("Booking failed", err);
-      alert(" Failed to book service");
+      alert(err.response?.data?.message || "❌ Booking failed");
     }
   };
 
@@ -217,7 +219,6 @@ const ServiceDetails = () => {
                         });
                         return;
                       }
-
                       fetchProviders();
                     }}
                     disabled={providerLoading}

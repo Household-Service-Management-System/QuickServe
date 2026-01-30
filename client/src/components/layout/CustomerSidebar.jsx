@@ -6,6 +6,7 @@ import {
   LifebuoyIcon,
   Cog6ToothIcon,
   ArrowLeftOnRectangleIcon,
+  ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
 import { NavLink, useNavigate } from "react-router-dom";
 
@@ -40,10 +41,11 @@ export default function CustomerSidebar() {
               to={item.path}
               end
               className={({ isActive }) =>
-                `flex items-center mx-3 px-4 py-2 rounded-lg transition-all ${isActive
-                                ? "bg-gray-800 text-white"
-                                : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                            }`
+                `flex items-center gap-3 mx-3 px-4 py-2 rounded-lg transition-all ${
+                  isActive
+                    ? "bg-gray-800 text-white"
+                    : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                }`
               }
             >
               <Icon className="w-5 h-5" />
@@ -53,7 +55,20 @@ export default function CustomerSidebar() {
         })}
       </nav>
 
-      {/* Logout */}
+      {/* Shop Again Button */}
+      <div className="px-4 pb-3">
+        <button
+          onClick={() => navigate("/")}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2
+          rounded-lg text-sm font-semibold bg-green-600 hover:bg-green-500 transition"
+        >
+          <ShoppingBagIcon className="w-5 h-5" />
+          Shop Again
+        </button>
+      </div>
+
+      {/* Logout (optional) */}
+      {/*
       <div className="p-4 border-t border-blue-600">
         <button
           onClick={() => navigate("/login")}
@@ -64,7 +79,7 @@ export default function CustomerSidebar() {
           Logout
         </button>
       </div>
-
+      */}
     </div>
   );
 }

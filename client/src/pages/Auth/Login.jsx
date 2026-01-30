@@ -1,21 +1,24 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import Nav from "../Home/Nav";
 import Footer from "../Home/Footer";
 import { loginUser } from "../../api/authService";
-import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast"; 
 
 const Login = () => {
-
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [form, setForm] = useState({
     email: "",
     password: "",
-    // role: "customer",
   });
 
+  // where user should go after login
+  const redirectPath = location.state?.from || "/";
+
+  // Yashraj
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -26,19 +29,27 @@ const Login = () => {
         password: form.password,
       });
 
-      // store token
+      // 🔐 Store auth data
       localStorage.setItem("token", res.token);
       localStorage.setItem("role", res.role);
       localStorage.setItem("user", JSON.stringify(res));
 
-      // role-based redirect
-      if (res.role === "ROLE_USER") navigate("/", { replace: true });
-      else if (res.role === "ROLE_SERVICEPROVIDER")
-        navigate("/service-provider", { replace: true });
-      else navigate("/admin", { replace: true });
+      // toast.dismiss(loadingToast);
+      toast.success("Login successful 🎉"); // ✅
 
+      // ✅ Redirect logic
+      if (res.role === "ROLE_ADMIN") {
+        navigate("/admin", { replace: true });
+      } else if (res.role === "ROLE_SERVICEPROVIDER") {
+        navigate("/service-provider", { replace: true });
+      } else {
+        // USER → go back to where they came from (mobile + desktop safe)
+        navigate(redirectPath, { replace: true });
+      }
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      // toast.dismiss(loadingToast);
+      toast.error(
+        err.response?.data?.message || "Invalid email or password ❌");
     }
   };
 
@@ -56,7 +67,7 @@ const Login = () => {
             Login to QuickServe
           </h2>
 
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleLogin}>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email
@@ -67,6 +78,7 @@ const Login = () => {
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your email"
+                required
               />
             </div>
 
@@ -80,26 +92,13 @@ const Login = () => {
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your password"
+                required
               />
             </div>
 
-            {/* <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Login As
-              </label>
-              <select
-                value={form.role}
-                onChange={(e) => setForm({ ...form, role: e.target.value })}
-                className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none bg-white focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="customer">Customer</option>
-                <option value="provider">Service Provider</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div> */}
-
-            <button className="w-full bg-blue-600 text-white py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition"
-              onClick={handleLogin}
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition"
             >
               Login
             </button>
