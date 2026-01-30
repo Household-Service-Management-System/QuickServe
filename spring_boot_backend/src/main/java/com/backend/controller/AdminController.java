@@ -180,4 +180,40 @@ public class AdminController {
         return ResponseEntity.ok("Profile updated successfully");
     }
     */
+    
+    
+ // ================= COMPLAINT ACTIONS =================
+
+ // START complaint (OPEN → IN_PROGRESS)
+ @PutMapping("/complaints/{id}/start")
+ public ResponseEntity<?> startComplaint(
+         Authentication authentication,
+         @PathVariable Long id
+ ) {
+     getLoggedInAdmin(authentication);
+     adminService.startDispute(id);
+     return ResponseEntity.ok("Complaint moved to IN_PROGRESS");
+ }
+
+ // RESOLVE complaint (IN_PROGRESS → RESOLVED)
+ @PutMapping("/complaints/{id}/resolve")
+ public ResponseEntity<?> resolveComplaint(
+         Authentication authentication,
+         @PathVariable Long id
+ ) {
+     getLoggedInAdmin(authentication);
+     adminService.resolveDispute(id);
+     return ResponseEntity.ok("Complaint RESOLVED");
+ }
+
+ // REJECT complaint (OPEN → REJECT)
+ @PutMapping("/complaints/{id}/reject")
+ public ResponseEntity<?> rejectComplaint(
+         Authentication authentication,
+         @PathVariable Long id
+ ) {
+     getLoggedInAdmin(authentication);
+     adminService.rejectDispute(id);
+     return ResponseEntity.ok("Complaint REJECTED");
+ }
 }

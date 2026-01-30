@@ -42,8 +42,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomerController {
 
-	@Autowired
-	private CustomerServiceImp customerServiceImp;
+	
 	
 	public final CustomerService customerService;
 	
@@ -78,10 +77,7 @@ public class CustomerController {
 	    );
 	}
 	
-	@GetMapping("/allServiceCategories")
-	public ResponseEntity<List<CategoryResponseDTO>> getAllCategories() {
-		return ResponseEntity.ok(customerServiceImp.getAllCategories());
-	}
+	
 	
 	
 	

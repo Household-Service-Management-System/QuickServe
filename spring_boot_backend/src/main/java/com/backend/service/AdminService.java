@@ -26,6 +26,11 @@ public interface AdminService {
 
 	void deactivateServiceProvider(Long id);
 
+	
+	public void startDispute(Long disputeId);
+	public void resolveDispute(Long disputeId);
+	public void rejectDispute(Long disputeId);
+
 	//Object getDisputeFullDetails(Long disputeId);
 
 }

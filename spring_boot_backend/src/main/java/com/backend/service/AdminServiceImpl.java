@@ -16,6 +16,7 @@ import com.backend.dtos.ServiceDTO;
 import com.backend.dtos.ServiceProviderDetailsDTO;
 import com.backend.dtos.ServiceProviderResponseDTO;
 import com.backend.entities.Dispute;
+import com.backend.entities.DisputeStatus;
 import com.backend.entities.PaymentStatus;
 import com.backend.entities.ServiceProvider;
 import com.backend.repository.DisputeRepository;
@@ -269,4 +270,44 @@ public class AdminServiceImpl implements AdminService {
 	        }
 	    }
 	    */
+	    
+	    @Override
+	    public void startDispute(Long disputeId) {
+	        Dispute dispute = disputeRepository.findById(disputeId)
+	                .orElseThrow(() -> new RuntimeException("Dispute not found"));
+
+	        if (dispute.getStatus() != DisputeStatus.OPEN) {
+	            throw new RuntimeException("Only OPEN disputes can be started");
+	        }
+
+	        dispute.setStatus(DisputeStatus.IN_PROGRESS);
+	        disputeRepository.save(dispute);
+	    }
+
+	    @Override
+	    public void resolveDispute(Long disputeId) {
+	        Dispute dispute = disputeRepository.findById(disputeId)
+	                .orElseThrow(() -> new RuntimeException("Dispute not found"));
+
+	        if (dispute.getStatus() != DisputeStatus.IN_PROGRESS) {
+	            throw new RuntimeException("Only IN_PROGRESS disputes can be resolved");
+	        }
+
+	        dispute.setStatus(DisputeStatus.RESOLVED);
+	        disputeRepository.save(dispute);
+	    }
+
+	    @Override
+	    public void rejectDispute(Long disputeId) {
+	        Dispute dispute = disputeRepository.findById(disputeId)
+	                .orElseThrow(() -> new RuntimeException("Dispute not found"));
+
+	        if (dispute.getStatus() != DisputeStatus.OPEN) {
+	            throw new RuntimeException("Only OPEN disputes can be rejected");
+	        }
+
+	        dispute.setStatus(DisputeStatus.REJECTED);
+	        disputeRepository.save(dispute);
+	    }
+
 }

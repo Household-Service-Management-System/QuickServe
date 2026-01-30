@@ -1,3 +1,4 @@
+
 import "./PaymentList.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -13,7 +14,7 @@ export default function PaymentList() {
   useEffect(() => {
     getPaymentRecords()
       .then((response) => {
-        console.log("PAYMENTS 👉", response.data); // optional debug
+        console.log("PAYMENTS 👉", response.data);
         setPayments(response.data || []);
       })
       .catch((error) => {
@@ -26,23 +27,24 @@ export default function PaymentList() {
       .finally(() => setLoading(false));
   }, [navigate]);
 
-  /* 🔍 FILTER (MATCHES BACKEND DTO) */
+  /* 🔍 FILTER — FIXED */
   const filteredPayments = payments.filter((p) =>
-    p.transactionId?.toLowerCase().includes(search.toLowerCase()) ||
-    p.customerName?.toLowerCase().includes(search.toLowerCase())
+    `${p.transactionId} ${p.firstName} ${p.lastName}`
+      .toLowerCase()
+      .includes(search.toLowerCase())
   );
 
-  /* 💰 SUMMARY */
+  /* 💰 SUMMARY — FIXED */
   const receivedAmount = filteredPayments
-    .filter((p) => p.status?.toUpperCase() === "SUCCESS")
+    .filter((p) => p.bookingStatus === "COMPLETED")
     .reduce((sum, p) => sum + (p.amount ?? 0), 0);
 
   const pendingAmount = filteredPayments
-    .filter((p) => p.status?.toUpperCase() === "PENDING")
+    .filter((p) => p.bookingStatus === "ACCEPTED")
     .reduce((sum, p) => sum + (p.amount ?? 0), 0);
 
   const failedAmount = filteredPayments
-    .filter((p) => p.status?.toUpperCase() === "FAILED")
+    .filter((p) => p.bookingStatus === "CANCELLED")
     .reduce((sum, p) => sum + (p.amount ?? 0), 0);
 
   if (loading) {
@@ -127,14 +129,14 @@ export default function PaymentList() {
                     </td>
                   </tr>
                 ) : (
-                  filteredPayments.map((p, index) => (
-                    <tr key={index}>
+                  filteredPayments.map((p) => (
+                    <tr key={p.bookingId}>
                       <td>{p.transactionId}</td>
-                      <td>{p.customerName}</td>
-                      <td>{p.amount ?? 0}</td>
+                      <td>{p.firstName} {p.lastName}</td>
+                      <td>{p.amount}</td>
                       <td>
-                        <span className={`status ${(p.status || "").toLowerCase()}`}>
-                          {p.status || "UNKNOWN"}
+                        <span className={`status ${p.bookingStatus.toLowerCase()}`}>
+                          {p.bookingStatus}
                         </span>
                       </td>
                     </tr>
