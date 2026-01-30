@@ -1,33 +1,17 @@
-/* LAYOUT */
+/* RESET */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* LAYOUT */
 .layout {
   display: flex;
   width: 100%;
   height: 100vh;
   background: #f3f4f7;
   font-family: Arial, sans-serif;
-}
-
-
-.logout-btn {
-  width: 100%;
-  padding: 12px;
-  background: #4f74d9;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  text-align: center;
-}
-
-.logout-btn:hover {
-  background: #c9c9c9;
 }
 
 /* SIDEBAR */
@@ -51,38 +35,54 @@
   margin-bottom: 25px;
 }
 
+/* MENU */
+.menu {
+  display: flex;
+  flex-direction: column;
+}
+
 .menu-item {
   padding: 12px 15px;
   margin-bottom: 10px;
   border-radius: 6px;
   cursor: pointer;
   color: #dce1e7;
+  text-decoration: none;
+  transition: background 0.2s;
 }
 
 .menu-item:hover {
   background: #1b263b;
 }
 
-.active {
+.menu-item.active {
   background: #1b263b;
   color: white;
 }
 
-.logout {
+/* LOGOUT */
+.logout-btn {
   margin-top: auto;
-  padding: 12px 10px;
+  width: 100%;
+  padding: 12px;
+  background: #4f74d9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
   cursor: pointer;
-  color: #dce1e7;
+  transition: background 0.2s;
 }
 
-.logout:hover {
-  color: white;
+.logout-btn:hover {
+  background: #3b5fc4;
 }
 
 /* MAIN CONTENT */
 .content {
   flex: 1;
   padding: 30px;
+  overflow-y: auto;
 }
 
 .page-title {
@@ -90,9 +90,20 @@
   margin-bottom: 20px;
 }
 
+/* SEARCH BAR */
+.search-bar {
+  width: 300px;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
 /* CARD */
 .card {
-  width: 80%;
+  width: 100%;
+  max-width: 900px;
   background: white;
   padding: 20px;
   border-radius: 12px;
@@ -100,6 +111,10 @@
 }
 
 /* TABLE */
+.table-wrapper {
+  overflow-x: auto;
+}
+
 .custom-table {
   width: 100%;
   border-collapse: collapse;
@@ -116,6 +131,7 @@
 .custom-table td {
   padding: 12px;
   border-bottom: 1px solid #ececec;
+  font-size: 14px;
 }
 
 /* BUTTONS */
@@ -126,6 +142,8 @@
   border-radius: 6px;
   border: none;
   cursor: pointer;
+  font-size: 13px;
+  transition: opacity 0.2s;
 }
 
 .view-btn {
@@ -136,12 +154,18 @@
 .accept-btn {
   background: #28a745;
   color: white;
-  margin-right: 5px;
+  margin-right: 6px;
 }
 
 .reject-btn {
   background: #d9534f;
   color: white;
+}
+
+.view-btn:hover,
+.accept-btn:hover,
+.reject-btn:hover {
+  opacity: 0.85;
 }
 
 /* BACK BUTTON */
@@ -156,12 +180,8 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: background 0.2s;
 }
-.menu-item {
-  text-decoration: none;
-  color: #dce1e7;
-}
-
 
 .back-btn:hover {
   background: #0d1b2a;

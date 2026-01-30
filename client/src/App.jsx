@@ -31,15 +31,19 @@ import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/SignUp";
 
 //Admin pages
+
+import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import Customer from "./pages/admin/Customer";
-import ServiceProvider from "./pages/admin/ServiceProvider";
-import PaymentList from "./pages/admin/PaymentList";
+import Complaint from "./pages/admin/Complaint";
 import ViewComplaint from "./pages/admin/ViewComplaint";
+import ServiceProvider from "./pages/admin/ServiceProvider";
 import ServiceProviderDetail from "./pages/admin/ServiceProviderDetail";
+import PaymentList from "./pages/admin/PaymentList";
 import PendingRequest from "./pages/admin/PendingRequest";
 import Setting from "./pages/admin/Setting";
 import Logout from "./pages/admin/Logout";
+
+
 
 import CustomerLayout from "./components/layout/CustomerLayout";
 import Dashboard from "./pages/customer/Dashboard";
@@ -151,28 +155,44 @@ function App() {
 
 
 
+<Route
+  path="/admin"
+  element={
+    <ProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+      <AdminLayout />
+    </ProtectedRoute>
+  }
+>
+  {/* Dashboard */}
+  <Route index element={<AdminDashboard />} />
+  <Route path="dashboard" element={<AdminDashboard />} />
 
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<AdminDashboard />} />
-          <Route path="customer" element={<Customer />} />
-          <Route path="serviceProvider" element={<ServiceProvider />} />
-          <Route path="paymentList" element={<PaymentList />} />
-          <Route path="viewComplaint" element={<ViewComplaint />} />
-          <Route
-            path="serviceProviderDetail"
-            element={<ServiceProviderDetail />}
-          />
-          <Route path="pendingRequest" element={<PendingRequest />} />
-          <Route path="setting" element={<Setting />} />
-          <Route path="logout" element={<Logout />} />
-        </Route>
+  {/* Complaints */}
+  <Route path="complaint" element={<Complaint />} />
+  <Route path="complaint/:id" element={<ViewComplaint />} />
+
+  {/* Service Providers */}
+<Route path="service-providers" element={<ServiceProvider />} />
+<Route
+  path="service-providers/:id"
+  element={<ServiceProviderDetail />}
+/>
+
+
+  {/* Payments */}
+  <Route path="payment-list" element={<PaymentList />} />
+
+  {/* Pending Requests */}
+  <Route path="pending-requests" element={<PendingRequest />} />
+
+  {/* Settings */}
+  <Route path="settings" element={<Setting />} />
+
+  {/* Logout */}
+  <Route path="logout" element={<Logout />} />
+</Route>
+
+
       </Routes>
     </BrowserRouter>
   );

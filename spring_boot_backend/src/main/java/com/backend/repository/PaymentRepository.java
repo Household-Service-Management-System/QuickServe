@@ -9,8 +9,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.backend.dtos.PaymentBookingUserDTO;
 import com.backend.dtos.PaymentHistoryDTO;
 import com.backend.entities.Payment;
+import com.backend.entities.PaymentStatus;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
@@ -49,4 +51,26 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 	List<Payment> findByBookingUserId(Long id);
 	
 	Optional<Payment> findByBookingId(Long id);
+	
+	@Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.status = :status")
+    double getTotalAmountByStatus(@Param("status") PaymentStatus status);
+	
+	@Query("""
+	        SELECT new com.backend.dtos.PaymentBookingUserDTO(
+	            b.id,
+	            b.status,
+	            u.firstName,
+	            u.lastName,
+	            u.email,
+	            u.phone,
+	            p.amount,
+	            p.transactionId
+	        )
+	        FROM Payment p
+	        JOIN p.booking b
+	        JOIN b.user u
+	    """)
+	List<PaymentBookingUserDTO> fetchPaymentBookingUserDetails();
+	
+	
 }

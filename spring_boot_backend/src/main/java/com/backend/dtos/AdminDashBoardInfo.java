@@ -1,4 +1,4 @@
-package com.backend.dto;
+package com.backend.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 public class AdminDashBoardInfo{
 
     private Long totalServiceProviders;
-    private Long totalRevenue;
+    private double totalRevenue;
     private Long totalCustomers;
     private Long pendingRequests;
 }
+

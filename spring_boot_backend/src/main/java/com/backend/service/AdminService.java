@@ -2,44 +2,30 @@ package com.backend.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.backend.dtos.AdminDashBoardInfo;
+import com.backend.dtos.ServiceProviderDetailsDTO;
+import com.backend.dtos.ServiceProviderResponseDTO;
 
-import com.backend.dto.AdminDashBoardInfo;
-import com.backend.entities.ServiceProvider;
-import com.backend.repository.PaymentRepository;
-import com.backend.repository.ServiceProviderRepository;
-import com.backend.repository.ServiceRepository;
-import com.backend.repository.UserRepository;
+public interface AdminService {
 
-@Service
-public class AdminService {
-    
-	  @Autowired
-	private ServiceProviderRepository serviceProviderRepository;
-	  @Autowired
-	private UserRepository userRepository;
-	  @Autowired
-	private PaymentRepository paymentRepository; 
-	  
-	  
-	  public AdminDashBoardInfo adminInfo() {
+	AdminDashBoardInfo adminInfo(Long adminId);
 
-		    long totalServiceProviders =
-		            serviceProviderRepository.countByVerificationStatusTrue();
+	Object dispute();
 
-		    long totalCustomers =
-		            userRepository.count();
+	Object getPaymentList();
 
-		    long pendingRequests =
-		            serviceProviderRepository.countByVerificationStatusFalse();
+	List<ServiceProviderResponseDTO> getAllUnVerifiedServiceProviders();
 
-		    return new AdminDashBoardInfo(
-		            totalServiceProviders,
-		            0L,
-		            totalCustomers,
-		            pendingRequests
-		    );
-		}
+	void activateServiceProvider(Long id);
+
+	//void deactivateServiceProvider(Long id);
+
+	ServiceProviderDetailsDTO getServiceProviderDetails(Long userId);
+
+	List<ServiceProviderResponseDTO> getAllServiceProviders();
+
+	void deactivateServiceProvider(Long id);
+
+	//Object getDisputeFullDetails(Long disputeId);
 
 }
