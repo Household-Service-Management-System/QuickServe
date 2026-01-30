@@ -88,9 +88,7 @@ public class CustomerServiceImp implements CustomerService {
 	    modelMapper.map(customerReqDTO, user);
 
 	    // ✅ ENCODE PASSWORD (STEP-1 FIX)
-	    user.setPassword(
-	        passwordEncoder.encode(customerReqDTO.getPassword())
-	    );
+	    
 
 	    user.setRole(Role.ROLE_USER);
 	    user.setLastLogin(LocalDateTime.now());
