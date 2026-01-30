@@ -21,6 +21,9 @@ public class ServiceProviderDocument extends BaseEntity {
     @Column(nullable = false)
     private String documentUrl;
 
+    @Column(nullable = false)
+    private String publicId;   
+    
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private VerificationStatus verificationStatus;

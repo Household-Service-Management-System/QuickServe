@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.backend.dtos.CloudinaryUploadResult;
 import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 
 
 
@@ -40,5 +42,30 @@ public class CloudinaryImageServiceImpl implements CloudinaryImageService {
 	        throw new RuntimeException("Image upload failed");
 	    }
 	}
+	
+	@Override
+	public CloudinaryUploadResult uploadDocument(MultipartFile file) throws IOException {
+
+	    Map<String,Object> uploadResult = null;
+		try {
+			uploadResult = cloudinary.uploader().upload(
+			    file.getBytes(),
+			    ObjectUtils.emptyMap()
+			);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	    return new CloudinaryUploadResult(
+	        uploadResult.get("secure_url").toString(),
+	        uploadResult.get("public_id").toString()
+	    );
+	}
+
+
+	public void delete(String publicId) throws IOException {
+	    cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+	}
+
 
 }

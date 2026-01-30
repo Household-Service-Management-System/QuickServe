@@ -1,12 +1,16 @@
 
 import React from "react";
-import axios from "axios";
 import { useEffect, useState } from "react";
 //import { useNavigate } from "react-router-dom";
+import {
+    getServiceRequests,
+    acceptBooking,
+    rejectBooking
+} from "../../api/serviceProviderService";
+
 
 export default function ServiceRequest() {
-    // const navigate = useNavigate();
-    const providerId = 2; // TODO: replace with auth context later
+
 
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -20,9 +24,7 @@ export default function ServiceRequest() {
 
     const fetchRequests = async () => {
         try {
-            const res = await axios.get(
-                `http://localhost:8080/service-provider/bookings/${providerId}`
-            );
+            const res = await getServiceRequests();
             setRequests(res.data);
         } catch (err) {
             console.error("Failed to fetch service requests", err);
@@ -33,9 +35,7 @@ export default function ServiceRequest() {
 
     const handleAccept = async (bookingId) => {
         try {
-            await axios.patch(
-                `http://localhost:8080/service-provider/bookings/${bookingId}/accept`
-            );
+            await acceptBooking(bookingId);
 
             setRequests((prev) =>
                 prev.map((r) =>
@@ -54,11 +54,7 @@ export default function ServiceRequest() {
         if (!reason) return;
 
         try {
-            await axios.patch(
-                `http://localhost:8080/service-provider/bookings/${bookingId}/reject`,
-                reason,
-                { headers: { "Content-Type": "text/plain" } }
-            );
+            await rejectBooking(bookingId, reason);
 
             setRequests((prev) =>
                 prev.map((r) =>
@@ -71,6 +67,7 @@ export default function ServiceRequest() {
             alert("Failed to reject booking");
         }
     };
+
 
     const getBadgeColor = (status) => {
         switch (status) {
@@ -108,78 +105,6 @@ export default function ServiceRequest() {
     if (loading) {
         return <div className="text-center py-10">Loading service requests...</div>;
     }
-
-
-    // return (
-    //     <div className="w-full">
-
-    //         <h1 className="text-2xl font-bold text-gray-900 mb-5">Service Requests</h1>
-
-    //         <div className="bg-white rounded-xl shadow-md p-6">
-
-    //             <div className="overflow-x-auto rounded-lg border border-gray-200">
-    //                 <table className="w-full text-left text-sm">
-    //                     <thead className="bg-gray-100 text-gray-700 font-semibold border-b">
-    //                         <tr>
-    //                             <th className="py-3 px-4">Customer</th>
-    //                             <th className="py-3 px-4">Service</th>
-    //                             <th className="py-3 px-4">Date</th>
-    //                             <th className="py-3 px-4">Amount</th>
-    //                             <th className="py-3 px-4">Status</th>
-    //                             <th className="py-3 px-4 text-right">Actions</th>
-    //                         </tr>
-    //                     </thead>
-
-    //                     <tbody>
-    //                         {requests.map((r) => (
-    //                             <tr key={r.id} className="border-b hover:bg-gray-50 transition">
-    //                                 <td className="py-3 px-4">{r.customer}</td>
-    //                                 <td className="py-3 px-4">{r.service}</td>
-    //                                 <td className="py-3 px-4">{r.date}</td>
-    //                                 <td className="py-3 px-4">{r.amount}</td>
-
-    //                                 <td className="py-3 px-4">
-    //                                     <span
-    //                                         className={`px-3 py-1 rounded-full text-xs font-semibold ${getBadgeColor(
-    //                                             r.status
-    //                                         )}`}
-    //                                     >
-    //                                         {r.status}
-    //                                     </span>
-    //                                 </td>
-
-    //                                 <td className="py-3 px-4 text-right space-x-2">
-    //                                     <button
-    //                                         onClick={() => alert("View details (placeholder)")}
-    //                                         className="text-blue-600 hover:underline text-sm"
-    //                                     >
-    //                                         View
-    //                                     </button>
-
-    //                                     <button
-    //                                         onClick={() => alert("Accept (placeholder)")}
-    //                                         className="text-green-600 hover:underline text-sm"
-    //                                     >
-    //                                         Accept
-    //                                     </button>
-
-    //                                     <button
-    //                                         onClick={() => alert("Reject (placeholder)")}
-    //                                         className="text-red-600 hover:underline text-sm"
-    //                                     >
-    //                                         Reject
-    //                                     </button>
-    //                                 </td>
-    //                             </tr>
-    //                         ))}
-    //                     </tbody>
-    //                 </table>
-
-    //             </div>
-    //         </div>
-
-    //     </div>
-    // );
 
     return (
         <>

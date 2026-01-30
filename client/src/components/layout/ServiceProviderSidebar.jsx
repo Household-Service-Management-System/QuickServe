@@ -12,8 +12,13 @@ import {
     Cog6ToothIcon
 } from "@heroicons/react/24/outline";
 
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../api/axiosInstance";
 
 export default function ServiceProviderSidebar() {
+
+    const navigate = useNavigate();
+
     const menuItems = [
         { name: "Dashboard", to: "/service-provider", icon: HomeIcon },
         { name: "Service Requests", to: "/service-provider/requests", icon: ClipboardDocumentListIcon },
@@ -29,7 +34,8 @@ export default function ServiceProviderSidebar() {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        window.location.href = "/login";
+        delete axiosInstance.defaults.headers.common["Authorization"];
+        navigate("/login", { replace: true });
     };
 
     return (

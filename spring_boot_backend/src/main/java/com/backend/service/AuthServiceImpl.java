@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.backend.dtos.LoginRequestDTO;
 import com.backend.dtos.LoginResponseDTO;
+import com.backend.dtos.RegisterAdminDTO;
 import com.backend.dtos.RegisterCustomerDTO;
 import com.backend.dtos.RegisterServiceProviderDTO;
 import com.backend.entities.Role;
@@ -84,6 +85,29 @@ public class AuthServiceImpl implements AuthService {
         return "Service Provider registered successfully";
     }
 
+    @Override
+    public String registerAdmin(RegisterAdminDTO dto) {
+
+        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new RuntimeException("Admin already exists");
+        }
+
+        User admin = new User();
+        admin.setFirstName(dto.getFirstName());
+        admin.setLastName(dto.getLastName());
+        admin.setEmail(dto.getEmail());
+        admin.setPhone(dto.getPhone());
+        admin.setPassword(passwordEncoder.encode(dto.getPassword()));
+        admin.setRole(Role.ROLE_ADMIN);
+        admin.setIsActive(Status.ACTIVE);
+
+        userRepository.save(admin);
+
+        return "Admin registered successfully";
+    }
+
+    
+    
     // ---------------- LOGIN ----------------
     @Override
     public LoginResponseDTO login(LoginRequestDTO dto) {

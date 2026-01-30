@@ -177,17 +177,6 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 FETCH CATEGORIES
-  useEffect(() => {
-    getAllServiceCategories()
-      .then((res) => {
-        setCategories(res);
-      })
-      .catch((err) => {
-        console.error("Failed to load categories", err);
-      })
-      .finally(() => setLoading(false));
-  }, []);
 
   return (
     <div className="bg-[#f2fbf8] text-gray-900 min-h-screen" id="top">
@@ -270,6 +259,7 @@ const Home = () => {
         </Swiper>
       </section>
 
+      
       {/* Categories Section  */}
       <Categories />
 
@@ -285,11 +275,6 @@ const Home = () => {
       <WhyChooseUs/>
 
       <Testimonials/>
-
-      <PopularServices />
-      <TopProfessionals />
-      <WhyChooseUs />
-      <Testimonials />
       <Footer />
     </div>
   );
