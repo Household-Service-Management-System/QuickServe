@@ -1,0 +1,191 @@
+/* ===== GLOBAL RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== LAYOUT ===== */
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f6f9;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 240px;
+  background: #1f2937; /* dark slate */
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.panel-text {
+  font-size: 13px;
+  color: #cbd5e1;
+  margin-bottom: 25px;
+}
+
+/* Logout */
+.logout-btn {
+  margin-top: auto;
+  padding: 12px;
+  width: 100%;
+  background: #ef4444;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}
+
+/* ===== MAIN CONTENT ===== */
+.content {
+  flex: 1;
+  padding: 30px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 20px;
+}
+
+/* ===== PROFILE CARD ===== */
+.profile-card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  max-width: 900px;
+}
+
+/* ===== FORM GRID ===== */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.form-group input:disabled {
+  background: #f3f4f6;
+  cursor: not-allowed;
+}
+
+/* ===== ERRORS ===== */
+.error {
+  font-size: 12px;
+  color: #dc2626;
+  margin-top: 4px;
+}
+
+/* ===== ACTIONS ===== */
+.actions {
+  margin-top: 25px;
+  text-align: right;
+}
+
+.actions button {
+  padding: 12px 22px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
+}
+
+.actions button:hover {
+  background: #1d4ed8;
+}
+
+.actions button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  padding: 12px 18px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  animation: slideIn 0.3s ease;
+}
+
+.toast.success {
+  background: #16a34a;
+}
+
+.toast.error {
+  background: #dc2626;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .content {
+    padding: 20px;
+  }
+}

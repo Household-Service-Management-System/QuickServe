@@ -96,7 +96,7 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
         SET sp.verificationStatus = true
         WHERE sp.id = :serviceProviderId
     """)
-    int activateServiceProvider(@Param("serviceProviderId") Long serviceProviderId)
+    int activateServiceProvider(@Param("serviceProviderId") Long serviceProviderId);
 
 
 }
