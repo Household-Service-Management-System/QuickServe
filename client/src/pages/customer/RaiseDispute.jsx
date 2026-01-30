@@ -1,4 +1,8 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
+
+// const user = useSelector((state) => state.auth.user);
+// const USER_ID = user?.id;
 
 export default function RaiseDispute() {
   const [bookingId, setBookingId] = useState("");

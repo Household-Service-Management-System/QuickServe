@@ -55,6 +55,19 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import Unauthorized from "./pages/Unauthorized";
 
 function App() {
+
+  // const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   dispatch(
+  //     loginSuccess({
+  //       id: 4,
+  //       role: "ROLE_USER",
+  //       name: "Rahul",
+  //     })
+  //   );
+  // }, []);
+
   return (
     <BrowserRouter>
       <Routes>

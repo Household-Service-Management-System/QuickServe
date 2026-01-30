@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.backend.entities.Booking;
+import com.backend.dtos.Booking_1_provider_detailsDTO;
 import com.backend.entities.ServiceProvider;
 
 @Repository
@@ -25,4 +26,24 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
     Optional<ServiceProvider> findByIdWithServices(@Param("id") Long id);
 
 	Optional<ServiceProvider> findByUserId(Long userId);
+    
+    // Booking API to get service providers for certain service
+    @Query(value = """
+    		SELECT
+    		sp.service_provider_id AS providerId,
+    		CONCAT(u.first_name, ' ', u.last_name) AS fullName,
+    		u.profile_image AS profileImage,
+    		sp.verification_status AS verified,
+    		u.city AS city
+    		FROM provider_skills ps
+    		JOIN service_providers sp
+    		ON ps.service_provider_id = sp.service_provider_id
+    		JOIN users u
+    		ON sp.user_id = u.user_id
+    		WHERE ps.service_id = :serviceId
+    		AND sp.verification_status = 1
+    		""", nativeQuery = true)
+    		List<Booking_1_provider_detailsDTO> findProvidersByServiceId(
+    		@Param("serviceId") Long serviceId
+    		);
 }

@@ -13,6 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.backend.dtos.*;
 import com.backend.entities.ServiceProvider;
 import com.backend.repository.ServiceProviderRepository;
+import com.backend.dtos.Booking_1_provider_detailsDTO;
+import com.backend.dtos.CategoryResponseDTO;
+import com.backend.dtos.PaymentHistoryDTO;
+import com.backend.dtos.PopularServiceDTO;
+import com.backend.dtos.ServiceProviderBookingResponseDTO;
+import com.backend.dtos.ServiceProviderDashboardDTO;
+import com.backend.dtos.ServiceProviderProfileUpdateDTO;
 import com.backend.service.ServiceProviderService;
 
 import io.jsonwebtoken.Claims;
@@ -200,3 +207,8 @@ public class ServiceProviderController {
         return ResponseEntity.ok("Service removed from your profile");
     }
 }
+    
+    
+    
+
+ 
