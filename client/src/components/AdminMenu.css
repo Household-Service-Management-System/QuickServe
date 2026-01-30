@@ -1,0 +1,35 @@
+.admin-menu {
+  width: 220px;
+  min-height: 100vh;
+  background-color: #1e293b;
+  color: white;
+  padding: 20px;
+}
+
+.menu-title {
+  margin-bottom: 20px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.admin-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.admin-menu li {
+  margin-bottom: 12px;
+}
+
+.admin-menu a {
+  color: white;
+  text-decoration: none;
+  display: block;
+  padding: 8px 10px;
+  border-radius: 5px;
+}
+
+.admin-menu li.active a,
+.admin-menu a:hover {
+  background-color: #3b82f6;
+}
