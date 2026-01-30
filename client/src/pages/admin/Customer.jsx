@@ -1,31 +1,39 @@
 import "./Customer.css";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axiosInstance from "../../api/axios";
 
 export default function Customer() {
 
-  const [customers, setCustomers] = useState([
-    { id: 101, name: "ABC", email: "abc@gmail.com", status: "" }
-  ]);
+  const [complaints, setComplaints] = useState([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  // IGNORE → Show Red Cross
-  const handleIgnore = (id) => {
-    setCustomers(customers.map(c => 
-      c.id === id ? { ...c, status: "ignored" } : c
-    ));
-  };
+  useEffect(() => {
+    axiosInstance
+      .get("/admin/complaints")
+      .then((response) => {
+        setComplaints(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching complaints", error);
+        setLoading(false);
+      });
+  }, []);
 
-  // BLOCK / ACTION DONE → Show Green Tick
-  const handleBlock = (id) => {
-    setCustomers(customers.map(c => 
-      c.id === id ? { ...c, status: "done" } : c
-    ));
-  };
+  const filteredComplaints = complaints.filter(c =>
+    c.firstName.toLowerCase().includes(search.toLowerCase()) ||
+    c.lastName.toLowerCase().includes(search.toLowerCase()) ||
+    c.email.toLowerCase().includes(search.toLowerCase())
+  );
+
+  if (loading) return <h2 style={{ padding: "20px" }}>Loading...</h2>;
 
   return (
     <div className="layout">
 
-      {/* Sidebar */}
+      {/* SIDEBAR */}
       <aside className="sidebar">
         <h2 className="logo">QuickServe</h2>
         <p className="panel-text">Admin Panel</p>
@@ -39,81 +47,72 @@ export default function Customer() {
           <Link to="/admin/setting" className="menu-item">Setting</Link>
         </nav>
 
-     <Link to="/admin/logout">
-  <button className="logout-btn">Logout</button>
-</Link>
-
+        <Link to="/admin/logout">
+          <button className="logout-btn">Logout</button>
+        </Link>
       </aside>
 
-      {/* Main Content */}
+      {/* MAIN CONTENT */}
       <main className="content">
+        <h1 className="page-title">Customer Complaints</h1>
 
-        <h1 className="page-title">Customer List</h1>
-  <input
+        {/* SEARCH */}
+        <input
           type="text"
           className="search-bar"
-          placeholder="Search..."
+          placeholder="Search by name or email"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
+
+        {/* TABLE */}
         <div className="card">
-          <table className="custom-table">
-            <thead>
-              <tr>
-                <th>Client ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>View Complaint</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {customers.map((cust) => (
-                <tr key={cust.id}>
-                  <td>{cust.id}</td>
-                  <td>{cust.name}</td>
-                  <td>{cust.email}</td>
-
-                  <td>
-                    <Link to="/admin/viewComplaint">
-                      <button className="view-btn">View</button>
-                    </Link>
-                  </td>
-
-                  <td>
-                    {/* STATUS LOGIC */}
-                    {cust.status === "" && (
-                      <>
-                        <button
-                          className="ignore-btn"
-                          onClick={() => handleIgnore(cust.id)}
-                        >
-                          Ignore
-                        </button>
-
-                        <button
-                          className="block-btn"
-                          onClick={() => handleBlock(cust.id)}
-                        >
-                          Action
-                        </button>
-                      </>
-                    )}
-
-                    {cust.status === "ignored" && (
-                      <span style={{ color: "red", fontSize: "20px" }}>❌ Ignored</span>
-                    )}
-
-                    {cust.status === "done" && (
-                      <span style={{ color: "green", fontSize: "20px" }}>✅ Done</span>
-                    )}
-                  </td>
+          <div className="table-wrapper">
+            <table className="custom-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th>View</th>
                 </tr>
-              ))}
-            </tbody>
+              </thead>
 
-          </table>
+              <tbody>
+                {filteredComplaints.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: "center" }}>
+                      No Complaints Found
+                    </td>
+                  </tr>
+                ) : (
+                  filteredComplaints.map((c) => (
+                    <tr key={c.id}>
+                      <td>{c.id}</td>
+                      <td>{c.firstName} {c.lastName}</td>
+                      <td>{c.email}</td>
+                      <td>{c.phone}</td>
+                      <td>
+                        <span className={`status ${c.status.toLowerCase()}`}>
+                          {c.status}
+                        </span>
+                      </td>
+                      <td>
+                        <Link to={`/admin/viewComplaint/${c.id}`}>
+                          <button className="view-btn">View</button>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
+        {/* BACK */}
         <div className="back-container">
           <Link to="/admin">
             <button className="back-btn">Back</button>
