@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
 
-import { useSelector } from "react-redux";
-
-// const user = useSelector((state) => state.auth.user);
-// const USER_ID = user?.id;
-const USER_ID = 4; // replace with auth later
-const ADMIN_ID = 12; // temp admin resolver
-
-export default function Support() {
+export default function CustomerSupport() {
   const [disputes, setDisputes] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,15 +15,14 @@ export default function Support() {
     status: "OPEN",
   });
 
-  /* ---------------- FETCH DATA ---------------- */
+  /* ================= FETCH DATA ================= */
 
   const fetchDisputes = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/customer/DisputeByUser/${USER_ID}`
-      );
+      const res = await axiosInstance.get("/customer/disputes");
       setDisputes(res.data || []);
-    } catch {
+    } catch (err) {
+      console.error("Failed to fetch disputes", err);
       setDisputes([]);
     } finally {
       setLoading(false);
@@ -39,11 +31,10 @@ export default function Support() {
 
   const fetchBookings = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/customer/bookings/${USER_ID}`
-      );
+      const res = await axiosInstance.get("/customer/bookings");
       setBookings(res.data || []);
-    } catch {
+    } catch (err) {
+      console.error("Failed to fetch bookings", err);
       setBookings([]);
     }
   };
@@ -53,7 +44,7 @@ export default function Support() {
     fetchBookings();
   }, []);
 
-  /* ---------------- SUBMIT ---------------- */
+  /* ================= SUBMIT ================= */
 
   const submitDispute = async (e) => {
     e.preventDefault();
@@ -65,39 +56,33 @@ export default function Support() {
 
     try {
       if (form.disputeId) {
-        await axios.put(
-          `http://localhost:8080/customer/DisputeUpdate/${form.disputeId}`,
+        await axiosInstance.put(
+          `/customer/DisputeUpdate/${form.disputeId}`,
           {
             bookingId: form.bookingId,
-            raisedById: USER_ID,
-            resolvedById: ADMIN_ID,
             description: form.description,
             status: form.status,
           }
         );
         showToast("Dispute updated");
       } else {
-        await axios.post(
-          "http://localhost:8080/customer/DisputeCreate",
-          {
-            bookingId: form.bookingId,
-            raisedById: USER_ID,
-            resolvedById: ADMIN_ID,
-            description: form.description,
-            status: "OPEN",
-          }
-        );
+        await axiosInstance.post("/customer/DisputeCreate", {
+          bookingId: form.bookingId,
+          description: form.description,
+          status: "OPEN",
+        });
         showToast("Dispute raised");
       }
 
       resetForm();
       fetchDisputes();
-    } catch {
+    } catch (err) {
+      console.error("Dispute operation failed", err);
       showToast("Operation failed");
     }
   };
 
-  /* ---------------- HELPERS ---------------- */
+  /* ================= HELPERS ================= */
 
   const resetForm = () => {
     setForm({
@@ -125,7 +110,7 @@ export default function Support() {
       ? disputes
       : disputes.filter((d) => d.status === filter);
 
-  /* ---------------- UI ---------------- */
+  /* ================= UI ================= */
 
   return (
     <div className="p-4 md:p-6 space-y-6">
@@ -155,9 +140,9 @@ export default function Support() {
             }
           >
             <option value="">Select Booking</option>
-            {bookings.map((b, i) => (
-              <option key={i} value={b.bookingId ?? i + 1}>
-                {b.service} — ₹{b.price}
+            {bookings.map((b) => (
+              <option key={b.bookingId} value={b.bookingId}>
+                {b.service || b.serviceName} — ₹{b.price || b.amount}
               </option>
             ))}
           </select>
@@ -217,9 +202,9 @@ export default function Support() {
               </tr>
             </thead>
             <tbody>
-              {filteredDisputes.map((d, idx) => (
+              {filteredDisputes.map((d) => (
                 <tr
-                  key={d.disputeId ?? idx}
+                  key={d.disputeId}
                   className="border-t hover:bg-gray-50 cursor-pointer"
                   onClick={() =>
                     setForm({
@@ -249,7 +234,6 @@ export default function Support() {
           </table>
         )}
       </div>
-
     </div>
   );
 }

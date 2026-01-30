@@ -1,11 +1,31 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import {
+  getCustomerPayments,
+  getBookingById,
+  createRazorpayOrder,
+  addPaymentByBooking,
+} from "../../api/customerService";
 
-//import { useSelector } from "react-redux";
+/* ================= HELPER ================= */
+// Keep only ONE payment per booking (prefer SUCCESS)
+const getLatestPaymentsPerBooking = (payments) => {
+  const map = new Map();
 
-// const user = useSelector((state) => state.auth.user);
-// const USER_ID = user?.id;
-const USER_ID = 4; // replace later with auth user
+  payments.forEach((p) => {
+    const bookingId = p.bookingId;
+    if (!bookingId) return;
+
+    const existing = map.get(bookingId);
+
+    if (!existing) {
+      map.set(bookingId, p);
+    } else if (existing.status !== "SUCCESS" && p.status === "SUCCESS") {
+      map.set(bookingId, p);
+    }
+  });
+
+  return Array.from(map.values());
+};
 
 export default function CustomerPayments() {
   const [payments, setPayments] = useState([]);
@@ -13,16 +33,16 @@ export default function CustomerPayments() {
 
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [bookingLoading, setBookingLoading] = useState(false);
+  const [payingId, setPayingId] = useState(null);
 
   /* ================= FETCH PAYMENTS ================= */
   const fetchPayments = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/customer/paymentByUser/${USER_ID}`
-      );
-      setPayments(res.data || []);
+      setLoading(true);
+      const res = await getCustomerPayments();
+      setPayments(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      console.error("Failed to load payments", err);
+      console.warn("Payments fetch failed", err);
       setPayments([]);
     } finally {
       setLoading(false);
@@ -39,9 +59,7 @@ export default function CustomerPayments() {
 
     setBookingLoading(true);
     try {
-      const res = await axios.get(
-        `http://localhost:8080/customer/booking/bookingId/${bookingId}`
-      );
+      const res = await getBookingById(bookingId);
       setSelectedBooking(res.data);
     } catch (err) {
       console.error("Failed to load booking", err);
@@ -50,13 +68,13 @@ export default function CustomerPayments() {
     }
   };
 
-  const closePopup = () => {
-    setSelectedBooking(null);
-  };
+  const closePopup = () => setSelectedBooking(null);
 
   /* ================= RAZORPAY ================= */
   const loadRazorpay = () =>
     new Promise((resolve) => {
+      if (window.Razorpay) return resolve(true);
+
       const script = document.createElement("script");
       script.src = "https://checkout.razorpay.com/v1/checkout.js";
       script.onload = () => resolve(true);
@@ -65,6 +83,8 @@ export default function CustomerPayments() {
     });
 
   const handlePayNow = async (payment) => {
+    if (payment.status === "SUCCESS") return;
+
     const loaded = await loadRazorpay();
     if (!loaded) {
       alert("Razorpay SDK failed to load");
@@ -72,56 +92,45 @@ export default function CustomerPayments() {
     }
 
     try {
-      // 1️⃣ Create order
-      const orderRes = await axios.post(
-        "http://localhost:8080/payment/create-order",
-        {
-          bookingId: payment.bookingId,
-          amount: payment.amount,
-        }
+      setPayingId(payment.bookingId);
+
+      const orderRes = await createRazorpayOrder(
+        payment.bookingId,
+        payment.amount
       );
 
       const order = orderRes.data;
 
-      // 2️⃣ Razorpay options
       const options = {
-        key: order.key,
+        key: order.razorpayKey,
         amount: order.amount,
         currency: order.currency,
         order_id: order.orderId,
         name: "QuickServe",
         description: `Booking #${payment.bookingId}`,
-        handler: async function (response) {
-          // 3️⃣ Verify payment
-          await axios.post(
-            "http://localhost:8080/payment/verify",
-            {
-              razorpayOrderId: response.razorpay_order_id,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
-              bookingId: payment.bookingId,
-              amount: payment.amount,
-            }
-          );
 
-          alert("Payment successful 🎉");
+        handler: async function (response) {
+          // Save / update payment
+          await addPaymentByBooking({
+            bookingId: payment.bookingId,
+            amount: payment.amount,
+            method: "UPI",
+            transactionId: response.razorpay_payment_id,
+            status: "SUCCESS",
+          });
+
           fetchPayments();
         },
-        prefill: {
-          name: "Customer",
-          email: "customer@test.com",
-          contact: "9999999999",
-        },
-        theme: {
-          color: "#2563eb",
-        },
+
+        theme: { color: "#2563eb" },
       };
 
-      const razorpay = new window.Razorpay(options);
-      razorpay.open();
+      new window.Razorpay(options).open();
     } catch (err) {
-      console.error(err);
+      console.error("Payment failed", err);
       alert("Payment failed");
+    } finally {
+      setPayingId(null);
     }
   };
 
@@ -138,6 +147,8 @@ export default function CustomerPayments() {
         return "bg-gray-100 text-gray-700";
     }
   };
+
+  const finalPayments = getLatestPaymentsPerBooking(payments);
 
   /* ================= RENDER ================= */
   return (
@@ -165,26 +176,26 @@ export default function CustomerPayments() {
                   Loading payments...
                 </td>
               </tr>
-            ) : payments.length === 0 ? (
+            ) : finalPayments.length === 0 ? (
               <tr>
                 <td colSpan="6" className="px-4 py-6 text-center text-gray-500">
                   No payments found
                 </td>
               </tr>
             ) : (
-              payments.map((p, idx) => (
-                <tr key={idx} className="border-t hover:bg-gray-50">
+              finalPayments.map((p) => (
+                <tr key={p.paymentId} className="border-t hover:bg-gray-50">
                   <td
                     className="px-4 py-2 text-blue-600 underline cursor-pointer"
                     onClick={() => openBookingPopup(p.bookingId)}
                   >
                     #{p.bookingId}
                   </td>
+
                   <td className="px-4 py-2">₹{p.amount}</td>
                   <td className="px-4 py-2">{p.method || "-"}</td>
-                  <td className="px-4 py-2">
-                    {p.transactionId || "-"}
-                  </td>
+                  <td className="px-4 py-2">{p.transactionId || "-"}</td>
+
                   <td className="px-4 py-2">
                     <span
                       className={`px-3 py-1 rounded-full text-xs ${statusBadge(
@@ -194,16 +205,20 @@ export default function CustomerPayments() {
                       {p.status}
                     </span>
                   </td>
+
                   <td className="px-4 py-2">
-                    {p.status === "INITIATED" ? (
+                    {p.status === "SUCCESS" ? (
+                      "—"
+                    ) : (
                       <button
                         onClick={() => handlePayNow(p)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+                        disabled={payingId === p.bookingId}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded disabled:opacity-50"
                       >
-                        Pay Now
+                        {payingId === p.bookingId
+                          ? "Processing..."
+                          : "Pay Now"}
                       </button>
-                    ) : (
-                      "-"
                     )}
                   </td>
                 </tr>
@@ -217,23 +232,23 @@ export default function CustomerPayments() {
       {selectedBooking && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 w-full max-w-md">
-            <h2 className="text-lg font-semibold mb-4">
-              Booking Details
-            </h2>
+            <h2 className="text-lg font-semibold mb-4">Booking Details</h2>
 
             {bookingLoading ? (
               <p className="text-gray-500">Loading booking...</p>
             ) : (
               <>
-                <p><b>Service:</b> {selectedBooking.service}</p>
-                <p><b>Provider:</b> {selectedBooking.serviceProvider}</p>
-                <p><b>Price:</b> ₹{selectedBooking.price}</p>
+                <p><b>Service:</b> {selectedBooking.service || "-"}</p>
+                <p><b>Provider:</b> {selectedBooking.serviceProvider || "-"}</p>
+                <p><b>Price:</b> ₹{selectedBooking.price || 0}</p>
                 <p><b>Status:</b> {selectedBooking.status}</p>
                 <p>
                   <b>Scheduled:</b>{" "}
-                  {new Date(
-                    selectedBooking.scheduledAt
-                  ).toLocaleString()}
+                  {selectedBooking.scheduledAt
+                    ? new Date(
+                        selectedBooking.scheduledAt
+                      ).toLocaleString()
+                    : "-"}
                 </p>
               </>
             )}
