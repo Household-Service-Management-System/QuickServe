@@ -172,11 +172,12 @@ function App() {
   <Route path="complaint/:id" element={<ViewComplaint />} />
 
   {/* Service Providers */}
-  <Route path="service-providers" element={<ServiceProvider />} />
-  <Route
-    path="service-providers/:id"
-    element={<ServiceProviderDetail />}
-  />
+<Route path="service-providers" element={<ServiceProvider />} />
+<Route
+  path="service-providers/:id"
+  element={<ServiceProviderDetail />}
+/>
+
 
   {/* Payments */}
   <Route path="payment-list" element={<PaymentList />} />

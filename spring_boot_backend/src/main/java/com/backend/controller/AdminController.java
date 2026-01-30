@@ -83,8 +83,9 @@ public class AdminController {
 
     // ================= SERVICE PROVIDERS =================
 
+   /**/
     @GetMapping("/pendingRequests")
-    public ResponseEntity<?> pendingRequests(Authentication authentication) {
+    public ResponseEntity<List<ServiceProviderResponseDTO>> pendingRequests(Authentication authentication) {
 
         getLoggedInAdmin(authentication);
         return ResponseEntity.ok(
@@ -101,7 +102,7 @@ public class AdminController {
                 adminService.getAllServiceProviders()
         );
     }
-
+/**/
     @GetMapping("/serviceProviderDetail/{userId}")
     public ResponseEntity<ServiceProviderDetailsDTO> serviceProviderDetail(
             Authentication authentication,
@@ -112,6 +113,7 @@ public class AdminController {
                 adminService.getServiceProviderDetails(userId)
         );
     }
+    
 
     @GetMapping("/verify/{id}")
     public ResponseEntity<String> verifyServiceProvider(
@@ -122,7 +124,7 @@ public class AdminController {
         adminService.activateServiceProvider(id);
         return ResponseEntity.ok("Service Provider verified successfully");
     }
-
+  
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteServiceProvider(
             Authentication authentication,
@@ -132,7 +134,7 @@ public class AdminController {
         adminService.deactivateServiceProvider(id);
         return ResponseEntity.ok("Service Provider deleted successfully");
     }
-   */
+//  /* */
     // ================= PAYMENTS =================
 
     @GetMapping("/paymentRecords")

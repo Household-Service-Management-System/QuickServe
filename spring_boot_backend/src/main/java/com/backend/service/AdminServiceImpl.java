@@ -13,6 +13,8 @@ import com.backend.dtos.DisputeDetailsDTO;
 import com.backend.dtos.DisputeFullDetailsDTO;
 import com.backend.dtos.PaymentBookingUserDTO;
 import com.backend.dtos.ServiceDTO;
+import com.backend.dtos.ServiceProviderDetailsDTO;
+import com.backend.dtos.ServiceProviderResponseDTO;
 import com.backend.entities.Dispute;
 import com.backend.entities.PaymentStatus;
 import com.backend.entities.ServiceProvider;
@@ -151,36 +153,39 @@ public class AdminServiceImpl implements AdminService {
 
 	    
 
-	    /*
+	    /**/
 	    // ================= SERVICE PROVIDERS =================
 
 	    public List<ServiceProviderResponseDTO> getAllUnVerifiedServiceProviders() {
 	        return serviceProviderRepository.findUnVerifiedProviders();
 	    }
-
+      
+       
 	    public List<ServiceProviderResponseDTO> getAllServiceProviders() {
 	        return serviceProviderRepository.findVerifiedProviders();
 	    }
-
+	    
 	    public ServiceProviderDetailsDTO getServiceProviderDetails(Long userId) {
 	        return serviceProviderRepository
 	                .fetchServiceProviderDetailsByServiceProviderId(userId);
 	    }
-
+	    /* */
+	    
 	    public void activateServiceProvider(Long id) {
 	        int updated = serviceProviderRepository.activateServiceProvider(id);
 	        if (updated == 0) {
 	            throw new RuntimeException("Service Provider not found");
 	        }
 	    }
-
+	    
+       
 	    public void deactivateServiceProvider(Long id) {
 	        int updated = serviceProviderRepository.deactivateServiceProvider(id);
 	        if (updated == 0) {
 	            throw new RuntimeException("Service Provider not found");
 	        }
 	    }
-           */
+	    /*  */
 	    // ================= PAYMENTS =================
 
 	    public List<PaymentBookingUserDTO> getPaymentList() {
