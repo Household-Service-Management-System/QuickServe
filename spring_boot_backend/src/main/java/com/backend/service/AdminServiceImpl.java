@@ -21,6 +21,7 @@ import com.backend.entities.PaymentStatus;
 import com.backend.entities.ServiceProvider;
 import com.backend.repository.DisputeRepository;
 import com.backend.repository.PaymentRepository;
+import com.backend.repository.ServiceProviderDocumentRepository;
 import com.backend.repository.ServiceProviderRepository;
 import com.backend.repository.UserRepository;
 import com.backend.dtos.AdminSetServiceDTO;
@@ -44,6 +45,8 @@ public class AdminServiceImpl implements AdminService {
     private PaymentRepository paymentRepository;
     @Autowired
     private  DisputeRepository  disputeRepository; 
+    @Autowired
+    private ServiceProviderDocumentRepository  serviceProviderDocumentRepository;
 
     @Override
     public AdminDashBoardInfo adminInfo(Long adminId) {
@@ -167,9 +170,33 @@ public class AdminServiceImpl implements AdminService {
 	    }
 	    
 	    public ServiceProviderDetailsDTO getServiceProviderDetails(Long userId) {
-	        return serviceProviderRepository
-	                .fetchServiceProviderDetailsByServiceProviderId(userId);
+
+	        System.out.println("🔍 Fetching ServiceProviderDetails for userId = " + userId);
+
+	        // 1️⃣ Fetch provider details (NO documents)
+	        ServiceProviderDetailsDTO dto =
+	                serviceProviderRepository
+	                        .fetchServiceProviderDetailsByServiceProviderId(userId);
+
+	        if (dto == null) {
+	            throw new RuntimeException("Service Provider not found for id: " + userId);
+	        }
+
+	        // 2️⃣ Fetch documents separately
+	        List<String> documentUrls =
+	                serviceProviderDocumentRepository
+	                        .findDocumentUrlsByServiceProviderId(userId);
+
+	        // 3️⃣ Put documents into DTO
+	        dto.setDocumentUrls(documentUrls);
+
+	        System.out.println("✅ ServiceProviderDetailsDTO received:");
+	        System.out.println(dto);
+
+	        return dto;
 	    }
+
+
 	    /* */
 	    
 	    public void activateServiceProvider(Long id) {
