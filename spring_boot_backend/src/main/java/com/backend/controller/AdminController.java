@@ -109,10 +109,18 @@ public class AdminController {
             @PathVariable Long userId) {
 
         getLoggedInAdmin(authentication);
-        return ResponseEntity.ok(
-                adminService.getServiceProviderDetails(userId)
-        );
+
+        ServiceProviderDetailsDTO dto =
+                adminService.getServiceProviderDetails(userId);
+
+        // 🔍 DEBUG PRINT
+        System.out.println("==== ServiceProviderDetailsDTO ====");
+        System.out.println(dto);
+        System.out.println("==================================");
+
+        return ResponseEntity.ok(dto);
     }
+
     
 
     @GetMapping("/verify/{id}")

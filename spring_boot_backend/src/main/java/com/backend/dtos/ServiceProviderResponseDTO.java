@@ -4,7 +4,6 @@ import com.backend.entities.GovIdType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Data
 @NoArgsConstructor
 public class ServiceProviderResponseDTO {
@@ -18,6 +17,10 @@ public class ServiceProviderResponseDTO {
     private String govId;
     private boolean verificationStatus;
 
+    // ✅ NEW
+    private String profileImage;
+    private String documentUrl;
+
     // JPQL constructor
     public ServiceProviderResponseDTO(
             Long serviceProviderId,
@@ -27,7 +30,9 @@ public class ServiceProviderResponseDTO {
             String phone,
             GovIdType govIdType,
             String govId,
-            boolean verificationStatus
+            boolean verificationStatus,
+            String profileImage,
+            String documentUrl
     ) {
         this.serviceProviderId = serviceProviderId;
         this.firstName = firstName;
@@ -37,6 +42,7 @@ public class ServiceProviderResponseDTO {
         this.govIdType = govIdType;
         this.govId = govId;
         this.verificationStatus = verificationStatus;
+        this.profileImage = profileImage;
+        this.documentUrl = documentUrl;
     }
 }
-

@@ -52,39 +52,49 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
     		@Param("serviceId") Long serviceId
     		);
     		
-    		 @Query("""
-    		    	    SELECT new com.backend.dtos.ServiceProviderResponseDTO(
-    		    	        sp.id,
-    		    	        u.firstName,
-    		    	        u.lastName,
-    		    	        u.email,
-    		    	        u.phone,
-    		    	        sp.govIdType,
-    		    	        sp.govId,
-    		    	        sp.verificationStatus
-    		    	    )
-    		    	    FROM ServiceProvider sp
-    		    	    JOIN sp.user u
-    		    	    WHERE sp.verificationStatus = true
-    		    	""")
-    		    	List<ServiceProviderResponseDTO> findVerifiedProviders();
+    		@Query("""
+    			    SELECT new com.backend.dtos.ServiceProviderResponseDTO(
+    			        sp.id,
+    			        u.firstName,
+    			        u.lastName,
+    			        u.email,
+    			        u.phone,
+    			        sp.govIdType,
+    			        sp.govId,
+    			        sp.verificationStatus,
+    			        u.profileImage,
+    			        spd.documentUrl
+    			    )
+    			    FROM ServiceProvider sp
+    			    JOIN sp.user u
+    			    LEFT JOIN ServiceProviderDocument spd
+    			        ON spd.serviceProvider = sp
+    			    WHERE sp.verificationStatus = true
+    			""")
+    			List<ServiceProviderResponseDTO> findVerifiedProviders();
+
     		    
-    		    @Query("""
-    		    	    SELECT new com.backend.dtos.ServiceProviderResponseDTO(
-    		    	        sp.id,
-    		    	        u.firstName,
-    		    	        u.lastName,
-    		    	        u.email,
-    		    	        u.phone,
-    		    	        sp.govIdType,
-    		    	        sp.govId,
-    		    	        sp.verificationStatus
-    		    	    )
-    		    	    FROM ServiceProvider sp
-    		    	    JOIN sp.user u
-    		    	    WHERE sp.verificationStatus = false
-    		    	""")
-    		    	List<ServiceProviderResponseDTO> findUnVerifiedProviders();
+    		 @Query("""
+    				    SELECT new com.backend.dtos.ServiceProviderResponseDTO(
+    				        sp.id,
+    				        u.firstName,
+    				        u.lastName,
+    				        u.email,
+    				        u.phone,
+    				        sp.govIdType,
+    				        sp.govId,
+    				        sp.verificationStatus,
+    				        u.profileImage,
+    				        spd.documentUrl
+    				    )
+    				    FROM ServiceProvider sp
+    				    JOIN sp.user u
+    				    LEFT JOIN ServiceProviderDocument spd
+    				        ON spd.serviceProvider = sp
+    				    WHERE sp.verificationStatus = false
+    				""")
+    				List<ServiceProviderResponseDTO> findUnVerifiedProviders();
+
     		    
     		    @Modifying
     		    @Transactional
@@ -106,26 +116,37 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
     		    
     		    @Query("""
     		    	    SELECT new com.backend.dtos.ServiceProviderDetailsDTO(
+    		    	        p.id,
     		    	        u.firstName,
     		    	        u.lastName,
     		    	        CONCAT(
-    		    	            COALESCE(u.street, ''), ', ',
-    		    	            COALESCE(u.city, ''), ', ',
-    		    	            COALESCE(u.state, ''), ' - ',
+    		    	            COALESCE(u.street, ''),
+    		    	            CASE WHEN u.street IS NOT NULL AND u.street <> '' THEN ', ' ELSE '' END,
+    		    	            COALESCE(u.city, ''),
+    		    	            CASE WHEN u.city IS NOT NULL AND u.city <> '' THEN ', ' ELSE '' END,
+    		    	            COALESCE(u.state, ''),
+    		    	            CASE WHEN u.state IS NOT NULL AND u.state <> '' THEN ' - ' ELSE '' END,
     		    	            COALESCE(u.pincode, '')
     		    	        ),
     		    	        u.email,
     		    	        u.role,
     		    	        u.phone,
+    		    	        u.profileImage,
     		    	        p.certification,
     		    	        p.govId,
-    		    	        p.govIdType
+    		    	        p.govIdType,
+    		    	        p.verificationStatus,
+    		    	        null
     		    	    )
     		    	    FROM ServiceProvider p
     		    	    JOIN p.user u
     		    	    WHERE p.id = :serviceProviderId
     		    	""")
     		    	ServiceProviderDetailsDTO fetchServiceProviderDetailsByServiceProviderId(
-    		    	        @Param("serviceProviderId") Long serviceProviderId
+    		    	    @Param("serviceProviderId") Long serviceProviderId
     		    	);
+
+
+
+
 }
