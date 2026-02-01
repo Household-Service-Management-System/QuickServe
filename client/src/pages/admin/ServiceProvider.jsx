@@ -313,28 +313,7 @@ export default function ServiceProvider() {
 
   return (
     <div className="layout">
-      {/* SIDEBAR */}
-      <aside className="sidebar">
-        <h2 className="logo">QuickServe</h2>
-        <p className="panel-text">Admin Panel</p>
-
-        <nav className="menu">
-          <Link to="/admin/dashboard" className="menu-item">Dashboard</Link>
-          <Link to="/admin/complaint" className="menu-item">Complaint</Link>
-          <Link to="/admin/service-providers" className="menu-item active">
-            Service Provider
-          </Link>
-          <Link to="/admin/pending-requests" className="menu-item">
-            Pending Request
-          </Link>
-          <Link to="/admin/payment-list" className="menu-item">Payment</Link>
-          <Link to="/admin/settings" className="menu-item">Setting</Link>
-        </nav>
-
-        <button className="logout-btn" onClick={() => navigate("/login")}>
-          Logout
-        </button>
-      </aside>
+     
 
       {/* CONTENT */}
       <main className="content">

@@ -154,7 +154,6 @@ function App() {
         </Route>
 
 
-
 <Route
   path="/admin"
   element={
@@ -172,12 +171,11 @@ function App() {
   <Route path="complaint/:id" element={<ViewComplaint />} />
 
   {/* Service Providers */}
-<Route path="service-providers" element={<ServiceProvider />} />
-<Route
-  path="service-providers/:id"
-  element={<ServiceProviderDetail />}
-/>
-
+  <Route path="service-providers" element={<ServiceProvider />} />
+  <Route
+    path="service-providers/:id"
+    element={<ServiceProviderDetail />}
+  />
 
   {/* Payments */}
   <Route path="payment-list" element={<PaymentList />} />
@@ -187,11 +185,7 @@ function App() {
 
   {/* Settings */}
   <Route path="settings" element={<Setting />} />
-
-  {/* Logout */}
-  <Route path="logout" element={<Logout />} />
 </Route>
-
 
       </Routes>
     </BrowserRouter>

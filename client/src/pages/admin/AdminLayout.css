@@ -1,0 +1,72 @@
+/* ===== LAYOUT ===== */
+.layout {
+  display: flex;
+  height: 100vh;
+  background: #f4f6f9;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 240px;
+  background: #1f2937;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.panel-text {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-bottom: 25px;
+}
+
+/* ===== MENU ===== */
+.menu {
+  flex: 1;
+}
+
+.menu-item {
+  display: block;
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  color: #d1d5db;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.menu-item:hover,
+.menu-item.active {
+  background: #374151;
+  color: #fff;
+}
+
+/* ===== LOGOUT ===== */
+.logout-btn {
+  background: #ef4444;
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}
+
+/* ===== MAIN CONTENT ===== */
+.content {
+  flex: 1;
+  padding: 25px;
+  overflow-y: auto;
+}
