@@ -14,14 +14,13 @@ export default function ServiceProviderDetail() {
   const [loading, setLoading] = useState(true);
   const [verifying, setVerifying] = useState(false);
 
-  // ✅ Document labels based on order
+ 
   const documentLabels = [
     "Address Proof",
     "Gov ID",
     "Certificate",
   ];
 
-  // ================= FETCH DETAILS =================
   useEffect(() => {
     getServiceProviderDetail(id)
       .then((response) => {
@@ -38,7 +37,7 @@ export default function ServiceProviderDetail() {
       .finally(() => setLoading(false));
   }, [id, navigate]);
 
-  // ================= VERIFY HANDLER =================
+
   const handleVerify = async () => {
     try {
       setVerifying(true);
@@ -60,7 +59,7 @@ export default function ServiceProviderDetail() {
     }
   };
 
-  // ================= UI STATES =================
+
   if (loading) {
     return <h2 style={{ padding: "20px" }}>Loading Service Provider...</h2>;
   }
@@ -69,14 +68,14 @@ export default function ServiceProviderDetail() {
     return <h2 style={{ padding: "20px" }}>No Data Found</h2>;
   }
 
-  // ================= UI =================
+ 
   return (
     <div className="layout">
       <main className="content">
         <h1 className="page-title">Service Provider Details</h1>
 
         <div className="detail-card">
-          {/* ===== PROFILE IMAGE ===== */}
+        
           <div className="profile-image-section">
             <img
               src={provider.profileImage || "/default-avatar.png"}
@@ -85,7 +84,7 @@ export default function ServiceProviderDetail() {
             />
           </div>
 
-          {/* ===== DETAILS ===== */}
+   
           <div className="info-section">
             <p>
               <strong>Name:</strong> {provider.firstName} {provider.lastName}
@@ -101,7 +100,7 @@ export default function ServiceProviderDetail() {
             </p>
             
 
-            {/* ===== DOCUMENTS ===== */}
+         
             <div style={{ marginTop: "10px" }}>
               <strong>Documents:</strong>
 
@@ -127,7 +126,7 @@ export default function ServiceProviderDetail() {
               )}
             </div>
 
-            {/* ===== VERIFY BUTTON ===== */}
+            
             {!provider.verificationStatus ? (
               <button
                 className="verify-btn"
@@ -144,7 +143,7 @@ export default function ServiceProviderDetail() {
           </div>
         </div>
 
-        {/* ===== BACK BUTTON ===== */}
+        
         <div className="back-container">
           <button className="back-btn" onClick={() => navigate(-1)}>
             Back

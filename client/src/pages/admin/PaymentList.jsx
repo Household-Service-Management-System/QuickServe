@@ -55,11 +55,10 @@ export default function PaymentList() {
     <div className="layout">
     
 
-      {/* MAIN CONTENT */}
+      
       <main className="content">
         <h1 className="page-title">Payment Records</h1>
 
-        {/* SUMMARY */}
         <div className="summary-container">
           <div className="summary-box received">
             <p>Received</p>
@@ -86,7 +85,7 @@ export default function PaymentList() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        {/* TABLE */}
+     
         <div className="card">
           <div className="table-wrapper">
             <table className="custom-table">

@@ -6,11 +6,11 @@ export default function Logout() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Clear user stored data if any
+   
     localStorage.clear();
     sessionStorage.clear();
 
-    // Redirect to login page
+   
     navigate("/login");
   };
 

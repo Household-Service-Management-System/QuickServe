@@ -10,7 +10,7 @@ export default function PendingRequest() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // ================= FETCH DATA =================
+
   useEffect(() => {
     getPendingRequests()
       .then((res) => {
@@ -26,8 +26,7 @@ export default function PendingRequest() {
       .finally(() => setLoading(false));
   }, [navigate]);
 
-  // ================= REMOVE DUPLICATES =================
-  // Keeps only ONE row per serviceProviderId
+ 
   const uniqueRequests = useMemo(() => {
     const map = new Map();
     requests.forEach((req) => {
@@ -38,7 +37,7 @@ export default function PendingRequest() {
     return Array.from(map.values());
   }, [requests]);
 
-  // ================= SEARCH FILTER =================
+
   const filteredRequests = uniqueRequests.filter((r) =>
     `${r.firstName} ${r.lastName} ${r.email}`
       .toLowerCase()
@@ -54,7 +53,7 @@ export default function PendingRequest() {
       <main className="content">
         <h1 className="page-title">Pending Requests</h1>
 
-        {/* SEARCH */}
+        
         <input
           className="search-bar"
           placeholder="Search by name or email"
@@ -62,7 +61,7 @@ export default function PendingRequest() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        {/* TABLE */}
+       
         <table className="custom-table">
           <thead>
             <tr>

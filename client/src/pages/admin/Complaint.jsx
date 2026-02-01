@@ -1,4 +1,3 @@
-
 import "./Complaint.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -14,6 +13,7 @@ export default function Complaint() {
 
   const [complaints, setComplaints] = useState([]);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,17 +28,20 @@ export default function Complaint() {
       .finally(() => setLoading(false));
   }, [navigate]);
 
-  const filteredComplaints = complaints.filter((c) =>
-    `${c.firstName} ${c.lastName} ${c.email}`
+  const filteredComplaints = complaints.filter((c) => {
+    const matchesSearch = `${c.firstName} ${c.lastName} ${c.email}`
       .toLowerCase()
-      .includes(search.toLowerCase())
-  );
+      .includes(search.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === "ALL" || c.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
 
   const updateStatus = (id, status) => {
     setComplaints((prev) =>
-      prev.map((c) =>
-        c.id === id ? { ...c, status } : c
-      )
+      prev.map((c) => (c.id === id ? { ...c, status } : c))
     );
   };
 
@@ -46,18 +49,29 @@ export default function Complaint() {
 
   return (
     <div className="layout">
-    
-
-      {/* MAIN */}
       <main className="content">
         <h1 className="page-title">Customer Complaints</h1>
 
-        <input
-          className="search-bar"
-          placeholder="Search by name or email"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <div className="filter-row">
+          <input
+            className="search-bar"
+            placeholder="Search by name or email"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          <select
+            className="status-filter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="ALL">All Complaints</option>
+            <option value="OPEN">Open</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="RESOLVED">Resolved</option>
+            <option value="REJECT">Rejected</option>
+          </select>
+        </div>
 
         <div className="card">
           <div className="table-wrapper">
@@ -76,7 +90,7 @@ export default function Complaint() {
               <tbody>
                 {filteredComplaints.length === 0 ? (
                   <tr>
-                    <td colSpan="7" style={{ textAlign: "center" }}>
+                    <td colSpan="6" style={{ textAlign: "center" }}>
                       No Complaints Found
                     </td>
                   </tr>
@@ -84,7 +98,9 @@ export default function Complaint() {
                   filteredComplaints.map((c) => (
                     <tr key={c.id}>
                       <td>{c.id}</td>
-                      <td>{c.firstName} {c.lastName}</td>
+                      <td>
+                        {c.firstName} {c.lastName}
+                      </td>
                       <td>{c.email}</td>
                       <td>{c.phone}</td>
 
@@ -94,7 +110,6 @@ export default function Complaint() {
                         </span>
                       </td>
 
-                      {/* ACTIONS */}
                       <td>
                         {c.status === "OPEN" && (
                           <>
@@ -132,12 +147,11 @@ export default function Complaint() {
                           </button>
                         )}
 
-                        {(c.status === "RESOLVED" || c.status === "REJECT") && (
+                        {(c.status === "RESOLVED" ||
+                          c.status === "REJECT") && (
                           <span style={{ color: "#999" }}>—</span>
                         )}
                       </td>
-
-                      
                     </tr>
                   ))
                 )}
@@ -146,11 +160,11 @@ export default function Complaint() {
           </div>
         </div>
 
-        <div className="back-container">
+        {/* <div className="back-container">
           <Link to="/admin">
             <button className="back-btn">Back</button>
           </Link>
-        </div>
+        </div> */}
       </main>
     </div>
   );
