@@ -54,8 +54,8 @@ public class AdminServiceImpl implements AdminService {
         long totalServiceProviders =
                 serviceProviderRepository.countByVerificationStatusTrue();
 
-        long totalCustomers =
-                userRepository.count();
+        long countOpenDisputes =
+        		disputeRepository.countOpenDisputes();
 
         long pendingRequests =
                 serviceProviderRepository.countByVerificationStatusFalse();
@@ -67,7 +67,7 @@ public class AdminServiceImpl implements AdminService {
         return new AdminDashBoardInfo(
                 totalServiceProviders,
                 totalRevenue,
-                totalCustomers,
+                countOpenDisputes,
                 pendingRequests
         );
     
@@ -83,82 +83,8 @@ public class AdminServiceImpl implements AdminService {
 	    }
 	    
 	    
-//	    @Override
-//	    public DisputeFullDetailsDTO getDisputeFullDetails(Long disputeId) {
-//
-//	        Dispute dispute = disputeRepository
-//	                .findDisputeWithAllJoins(disputeId)
-//	                .orElseThrow(() -> new RuntimeException("Dispute not found"));
-//
-//	        ServiceProvider sp = dispute.getBooking().getServiceProvider();
-//
-//	        DisputeFullDetailsDTO dto = new DisputeFullDetailsDTO();
-//
-//	        /* ================= DISPUTE ================= 
-//	        dto.setDisputeId(dispute.getId());
-//	        dto.setDisputeDescription(dispute.getDescription());
-//	        dto.setDisputeStatus(dispute.getStatus());
-//	        dto.setDisputeCreatedOn(dispute.getCreatedOn());
-//	        dto.setDisputeUpdatedOn(dispute.getUpdatedOn());
-//
-//	        /* ================= CUSTOMER ================= */
-//	        dto.setCustomerId(dispute.getRaisedBy().getId());
-//	        dto.setCustomerFirstName(dispute.getRaisedBy().getFirstName());
-//	        dto.setCustomerLastName(dispute.getRaisedBy().getLastName());
-//	        dto.setCustomerEmail(dispute.getRaisedBy().getEmail());
-//	        dto.setCustomerPhone(dispute.getRaisedBy().getPhone());
-//	        dto.setCustomerStreet(dispute.getRaisedBy().getStreet());
-//	        dto.setCustomerCity(dispute.getRaisedBy().getCity());
-//	        dto.setCustomerState(dispute.getRaisedBy().getState());
-//	        dto.setCustomerPincode(dispute.getRaisedBy().getPincode());
-//	        dto.setCustomerDob(dispute.getRaisedBy().getDob());
-//	        dto.setCustomerGender(dispute.getRaisedBy().getGender());
-//	        dto.setCustomerStatus(dispute.getRaisedBy().getStatus());
-//
-//	        /* ================= BOOKING ================= */
-//	        dto.setBookingId(dispute.getBooking().getId());
-//	        dto.setScheduledAt(dispute.getBooking().getScheduledAt());
-//	        dto.setPrice(dispute.getBooking().getPrice());
-//	        dto.setBookingStatus(dispute.getBooking().getStatus());
-//	        dto.setRejectionReason(dispute.getBooking().getRejectionReason());
-//
-//	        /* ================= SERVICE PROVIDER ================= */
-//	        dto.setServiceProviderId(sp.getId());
-//	        dto.setGovIdType(sp.getGovIdType());
-//	        dto.setGovId(sp.getGovId());
-//	        dto.setVerificationStatus(sp.isVerificationStatus());
-//	        dto.setCertification(sp.getCertification());
-//
-//	        /* ================= PROVIDER USER ================= */
-//	        dto.setProviderUserId(sp.getUser().getId());
-//	        dto.setProviderFirstName(sp.getUser().getFirstName());
-//	        dto.setProviderLastName(sp.getUser().getLastName());
-//	        dto.setProviderEmail(sp.getUser().getEmail());
-//	        dto.setProviderPhone(sp.getUser().getPhone());
-//
-//	        /* ================= SERVICES ================= */
-//	        dto.setServices(mapServices(sp));
 
 
-
-
-
-//	        /* ================= RESOLVED BY (ADMIN) ================= */
-//	        if (dispute.getResolvedBy() != null) {
-//	            dto.setResolvedById(dispute.getResolvedBy().getId());
-//	            dto.setResolvedByName(
-//	                    dispute.getResolvedBy().getFirstName() + " " +
-//	                    dispute.getResolvedBy().getLastName()
-//	            );
-//	        }
-//
-//	        return dto;
-//	    }
-
-	    
-
-	    /**/
-	    // ================= SERVICE PROVIDERS =================
 
 	    public List<ServiceProviderResponseDTO> getAllUnVerifiedServiceProviders() {
 	        return serviceProviderRepository.findUnVerifiedProviders();
@@ -173,7 +99,7 @@ public class AdminServiceImpl implements AdminService {
 
 	        System.out.println("🔍 Fetching ServiceProviderDetails for userId = " + userId);
 
-	        // 1️⃣ Fetch provider details (NO documents)
+	        
 	        ServiceProviderDetailsDTO dto =
 	                serviceProviderRepository
 	                        .fetchServiceProviderDetailsByServiceProviderId(userId);
@@ -182,12 +108,12 @@ public class AdminServiceImpl implements AdminService {
 	            throw new RuntimeException("Service Provider not found for id: " + userId);
 	        }
 
-	        // 2️⃣ Fetch documents separately
+	       
 	        List<String> documentUrls =
 	                serviceProviderDocumentRepository
 	                        .findDocumentUrlsByServiceProviderId(userId);
 
-	        // 3️⃣ Put documents into DTO
+	        
 	        dto.setDocumentUrls(documentUrls);
 
 	        System.out.println("✅ ServiceProviderDetailsDTO received:");
@@ -197,7 +123,7 @@ public class AdminServiceImpl implements AdminService {
 	    }
 
 
-	    /* */
+	 
 	    
 	    public void activateServiceProvider(Long id) {
 	        int updated = serviceProviderRepository.activateServiceProvider(id);
@@ -213,90 +139,13 @@ public class AdminServiceImpl implements AdminService {
 	            throw new RuntimeException("Service Provider not found");
 	        }
 	    }
-	    /*  */
-	    // ================= PAYMENTS =================
+	   
 
 	    public List<PaymentBookingUserDTO> getPaymentList() {
 	        return paymentRepository.fetchPaymentBookingUserDetails();
 	    }
 	    
-	    /*
-
-	    // ================= USERS =================
-
-	    public List<User> getUsersByRole() {
-	        return userRepository.findUsersByRole();
-	    }
-
-	    // ================= ADMIN PROFILE =================
-
-	    public AdminDTO getAdminDetails(Long adminId) {
-
-	        User admin = userRepository.findById(adminId)
-	                .orElseThrow(() -> new RuntimeException("Admin not found"));
-
-	        if (admin.getRole() != Role.ROLE_ADMIN) {
-	            throw new RuntimeException("Unauthorized access");
-	        }
-
-	        return new AdminDTO(
-	                admin.getId(),
-	                admin.getFullName(),
-	                admin.getEmail(),
-	                admin.getPhone(),
-	                admin.getCity(),
-	                admin.getState()
-	        );
-	    }
-
-	    public void updateUserProfile(Long adminId, User user) {
-
-	        validateAdmin(adminId);
-
-	        int updated = userRepository.updateUserProfile(
-	                adminId,
-	                user.getFirstName(),
-	                user.getLastName(),
-	                user.getPhone(),
-	                user.getCity(),
-	                user.getState()
-	        );
-
-	        if (updated == 0) {
-	            throw new RuntimeException("Profile update failed");
-	        }
-	    }
-
-	    // ================= DISPUTE RESPONSE =================
-
-	    public DisputeResponse insertResponse(Long disputeId, String adminResponse) {
-
-	        Dispute dispute = disputeRepository.findById(disputeId)
-	                .orElseThrow(() -> new RuntimeException("Dispute not found"));
-
-	        DisputeResponse response = new DisputeResponse();
-	        response.setDispute(dispute);
-	        response.setAdminResponse(adminResponse);
-
-	        disputeRepository.updateStatus(
-	                disputeId,
-	                DisputeStatus.RESOLVED
-	        );
-
-	        return disputeResponseRepository.save(response);
-	    }
-
-	    // ================= HELPER =================
-
-	    private void validateAdmin(Long adminId) {
-	        User admin = userRepository.findById(adminId)
-	                .orElseThrow(() -> new RuntimeException("Admin not found"));
-
-	        if (admin.getRole() != Role.ROLE_ADMIN) {
-	            throw new RuntimeException("Unauthorized access");
-	        }
-	    }
-	    */
+	   
 	    
 	    @Override
 	    public void startDispute(Long disputeId) {

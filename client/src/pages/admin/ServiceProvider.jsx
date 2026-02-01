@@ -29,8 +29,7 @@ export default function ServiceProvider() {
       .finally(() => setLoading(false));
   }, [navigate]);
 
-  // ================= REMOVE DUPLICATES =================
-  // Ensures ONLY ONE row per serviceProviderId
+
   const uniqueProviders = useMemo(() => {
     const map = new Map();
     providers.forEach((p) => {
@@ -41,14 +40,14 @@ export default function ServiceProvider() {
     return Array.from(map.values());
   }, [providers]);
 
-  // ================= SEARCH FILTER =================
+
   const filteredProviders = uniqueProviders.filter((p) =>
     `${p.firstName ?? ""} ${p.lastName ?? ""} ${p.email ?? ""}`
       .toLowerCase()
       .includes(search.toLowerCase())
   );
 
-  // ================= DELETE HANDLER =================
+
   const handleDelete = async (serviceProviderId) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this service provider?"
@@ -58,7 +57,7 @@ export default function ServiceProvider() {
     try {
       await deleteServiceProvider(serviceProviderId);
 
-      // Update UI
+    
       setProviders((prev) =>
         prev.filter((p) => p.serviceProviderId !== serviceProviderId)
       );
@@ -79,13 +78,13 @@ export default function ServiceProvider() {
     return <h2 style={{ padding: "20px" }}>Loading Service Providers...</h2>;
   }
 
-  // ================= UI =================
+
   return (
     <div className="layout">
       <main className="content">
         <h1 className="page-title">Service Providers</h1>
 
-        {/* SEARCH */}
+      
         <input
           className="search-bar"
           placeholder="Search by name or email"

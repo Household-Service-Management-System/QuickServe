@@ -5,21 +5,21 @@ export default function ViewComplaint() {
     <div className="layout">
 
   
-      {/* MAIN CONTENT */}
+      
       <main className="content">
 
         <h1 className="page-title">Dashboard Overview</h1>
 
-        {/* CARD BOX */}
+        
         <div className="complaint-card">
 
-          {/* Top Row (ID + Name) */}
+          
           <div className="info-row">
             <p className="info-text">SR/C ID : - 1</p>
             <p className="info-text">Name : - ABV</p>
           </div>
 
-          {/* Complaint and Response */}
+          
           <div className="two-box-row">
 
             <div className="box">
@@ -34,7 +34,7 @@ export default function ViewComplaint() {
 
           </div>
 
-          {/* Submit Button */}
+         
           <div className="submit-container">
             <button className="submit-btn">Submit</button>
           </div>

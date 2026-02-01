@@ -37,7 +37,7 @@ export default function AdminDashboard() {
   return (
     <div className="layout">
      
-      {/* MAIN CONTENT */}
+     
       <main className="content">
         <h1 className="page-title">Dashboard Overview</h1>
 
