@@ -276,3 +276,9 @@
 .custom-table td:last-child {
   white-space: nowrap;
 }
+.description-cell {
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
