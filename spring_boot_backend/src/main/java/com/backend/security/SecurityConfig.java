@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -23,7 +25,8 @@ public class SecurityConfig {
     	
     	http
         .csrf(csrf -> csrf.disable())
-        .cors(cors -> {})   // 🔥 ENABLE CORS
+        .cors(cors -> cors.configurationSource(corsConfigurationSource))
+   // 🔥 ENABLE CORS
         .formLogin(form -> form.disable())
         .httpBasic(basic -> basic.disable())
         .sessionManagement(session ->
@@ -32,7 +35,7 @@ public class SecurityConfig {
     .authorizeHttpRequests(auth -> auth
 
         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-
+        
         // PUBLIC
         .requestMatchers("/auth/**","/services/**","/providers/**","/service-categories/**").permitAll()
 

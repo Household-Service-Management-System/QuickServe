@@ -58,7 +58,7 @@ const Nav = () => {
             Services
           </Link>
           <Link to="/HowItWorks" className="hover:text-blue-700">
-            How It Works
+            How It Works ?
           </Link>
           {/* {/* <Link to="/about" className="hover:text-green-700">About</Link>
           <Link to="/support" className="hover:text-green-700">Support</Link> */}

@@ -99,8 +99,8 @@ public class AuthServiceImpl implements AuthService {
         admin.setPhone(dto.getPhone());
         admin.setPassword(passwordEncoder.encode(dto.getPassword()));
         admin.setRole(Role.ROLE_ADMIN);
+        // admin.setIsActive(Status.ACTIVE);
         admin.setIsActive(Status.ACTIVE);
-
         userRepository.save(admin);
 
         return "Admin registered successfully";

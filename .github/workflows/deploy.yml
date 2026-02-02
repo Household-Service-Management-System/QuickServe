@@ -1,0 +1,50 @@
+name: Build & Push Docker Images
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  backend:
+    name: Backend Docker Build & Push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Docker Hub Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & Push Backend Image
+        run: |
+          cd server
+          docker build -t backendquickserve4 .
+          docker tag backendquickserve4 ${{ secrets.DOCKER_USERNAME }}/backendquickserve4:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/backendquickserve4:latest
+
+  frontend:
+    name: Frontend Docker Build & Push
+    runs-on: ubuntu-latest
+    needs: backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Docker Hub Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & Push Frontend Image
+        run: |
+          cd client
+          docker build -t frontendquickserve .
+          docker tag frontendquickserve ${{ secrets.DOCKER_USERNAME }}/frontendquickserve:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/frontendquickserve:latest
