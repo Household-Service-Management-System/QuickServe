@@ -1,6 +1,5 @@
-
 import "./Complaint.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   getAllComplaints,
@@ -14,11 +13,14 @@ export default function Complaint() {
 
   const [complaints, setComplaints] = useState([]);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getAllComplaints()
-      .then((res) => setComplaints(res.data))
+      .then((res) => {
+        setComplaints(res.data);
+      })
       .catch((error) => {
         if (error.response?.status === 401) {
           localStorage.removeItem("token");
@@ -28,60 +30,55 @@ export default function Complaint() {
       .finally(() => setLoading(false));
   }, [navigate]);
 
-  const filteredComplaints = complaints.filter((c) =>
-    `${c.firstName} ${c.lastName} ${c.email}`
+  const filteredComplaints = complaints.filter((c) => {
+    const matchesSearch = `${c.firstName} ${c.lastName} ${c.email}`
       .toLowerCase()
-      .includes(search.toLowerCase())
-  );
+      .includes(search.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === "ALL" || c.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
 
   const updateStatus = (id, status) => {
     setComplaints((prev) =>
-      prev.map((c) =>
-        c.id === id ? { ...c, status } : c
-      )
+      prev.map((c) => (c.id === id ? { ...c, status } : c))
     );
   };
 
-  if (loading) return <h2 style={{ padding: "20px" }}>Loading...</h2>;
+  if (loading) {
+    return <h2 style={{ padding: "20px" }}>Loading...</h2>;
+  }
 
   return (
     <div className="layout">
-      {/* SIDEBAR */}
-      <aside className="sidebar">
-        <h2 className="logo">QuickServe</h2>
-        <p className="panel-text">Admin Panel</p>
-
-        <nav className="menu">
-          <Link to="/admin" className="menu-item">Dashboard</Link>
-          <Link to="/admin/complaint" className="menu-item active">Complaint</Link>
-          <Link to="/admin/service-providers" className="menu-item">Service Provider</Link>
-          <Link to="/admin/pending-requests" className="menu-item">Pending Request</Link>
-          <Link to="/admin/payment-list" className="menu-item">Payment</Link>
-          <Link to="/admin/setting" className="menu-item">Setting</Link>
-        </nav>
-
-        <button
-          className="logout-btn"
-          onClick={() => {
-            localStorage.removeItem("token");
-            navigate("/login");
-          }}
-        >
-          Logout
-        </button>
-      </aside>
-
-      {/* MAIN */}
       <main className="content">
         <h1 className="page-title">Customer Complaints</h1>
 
-        <input
-          className="search-bar"
-          placeholder="Search by name or email"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        {/* 🔍 Search & Filter */}
+        <div className="filter-row">
+          <input
+            className="search-bar"
+            placeholder="Search by name or email"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
+          <select
+            className="status-filter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="ALL">All Complaints</option>
+            <option value="OPEN">Open</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="RESOLVED">Resolved</option>
+            <option value="REJECT">Rejected</option>
+          </select>
+        </div>
+
+        {/* 📋 Complaints Table */}
         <div className="card">
           <div className="table-wrapper">
             <table className="custom-table">
@@ -91,6 +88,7 @@ export default function Complaint() {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th>
+                  <th>Description</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
@@ -107,9 +105,18 @@ export default function Complaint() {
                   filteredComplaints.map((c) => (
                     <tr key={c.id}>
                       <td>{c.id}</td>
-                      <td>{c.firstName} {c.lastName}</td>
+
+                      <td>
+                        {c.firstName} {c.lastName}
+                      </td>
+
                       <td>{c.email}</td>
                       <td>{c.phone}</td>
+
+                      {/* ✅ DESCRIPTION */}
+                      <td className="description-cell">
+                        {c.description || "—"}
+                      </td>
 
                       <td>
                         <span className={`status ${c.status.toLowerCase()}`}>
@@ -117,7 +124,6 @@ export default function Complaint() {
                         </span>
                       </td>
 
-                      {/* ACTIONS */}
                       <td>
                         {c.status === "OPEN" && (
                           <>
@@ -155,24 +161,17 @@ export default function Complaint() {
                           </button>
                         )}
 
-                        {(c.status === "RESOLVED" || c.status === "REJECT") && (
+                        {(c.status === "RESOLVED" ||
+                          c.status === "REJECT") && (
                           <span style={{ color: "#999" }}>—</span>
                         )}
                       </td>
-
-                      
                     </tr>
                   ))
                 )}
               </tbody>
             </table>
           </div>
-        </div>
-
-        <div className="back-container">
-          <Link to="/admin">
-            <button className="back-btn">Back</button>
-          </Link>
         </div>
       </main>
     </div>

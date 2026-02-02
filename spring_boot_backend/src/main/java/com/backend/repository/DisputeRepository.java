@@ -51,7 +51,13 @@ public interface DisputeRepository extends JpaRepository<Dispute, Long> {
 	
 	
 	
-	
+	@Query("""
+		    SELECT COUNT(d)
+		    FROM Dispute d
+		    WHERE d.status = com.backend.entities.DisputeStatus.OPEN
+		""")
+		long countOpenDisputes();
+
 	
 
 }

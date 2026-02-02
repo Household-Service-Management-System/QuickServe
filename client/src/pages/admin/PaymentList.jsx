@@ -53,35 +53,12 @@ export default function PaymentList() {
 
   return (
     <div className="layout">
-      {/* SIDEBAR */}
-      <aside className="sidebar">
-        <h2 className="logo">QuickServe</h2>
-        <p className="panel-text">Admin Panel</p>
+    
 
-        <nav className="menu">
-          <Link to="/admin/dashboard" className="menu-item">Dashboard</Link>
-          <Link to="/admin/service-providers" className="menu-item">Service Provider</Link>
-          <Link to="/admin/pending-requests" className="menu-item">Pending Request</Link>
-          <Link to="/admin/payment-list" className="menu-item active">Payment</Link>
-          <Link to="/admin/settings" className="menu-item">Setting</Link>
-        </nav>
-
-        <button
-          className="logout-btn"
-          onClick={() => {
-            localStorage.removeItem("token");
-            navigate("/login");
-          }}
-        >
-          Logout
-        </button>
-      </aside>
-
-      {/* MAIN CONTENT */}
+      
       <main className="content">
         <h1 className="page-title">Payment Records</h1>
 
-        {/* SUMMARY */}
         <div className="summary-container">
           <div className="summary-box received">
             <p>Received</p>
@@ -108,7 +85,7 @@ export default function PaymentList() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        {/* TABLE */}
+     
         <div className="card">
           <div className="table-wrapper">
             <table className="custom-table">

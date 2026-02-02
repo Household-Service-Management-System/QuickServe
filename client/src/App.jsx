@@ -1,15 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-//User pages
-import UserLayout from "./pages/user/UserLayout";
-import UserDashboard from "./pages/user/UserDashboard";
-import ServicesList from "./pages/user/ServicesList";
-import ServiceDetail from "./pages/user/ServiceDetail";
-import BookService from "./pages/user/BookService";
-import MyBookings from "./pages/user/MyBookings";
-import Payments from "./pages/user/Payments";
-import Profile from "./pages/user/UserProfile";
-
 //SP pages
 import ServiceProviderLayout from "./pages/service-provider/ServiceProviderLayout";
 import ServiceProviderDashboard from "./pages/service-provider/ServiceProviderDashboard";
@@ -44,7 +34,7 @@ import Setting from "./pages/admin/Setting";
 import Logout from "./pages/admin/Logout";
 
 
-
+//Customer pages
 import CustomerLayout from "./components/layout/CustomerLayout";
 import Dashboard from "./pages/customer/Dashboard";
 import CustomerBookings from "./pages/customer/Bookings";
@@ -55,64 +45,46 @@ import CustomerSettings from "./pages/customer/Settings";
 import ServicesByCategory from "./pages/Home/ServiceByCategories";
 import ServiceDetails from "./pages/Home/ServiceDetails";
 
+
+//Protected Route
 import ProtectedRoute from "./routes/ProtectedRoute";
+
+//Unauthorized Page - shown when user tries to access a route without proper role(status 403)
 import Unauthorized from "./pages/Unauthorized";
 
 function App() {
 
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(
-  //     loginSuccess({
-  //       id: 4,
-  //       role: "ROLE_USER",
-  //       name: "Rahul",
-  //     })
-  //   );
-  // }, []);
-
   return (
     <BrowserRouter>
       <Routes>
+
+        {/* Home page routes  */}
         <Route path="/" element={<Home />} />
         <Route path="/HowItWorks" element={<HowItWorks />} />
         <Route path="/ServicesList" element={<Services />} />
+
+
+
+        {/* Login component route */}
         <Route path="/login" element={<Login />} />
+        {/* SignUp component route */}
         <Route path="/signup" element={<Signup />} />
+        {/* this is UNAUTHORIZED route */}
+        <Route path="/unauthorized" element={<Unauthorized />} />
 
 
-
-
-        {/* <Route
-          path="/customer"
-          element={
-            <ProtectedRoute allowedRoles={["ROLE_USER"]}>
-              <CustomerLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<UserDashboard />} />
-          <Route path="services" element={<ServicesList />} />
-          <Route path="service/:id" element={<ServiceDetail />} />
-          <Route path="book/:id" element={<BookService />} />
-          <Route path="bookings" element={<MyBookings />} />
-          <Route path="payments" element={<Payments />} />
-          <Route path="profile" element={<Profile />} />
-        </Route> */}
-
-        {/* Home page routes  */}
+        {/* Services by Category : Popular Categories on frontend*/}
         <Route
           path="/services/category/:categoryId"
           element={<ServicesByCategory />}
         />
 
+        {/* Service Details Page : Services Listed under a particular category*/}
         <Route
           path="/services/details/:serviceId"
           element={<ServiceDetails />}
         />
 
-        <Route path="/unauthorized" element={<Unauthorized />} />
 
 
         <Route
@@ -123,6 +95,8 @@ function App() {
             </ProtectedRoute>
           }
         >
+
+
           <Route index element={<Dashboard />} />
           <Route path="bookings" element={<CustomerBookings />} />
           <Route path="payments" element={<CustomerPayments />} />
@@ -136,61 +110,90 @@ function App() {
         <Route
           path="/service-provider"
           element={
+            // ProtectedRoute acts as a guard before rendering anything inside
+            // Only users with ROLE_SERVICEPROVIDER can access this route
             <ProtectedRoute allowedRoles={["ROLE_SERVICEPROVIDER"]}>
+              {/* This is the layout component that wraps all service-provider pages */}
               <ServiceProviderLayout />
             </ProtectedRoute>
           }
         >
+
+          {/* Default route: /service-provider => Dashboard component*/}
           <Route index element={<ServiceProviderDashboard />} />
+
+          {/* /service-provider/requests => Upcoming Bookings*/}
           <Route path="requests" element={<ServiceRequest />} />
+
+          {/* /service-provider/services => Add or Manage Services(Edit,Delete) */}
           <Route path="services" element={<ManageServices />} />
           <Route path="services/add" element={<AddService />} />
           <Route path="services/edit/:id" element={<EditService />} />
+
+
+          {/* /service-provider/payments => Payment History*/}
           <Route path="payments" element={<ViewPayments />} />
+
+          {/* /service-provider/profile => Service Provider Profile*/}
           <Route path="profile" element={<ServiceProviderProfile />} />
+
+          {/* /service-provider/documents => Manage Documents */}
           <Route path="documents" element={<Documents />} />
+
+          {/* /service-provider/support => Support Page */}
           <Route path="support" element={<Support />} />
+
+          {/* /service-provider/settings => Settings Page */}
           <Route path="settings" element={<Settings />} />
         </Route>
 
 
 
-<Route
-  path="/admin"
-  element={
-    <ProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
-      <AdminLayout />
-    </ProtectedRoute>
-  }
->
-  {/* Dashboard */}
-  <Route index element={<AdminDashboard />} />
-  <Route path="dashboard" element={<AdminDashboard />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          {/* Dashboard */}
+          <Route index element={<AdminDashboard />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
 
-  {/* Complaints */}
-  <Route path="complaint" element={<Complaint />} />
-  <Route path="complaint/:id" element={<ViewComplaint />} />
+          {/* Complaints */}
+          <Route path="complaint" element={<Complaint />} />
+          <Route path="complaint/:id" element={<ViewComplaint />} />
 
-  {/* Service Providers */}
-<Route path="service-providers" element={<ServiceProvider />} />
-<Route
-  path="service-providers/:id"
-  element={<ServiceProviderDetail />}
-/>
+          {/*Page for showing VERIFIED service providers*/}
+          <Route path="service-providers" element={<ServiceProvider />} />
+
+          {/*Page for showing UNVERIFIED service providers*/}
+          <Route path="pending-requests" element={<PendingRequest />} />
+          <Route
+            path="service-providers/:id"
+            element={<ServiceProviderDetail />}
+          />
 
 
-  {/* Payments */}
-  <Route path="payment-list" element={<PaymentList />} />
+          {/* Service Providers */}
+          <Route path="service-providers" element={<ServiceProvider />} />
+          <Route
+            path="service-providers/:id"
+            element={<ServiceProviderDetail />}
+          />
+          {/* Payments */}
+          <Route path="payment-list" element={<PaymentList />} />
 
-  {/* Pending Requests */}
-  <Route path="pending-requests" element={<PendingRequest />} />
 
-  {/* Settings */}
-  <Route path="settings" element={<Setting />} />
+          {/* Settings */}
+          <Route path="settings" element={<Setting />} />
 
-  {/* Logout */}
-  <Route path="logout" element={<Logout />} />
-</Route>
+          {/* Logout */}
+          <Route path="logout" element={<Logout />} />
+          {/* Settings */}
+          <Route path="settings" element={<Setting />} />
+        </Route>
 
 
       </Routes>
