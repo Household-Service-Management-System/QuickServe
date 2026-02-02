@@ -1,5 +1,5 @@
 import "./Complaint.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   getAllComplaints,
@@ -18,7 +18,9 @@ export default function Complaint() {
 
   useEffect(() => {
     getAllComplaints()
-      .then((res) => setComplaints(res.data))
+      .then((res) => {
+        setComplaints(res.data);
+      })
       .catch((error) => {
         if (error.response?.status === 401) {
           localStorage.removeItem("token");
@@ -45,13 +47,16 @@ export default function Complaint() {
     );
   };
 
-  if (loading) return <h2 style={{ padding: "20px" }}>Loading...</h2>;
+  if (loading) {
+    return <h2 style={{ padding: "20px" }}>Loading...</h2>;
+  }
 
   return (
     <div className="layout">
       <main className="content">
         <h1 className="page-title">Customer Complaints</h1>
 
+        {/* 🔍 Search & Filter */}
         <div className="filter-row">
           <input
             className="search-bar"
@@ -73,6 +78,7 @@ export default function Complaint() {
           </select>
         </div>
 
+        {/* 📋 Complaints Table */}
         <div className="card">
           <div className="table-wrapper">
             <table className="custom-table">
@@ -82,6 +88,7 @@ export default function Complaint() {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th>
+                  <th>Description</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
@@ -90,7 +97,7 @@ export default function Complaint() {
               <tbody>
                 {filteredComplaints.length === 0 ? (
                   <tr>
-                    <td colSpan="6" style={{ textAlign: "center" }}>
+                    <td colSpan="7" style={{ textAlign: "center" }}>
                       No Complaints Found
                     </td>
                   </tr>
@@ -98,11 +105,18 @@ export default function Complaint() {
                   filteredComplaints.map((c) => (
                     <tr key={c.id}>
                       <td>{c.id}</td>
+
                       <td>
                         {c.firstName} {c.lastName}
                       </td>
+
                       <td>{c.email}</td>
                       <td>{c.phone}</td>
+
+                      {/* ✅ DESCRIPTION */}
+                      <td className="description-cell">
+                        {c.description || "—"}
+                      </td>
 
                       <td>
                         <span className={`status ${c.status.toLowerCase()}`}>
@@ -159,12 +173,6 @@ export default function Complaint() {
             </table>
           </div>
         </div>
-
-        {/* <div className="back-container">
-          <Link to="/admin">
-            <button className="back-btn">Back</button>
-          </Link>
-        </div> */}
       </main>
     </div>
   );
