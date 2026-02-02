@@ -133,12 +133,12 @@ const Signup = () => {
 
             if (form.role === "customer") {
                 await axios.post(
-                    "http://localhost:8080/auth/register/customer",
+                    "http://13.60.193.121:8080/auth/register/customer",
                     payload
                 );
             } else {
                 await axios.post(
-                    "http://localhost:8080/auth/register/provider",
+                    "http://13.60.193.121:8080/auth/register/provider",
                     payload
                 );
             }

@@ -23,7 +23,7 @@ const ServicesByCategory = ({ propCategoryId }) => {
     const fetchServices = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/services/category/${categoryId}`
+          `http://13.60.193.121:8080/services/category/${categoryId}`
         );
         setServices(res.data);
       } catch (error) {

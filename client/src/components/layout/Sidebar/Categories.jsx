@@ -59,7 +59,7 @@ const Categories = () => {
     const fetchCategories = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8080/service-categories/allServiceCategories",
+          "http://13.60.193.121:8080/service-categories/allServiceCategories",
         );
         setCategories(res.data);
       } catch (error) {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PaymentMethodPopup from "./PaymentMethodPopup";
-import "./Popup.css";
+import "./popup.css";
 
 /**
  * PaymentPopup

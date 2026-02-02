@@ -70,7 +70,7 @@ const ServiceDetails = () => {
     const fetchServiceDetails = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/services/details/${serviceId}`,
+          `http://13.60.193.121:8080/services/details/${serviceId}`,
         );
         setService(res.data);
       } catch (err) {
@@ -87,7 +87,7 @@ const ServiceDetails = () => {
     try {
       setProviderLoading(true);
       const res = await axios.get(
-        `http://localhost:8080/services/${serviceId}/providers`,
+        `http://13.60.193.121:8080/services/${serviceId}/providers`,
       );
       setProviders(res.data);
       setShowProviders(true);
@@ -112,7 +112,7 @@ const ServiceDetails = () => {
       setSelectedSlot(null);
 
       const res = await axios.get(
-        `http://localhost:8080/providers/${providerId}/slots`,
+        `http://13.60.193.121:8080/providers/${providerId}/slots`,
         {
           params: {
             date: date, // ✅ REQUIRED BY BACKEND
@@ -138,7 +138,7 @@ const ServiceDetails = () => {
       setSlotLoading(false);
     }
   };
-
+  
   /* ================= UI STATES ================= */
   if (loading) {
     return (

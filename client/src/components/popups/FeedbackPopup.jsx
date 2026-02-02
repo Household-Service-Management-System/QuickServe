@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Popup.css";
+import "./popup.css";
 
 export default function FeedbackPopup({ booking, onClose }) {
   const [message, setMessage] = useState("");
