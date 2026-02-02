@@ -31,6 +31,8 @@ public class SecurityConfig {
     )
     .authorizeHttpRequests(auth -> auth
 
+        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+
         // 🔓 PUBLIC
         .requestMatchers("/auth/**","/services/**","/providers/**","/service-categories/**").permitAll()
 

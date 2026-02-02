@@ -14,9 +14,16 @@ public class CorsConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(
-                List.of("http://localhost:5173") // Vite frontend
-        );
+        config.setAllowedOriginPatterns(List.of(
+                "http://localhost:3000",
+                "http://localhost:5173",
+                "http://localhost:8080",
+                "http://13.60.193.121",
+                "http://13.60.193.121:5173",
+                "http://13.60.193.121:8080",
+                "http://ec2-13-60-193-121.eu-north-1.compute.amazonaws.com",
+                "http://ec2-13-60-193-121.eu-north-1.compute.amazonaws.com:8080"
+        ));
 
         config.setAllowedMethods(
                 List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
