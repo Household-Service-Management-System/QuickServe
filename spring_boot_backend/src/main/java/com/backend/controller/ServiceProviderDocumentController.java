@@ -27,7 +27,7 @@ public class ServiceProviderDocumentController {
     @Autowired
     private ServiceProviderRepository serviceProviderRepo;
 
-    // ================= HELPER =================
+    //Just a helper method to get the logged-in service provider
     private ServiceProvider getLoggedInProvider(Authentication authentication) {
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -46,7 +46,7 @@ public class ServiceProviderDocumentController {
                 .orElseThrow(() -> new RuntimeException("Service provider not found"));
     }
 
-    // ================= UPLOAD =================
+    //upload document
     @PostMapping(
         value = "/documents",
         consumes = "multipart/form-data"
@@ -63,7 +63,7 @@ public class ServiceProviderDocumentController {
         return ResponseEntity.ok("Document uploaded successfully");
     }
 
-    // ================= GET =================
+    //get documents
     @GetMapping("/documents")
     public ResponseEntity<List<ProviderDocumentResponseDTO>> getDocuments(
             Authentication authentication) {
@@ -75,7 +75,7 @@ public class ServiceProviderDocumentController {
         );
     }
 
-    // ================= DELETE =================
+    //delete document
     @DeleteMapping("/documents/{docId}")
     public ResponseEntity<String> deleteDocument(
             Authentication authentication,

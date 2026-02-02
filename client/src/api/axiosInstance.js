@@ -5,7 +5,7 @@ const axiosInstance = axios.create({
     withCredentials: true, // safe to keep
 });
 
-// 🔐 Attach JWT automatically
+//  Attach JWT automatically
 axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");

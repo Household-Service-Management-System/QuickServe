@@ -15,7 +15,7 @@ export default function Support() {
 
     const [submitting, setSubmitting] = useState(false);
 
-    // ---------------- LOAD MY DISPUTES ----------------
+
     useEffect(() => {
         loadDisputes();
     }, []);
@@ -31,7 +31,7 @@ export default function Support() {
         }
     };
 
-    // ---------------- FORM HANDLERS ----------------
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((p) => ({ ...p, [name]: value }));
@@ -64,7 +64,7 @@ export default function Support() {
         }
     };
 
-    // ---------------- STATUS BADGE ----------------
+
     const statusBadge = (status) => {
         switch (status) {
             case "OPEN":
@@ -88,7 +88,7 @@ export default function Support() {
         <div className="p-4 md:p-6">
             <div className="max-w-4xl mx-auto space-y-8">
 
-                {/* ================= MY DISPUTES ================= */}
+
                 <div className="bg-white border rounded-xl shadow-sm p-6">
                     <h1 className="text-2xl font-semibold text-gray-800 mb-1">
                         Help & Support
@@ -141,7 +141,7 @@ export default function Support() {
                     </div>
                 </div>
 
-                {/* ================= RAISE NEW ISSUE ================= */}
+
                 <div className="bg-white border rounded-xl shadow-sm p-6">
                     <h2 className="text-lg font-semibold text-gray-800 mb-4">
                         Raise a New Support Request

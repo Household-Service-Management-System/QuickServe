@@ -27,14 +27,14 @@ export default function PaymentList() {
       .finally(() => setLoading(false));
   }, [navigate]);
 
-  /* 🔍 FILTER — FIXED */
+  //filter payments based on search
   const filteredPayments = payments.filter((p) =>
     `${p.transactionId} ${p.firstName} ${p.lastName}`
       .toLowerCase()
       .includes(search.toLowerCase())
   );
 
-  /* 💰 SUMMARY — FIXED */
+  //calculate summary amounts
   const receivedAmount = filteredPayments
     .filter((p) => p.bookingStatus === "COMPLETED")
     .reduce((sum, p) => sum + (p.amount ?? 0), 0);
@@ -53,9 +53,9 @@ export default function PaymentList() {
 
   return (
     <div className="layout">
-    
 
-      
+
+
       <main className="content">
         <h1 className="page-title">Payment Records</h1>
 
@@ -85,7 +85,7 @@ export default function PaymentList() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-     
+
         <div className="card">
           <div className="table-wrapper">
             <table className="custom-table">

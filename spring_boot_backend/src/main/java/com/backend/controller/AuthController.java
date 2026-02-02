@@ -18,7 +18,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // -------- CUSTOMER REGISTER --------
+    //customer register
     @PostMapping("/register/customer")
     public ResponseEntity<?> registerCustomer(
             @RequestBody RegisterCustomerDTO dto) {
@@ -26,7 +26,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.registerCustomer(dto));
     }
 
-    // -------- SERVICE PROVIDER REGISTER --------
+    //service provider register
     @PostMapping("/register/provider")
     public ResponseEntity<?> registerProvider(
             @RequestBody RegisterServiceProviderDTO dto) {
@@ -34,7 +34,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.registerServiceProvider(dto));
     }
 
-    
+    //admin register
     @PostMapping("/register/admin")
     public ResponseEntity<?> registerAdmin(
             @RequestBody RegisterAdminDTO dto
@@ -43,7 +43,7 @@ public class AuthController {
     }
 
     
-    // -------- LOGIN --------
+    //login
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO dto) {
         return ResponseEntity.ok(authService.login(dto));

@@ -108,9 +108,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     // 🔑 KEY CHANGE: principal = claims (NOT userDetails)
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(
-                                    claims,                         // ✅ principal
+                                    claims,                         // principal
                                     null,
-                                    userDetails.getAuthorities()    // ✅ authorities
+                                    userDetails.getAuthorities()    // authorities
                             );
 
                     authToken.setDetails(

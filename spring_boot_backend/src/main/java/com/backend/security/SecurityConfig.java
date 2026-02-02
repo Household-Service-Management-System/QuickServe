@@ -33,19 +33,19 @@ public class SecurityConfig {
 
         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 
-        // 🔓 PUBLIC
+        // PUBLIC
         .requestMatchers("/auth/**","/services/**","/providers/**","/service-categories/**").permitAll()
 
-        // 👤 CUSTOMER
+        //  CUSTOMER
         .requestMatchers("/customer/**","/bookings/**").hasRole("USER")
 
-        // 🧑‍🔧 SERVICE PROVIDER
+        //SERVICE PROVIDER
         .requestMatchers("/service-provider/**").hasRole("SERVICEPROVIDER")
 
-        // 👮 ADMIN
+        //  ADMIN
         .requestMatchers("/admin/**").hasRole("ADMIN")
 
-        // ❌ EVERYTHING ELSE
+        //  EVERYTHING ELSE
         .anyRequest().authenticated()
     )
     .addFilterBefore(

@@ -6,10 +6,6 @@ import {
 
 
 export default function ServiceProviderProfile() {
-
-
-
-  // ---------------- STATE ----------------
   const [user, setUser] = useState({
     firstName: "",
     lastName: "",
@@ -66,7 +62,7 @@ export default function ServiceProviderProfile() {
   }, []);
 
 
-  // ---------------- VALIDATION ----------------
+  //validate function
   const validate = () => {
     const e = {};
 
@@ -86,14 +82,14 @@ export default function ServiceProviderProfile() {
     return Object.keys(e).length === 0;
   };
 
-  // ---------------- INPUT CHANGE ----------------
+  //input change handler
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((p) => ({ ...p, [name]: value }));
     setErrors((p) => ({ ...p, [name]: undefined }));
   };
 
-  // ---------------- AVATAR ----------------
+  //avatar click handler
   const onAvatarClick = () => inputRef.current?.click();
 
   const handleAvatar = (e) => {
@@ -107,7 +103,7 @@ export default function ServiceProviderProfile() {
     reader.readAsDataURL(file);
   };
 
-  // ---------------- SAVE PROFILE (MULTIPART) ----------------
+  // save handler
   const handleSave = async () => {
     if (!validate()) {
       showToast("error", "Please fix validation errors");

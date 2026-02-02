@@ -31,7 +31,7 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    // 🔐 Generate JWT
+    // Generate JWT
     public String generateToken(User user) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expirationTime);

@@ -46,7 +46,7 @@ export default function Documents() {
     }, []);
 
 
-    // ---------------- FILE HANDLER ----------------
+    // file
     const handleFile = (type, file) => {
         if (!file) return;
 
@@ -58,7 +58,7 @@ export default function Documents() {
         reader.readAsDataURL(file);
     };
 
-    // ---------------- UPLOAD ----------------
+    //uploadDoc
     const uploadDoc = async (type) => {
         if (!files[type]) {
             showToast("error", "Please select a file");
@@ -83,18 +83,7 @@ export default function Documents() {
     };
 
 
-    // ---------------- DELETE ----------------
-    // const deleteDocument = async (docId) => {
-    //     try {
-    //         await axios.delete(
-    //             `http://localhost:8080/service-provider/documents/${docId}`
-    //         );
-    //         showToast("success", "Document deleted");
-    //         window.location.reload();
-    //     } catch {
-    //         showToast("error", "Delete failed");
-    //     }
-    // };
+
     const deleteDoc = async (docId) => {
         try {
             await deleteDocument(docId);

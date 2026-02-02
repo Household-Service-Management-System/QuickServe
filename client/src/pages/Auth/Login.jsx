@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Nav from "../Home/Nav";
 import Footer from "../Home/Footer";
 import { loginUser } from "../../api/authService";
-import toast from "react-hot-toast"; 
+import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const Login = () => {
         password: form.password,
       });
 
-      // 🔐 Store auth data
+      //  Store auth data
       localStorage.setItem("token", res.token);
       localStorage.setItem("role", res.role);
       localStorage.setItem("user", JSON.stringify(res));
@@ -37,7 +37,7 @@ const Login = () => {
       // toast.dismiss(loadingToast);
       toast.success("Login successful 🎉"); // ✅
 
-      // ✅ Redirect logic
+      //  Redirect logic
       if (res.role === "ROLE_ADMIN") {
         navigate("/admin", { replace: true });
       } else if (res.role === "ROLE_SERVICEPROVIDER") {
@@ -104,14 +104,14 @@ const Login = () => {
             </button>
           </form>
 
-          <div className="text-center mt-4">
+          {/* <div className="text-center mt-4">
             <Link
               to="/forgot-password"
               className="text-sm text-blue-700 hover:underline"
             >
               Forgot Password?
             </Link>
-          </div>
+          </div> */}
 
           <p className="text-sm text-center text-gray-600 mt-4">
             Don't have an account?

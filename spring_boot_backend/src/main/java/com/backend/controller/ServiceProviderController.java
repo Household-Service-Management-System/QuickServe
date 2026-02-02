@@ -172,7 +172,7 @@ public class ServiceProviderController {
         return ResponseEntity.ok("Profile updated successfully");
     }
 
-    //available servic
+    //available services
     @GetMapping("/services")
     public ResponseEntity<Set<com.backend.entities.Service>> getMyServices(
             Authentication authentication) {
