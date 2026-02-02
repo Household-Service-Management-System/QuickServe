@@ -249,7 +249,7 @@ const Home = () => {
                       to="/signup"
                       className="px-5 py-2.5 rounded-full bg-white text-blue-800 font-semibold shadow"
                     >
-                      Book a Service
+                      Book Service
                     </Link>
                   </div>
                 </div>
